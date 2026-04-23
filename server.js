@@ -226,6 +226,7 @@ app.get('/admin/ingressos', auth, adminOnly, async (req, res) => {
 });
 
 // ADMIN - USUÁRIOS
+// ADMIN - USUÁRIOS
 app.get('/admin/usuarios', auth, adminOnly, async (req, res) => {
   try {
     const usuarios = await User.find({}, { senha: 0 }).sort({ createdAt: -1 });
@@ -236,4 +237,5 @@ app.get('/admin/usuarios', auth, adminOnly, async (req, res) => {
   }
 });
 
-app.listen(3000, () => console.log('Rodando em http://localhost:3000'));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Rodando na porta ${PORT}`));
