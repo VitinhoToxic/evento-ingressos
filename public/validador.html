@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <link rel="icon" href="/favicon.png">
-<link rel="apple-touch-icon" href="/favicon.png">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Validador - Sunset Open Bar</title>
@@ -68,11 +66,6 @@
     .nav-links a {
       color: #dbe4ff;
       font-size: 15px;
-      transition: 0.2s;
-    }
-
-    .nav-links a:hover {
-      color: #22c55e;
     }
 
     .page {
@@ -105,23 +98,51 @@
     }
 
     .title {
-      font-size: 40px;
+      font-size: 38px;
       margin-bottom: 12px;
     }
 
     .subtitle {
       color: #94a3b8;
       line-height: 1.7;
-      margin-bottom: 24px;
-      max-width: 650px;
+      margin-bottom: 22px;
     }
 
-    .reader-wrap {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 22px;
-      padding: 18px;
-      text-align: center;
+    .row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 15px 16px;
+      border-radius: 14px;
+      border: 1px solid #334155;
+      background: #0b1220;
+      color: white;
+      outline: none;
+      font-size: 15px;
+    }
+
+    .camera-select {
+      margin-bottom: 14px;
+    }
+
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 14px 18px;
+      background: #22c55e;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .secondary-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
     }
 
     #reader {
@@ -133,41 +154,18 @@
       overflow: hidden;
     }
 
-    .action-row {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 18px;
-    }
-
-    button {
-      border: none;
-      border-radius: 14px;
-      padding: 14px 18px;
-      background: #22c55e;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    button:hover {
-      background: #16a34a;
-      transform: translateY(-1px);
-    }
-
-    .secondary-btn {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .secondary-btn:hover {
-      background: rgba(255,255,255,0.13);
+    .reader-wrap {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 22px;
+      padding: 18px;
+      text-align: center;
+      margin-top: 12px;
     }
 
     .manual-box {
       margin-top: 24px;
-      padding-top: 24px;
+      padding-top: 22px;
       border-top: 1px solid rgba(255,255,255,0.06);
     }
 
@@ -179,31 +177,8 @@
     .manual-box p {
       color: #94a3b8;
       line-height: 1.6;
-      margin-bottom: 14px;
-      font-size: 14px;
-    }
-
-    input {
-      width: 100%;
-      padding: 15px 16px;
-      border-radius: 14px;
-      border: 1px solid #334155;
-      background: #0b1220;
-      color: white;
-      outline: none;
       margin-bottom: 12px;
-      font-size: 15px;
-    }
-
-    input:focus {
-      border-color: #22c55e;
-      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
-    }
-
-    .status-panel {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      font-size: 14px;
     }
 
     .status-box {
@@ -227,7 +202,7 @@
     }
 
     .status-message {
-      font-size: 34px;
+      font-size: 32px;
       line-height: 1.15;
       font-weight: bold;
     }
@@ -236,6 +211,7 @@
       margin-top: 12px;
       line-height: 1.6;
       color: #cbd5e1;
+      word-break: break-word;
     }
 
     .status-idle .status-message {
@@ -300,7 +276,6 @@
         <a href="/ingressos.html">Ingressos</a>
         <a href="/meus-ingressos.html">Meus ingressos</a>
         <a href="/admin.html">Admin</a>
-        <a href="/login.html">Login</a>
       </nav>
     </div>
   </header>
@@ -310,11 +285,16 @@
       <div class="badge">Leitura com câmera</div>
       <h1 class="title">Validação de ingresso</h1>
       <p class="subtitle">
-        Escaneie o QR Code do ingresso pela câmera do dispositivo ou faça a validação manual
-        usando o código do ticket.
+        Abra a câmera, aponte para o QR Code ou valide manualmente pelo código do ingresso.
       </p>
 
-      <div class="action-row">
+      <div class="camera-select">
+        <select id="cameraSelect">
+          <option value="">Carregando câmeras...</option>
+        </select>
+      </div>
+
+      <div class="row">
         <button onclick="iniciarLeitura()">Iniciar câmera</button>
         <button class="secondary-btn" onclick="pararLeitura()">Parar câmera</button>
       </div>
@@ -325,25 +305,25 @@
 
       <div class="manual-box">
         <h3>Validação manual</h3>
-        <p>Cole o código do ingresso abaixo caso precise validar sem usar a câmera.</p>
+        <p>Se a câmera não ler, cole o código do ingresso abaixo.</p>
         <input id="codigoManual" type="text" placeholder="Digite ou cole o código do ingresso" />
         <button onclick="validarManual()">Validar código</button>
       </div>
     </section>
 
-    <section class="status-panel">
+    <section>
       <div class="status-box status-idle" id="statusBox">
         <div class="status-label">Status da validação</div>
         <div class="status-message" id="statusMessage">Aguardando leitura</div>
         <div class="status-detail" id="statusDetail">
-          Inicie a câmera ou use a validação manual para verificar a entrada.
+          Faça login como admin no site online e permita a câmera no navegador.
         </div>
       </div>
 
       <div class="tips">
-        <div class="tip">✔️ Ingressos válidos serão marcados como usados automaticamente.</div>
-        <div class="tip">✔️ Se o mesmo ingresso for lido novamente, o sistema bloqueará a entrada.</div>
-        <div class="tip">✔️ Para usar a câmera, permita o acesso quando o navegador solicitar.</div>
+        <div class="tip">✔️ Teste primeiro com a validação manual para confirmar que o backend está funcionando.</div>
+        <div class="tip">✔️ No celular, prefira o Chrome e permita acesso à câmera no cadeado do navegador.</div>
+        <div class="tip">✔️ O login de admin precisa ser feito no domínio do Render, não no localhost.</div>
       </div>
     </section>
   </main>
@@ -353,6 +333,7 @@
     const isAdmin = localStorage.getItem('isAdmin');
     let html5QrCode = null;
     let lendo = false;
+    let cameras = [];
 
     if (!token) {
       alert('Faça login primeiro.');
@@ -378,34 +359,24 @@
       detailEl.textContent = detail || '';
     }
 
-    function beepOk() {
+    async function carregarCameras() {
       try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = ctx.createOscillator();
-        const gain = ctx.createGain();
-        oscillator.type = 'sine';
-        oscillator.frequency.setValueAtTime(880, ctx.currentTime);
-        gain.gain.setValueAtTime(0.12, ctx.currentTime);
-        oscillator.connect(gain);
-        gain.connect(ctx.destination);
-        oscillator.start();
-        oscillator.stop(ctx.currentTime + 0.15);
-      } catch (e) {}
-    }
+        cameras = await Html5Qrcode.getCameras();
+        const select = document.getElementById('cameraSelect');
 
-    function beepError() {
-      try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = ctx.createOscillator();
-        const gain = ctx.createGain();
-        oscillator.type = 'square';
-        oscillator.frequency.setValueAtTime(220, ctx.currentTime);
-        gain.gain.setValueAtTime(0.12, ctx.currentTime);
-        oscillator.connect(gain);
-        gain.connect(ctx.destination);
-        oscillator.start();
-        oscillator.stop(ctx.currentTime + 0.18);
-      } catch (e) {}
+        if (!cameras.length) {
+          select.innerHTML = '<option value="">Nenhuma câmera encontrada</option>';
+          return;
+        }
+
+        select.innerHTML = cameras.map((camera, index) => {
+          const label = camera.label || `Câmera ${index + 1}`;
+          return `<option value="${camera.id}">${label}</option>`;
+        }).join('');
+      } catch (error) {
+        document.getElementById('cameraSelect').innerHTML =
+          '<option value="">Não foi possível listar as câmeras</option>';
+      }
     }
 
     async function enviarCodigo(codigo) {
@@ -422,28 +393,33 @@
         const data = await res.json();
 
         if (res.ok) {
-          setStatus('ok', data.message || 'Entrada liberada', `Código validado: ${codigo}`);
-          beepOk();
+          setStatus('ok', data.message || 'Entrada liberada', `Código lido: ${codigo}`);
         } else {
-          setStatus('error', data.message || data.error || 'Ingresso inválido', `Código informado: ${codigo}`);
-          beepError();
+          setStatus('error', data.message || data.error || 'Erro ao validar', `Código lido: ${codigo}`);
         }
       } catch (error) {
-        setStatus('error', 'Erro de conexão', 'Não foi possível validar o ingresso agora.');
-        beepError();
+        setStatus('error', 'Erro de conexão', 'Não foi possível validar o ingresso no servidor.');
       }
     }
 
     async function iniciarLeitura() {
+      const cameraId = document.getElementById('cameraSelect').value;
+
+      if (!cameraId) {
+        setStatus('error', 'Nenhuma câmera selecionada', 'Escolha uma câmera disponível.');
+        return;
+      }
+
       if (lendo) return;
 
       html5QrCode = new Html5Qrcode('reader');
 
       try {
         await html5QrCode.start(
-          { facingMode: 'environment' },
-          { fps: 10, qrbox: 260 },
+          cameraId,
+          { fps: 10, qrbox: 250 },
           async (decodedText) => {
+            setStatus('idle', 'QR detectado', `Conteúdo lido: ${decodedText}`);
             await enviarCodigo(decodedText);
             await pararLeitura();
           },
@@ -453,7 +429,7 @@
         lendo = true;
         setStatus('idle', 'Câmera ativa', 'Aponte para o QR Code do ingresso.');
       } catch (error) {
-        setStatus('error', 'Não foi possível abrir a câmera', 'Verifique a permissão da câmera no navegador.');
+        setStatus('error', 'Não foi possível abrir a câmera', 'Verifique a permissão da câmera e tente novamente.');
       }
     }
 
@@ -463,10 +439,9 @@
           await html5QrCode.stop();
           await html5QrCode.clear();
           lendo = false;
-          setStatus('idle', 'Leitura pausada', 'Você pode iniciar a câmera novamente quando quiser.');
         }
       } catch (error) {
-        setStatus('error', 'Erro ao parar câmera', 'Tente recarregar a página.');
+        setStatus('error', 'Erro ao parar câmera', 'Recarregue a página se necessário.');
       }
     }
 
@@ -480,6 +455,8 @@
 
       await enviarCodigo(codigo);
     }
+
+    carregarCameras();
   </script>
 </body>
 </html>
