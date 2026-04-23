@@ -331,6 +331,8 @@
   <script>
     const token = localStorage.getItem('token');
     const isAdmin = localStorage.getItem('isAdmin');
+
+    let processandoLeitura = false;
     let html5QrCode = null;
     let lendo = false;
     let cameras = [];
@@ -410,7 +412,7 @@
         return;
       }
 
-      if (lendo) return;
+      if (lendo || processandoLeitura) return;
 
       html5QrCode = new Html5Qrcode('reader');
 
@@ -419,9 +421,17 @@
           cameraId,
           { fps: 10, qrbox: 250 },
           async (decodedText) => {
+            if (processandoLeitura) return;
+
+            processandoLeitura = true;
             setStatus('idle', 'QR detectado', `Conteúdo lido: ${decodedText}`);
-            await enviarCodigo(decodedText);
+
             await pararLeitura();
+            await enviarCodigo(decodedText);
+
+            setTimeout(() => {
+              processandoLeitura = false;
+            }, 1500);
           },
           () => {}
         );
