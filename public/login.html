@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <link rel="icon" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Sunset Open Bar</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(34, 197, 94, 0.15), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.14), transparent 30%),
+        linear-gradient(135deg, #050816, #0f172a 45%, #111827);
+      color: white;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .navbar {
+      width: 100%;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(5, 8, 22, 0.82);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .logo span {
+      color: #22c55e;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: #dbe4ff;
+      font-size: 15px;
+      transition: 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: #22c55e;
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 56px 20px 70px;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .hero-card,
+    .form-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 28px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.28);
+    }
+
+    .hero-card {
+      padding: 34px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      top: -80px;
+      right: -80px;
+      width: 220px;
+      height: 220px;
+      background: rgba(34, 197, 94, 0.12);
+      border-radius: 50%;
+      filter: blur(10px);
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      bottom: -70px;
+      left: -70px;
+      width: 200px;
+      height: 200px;
+      background: rgba(59, 130, 246, 0.10);
+      border-radius: 50%;
+      filter: blur(10px);
+    }
+
+    .badge {
+      display: inline-block;
+      width: fit-content;
+      background: rgba(34, 197, 94, 0.14);
+      color: #4ade80;
+      border: 1px solid rgba(34,197,94,0.22);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card h1 {
+      font-size: 46px;
+      line-height: 1.04;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card h1 span {
+      color: #22c55e;
+    }
+
+    .hero-card p {
+      color: #cbd5e1;
+      line-height: 1.7;
+      font-size: 17px;
+      margin-bottom: 24px;
+      max-width: 560px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-list {
+      display: grid;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-item {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 14px;
+      padding: 14px 16px;
+      color: #dbe4ff;
+    }
+
+    .form-card {
+      padding: 28px;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      background: rgba(255,255,255,0.04);
+      padding: 8px;
+      border-radius: 16px;
+      margin-bottom: 24px;
+    }
+
+    .tab-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      background: transparent;
+      color: #cbd5e1;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .tab-btn.active {
+      background: #22c55e;
+      color: white;
+    }
+
+    .tab-btn:not(.active):hover {
+      background: rgba(255,255,255,0.06);
+    }
+
+    .form-panel {
+      display: none;
+    }
+
+    .form-panel.active {
+      display: block;
+    }
+
+    .form-title {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .form-sub {
+      color: #94a3b8;
+      line-height: 1.6;
+      margin-bottom: 22px;
+    }
+
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    .input-label {
+      display: block;
+      margin-bottom: 8px;
+      color: #dbe4ff;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px 16px;
+      border-radius: 14px;
+      border: 1px solid #334155;
+      background: #0b1220;
+      color: white;
+      outline: none;
+      transition: 0.2s;
+      font-size: 15px;
+    }
+
+    input:focus {
+      border-color: #22c55e;
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
+    }
+
+    .submit-btn {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      background: #22c55e;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-top: 6px;
+    }
+
+    .submit-btn:hover {
+      background: #16a34a;
+      transform: translateY(-1px);
+    }
+
+    .status {
+      margin-top: 14px;
+      min-height: 24px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .status.ok {
+      color: #4ade80;
+    }
+
+    .status.err {
+      color: #f87171;
+    }
+
+    .footer-note {
+      margin-top: 24px;
+      color: #94a3b8;
+      font-size: 13px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    @media (max-width: 980px) {
+      .page {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-card h1 {
+        font-size: 36px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .hero-card,
+      .form-card {
+        padding: 22px;
+      }
+
+      .hero-card h1 {
+        font-size: 30px;
+      }
+
+      .form-title {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="nav-content">
+      <div class="logo">SUNSET <span>OPEN BAR</span></div>
+      <nav class="nav-links">
+        <a href="/index.html">Início</a>
+        <a href="/ingressos.html">Ingressos</a>
+        <a href="/meus-ingressos.html">Meus ingressos</a>
+        <a href="/admin.html">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="hero-card">
+      <div class="badge">Acesso do cliente</div>
+      <h1>Entre na sua conta e <span>garanta sua vaga</span>.</h1>
+      <p>
+        Faça login para comprar seu ingresso, acompanhar seus tickets emitidos
+        e ter acesso rápido ao QR Code da sua entrada.
+      </p>
+
+      <div class="hero-list">
+        <div class="hero-item">✔️ Compra de ingresso em poucos passos</div>
+        <div class="hero-item">✔️ Área exclusiva para visualizar seus ingressos</div>
+        <div class="hero-item">✔️ QR Code individual para validação na entrada</div>
+      </div>
+    </section>
+
+    <section class="form-card">
+      <div class="tabs">
+        <button class="tab-btn active" id="tabLoginBtn" onclick="showTab('login')">Entrar</button>
+        <button class="tab-btn" id="tabCadastroBtn" onclick="showTab('cadastro')">Criar conta</button>
+      </div>
+
+      <div class="form-panel active" id="loginPanel">
+        <h2 class="form-title">Bem-vindo de volta</h2>
+        <p class="form-sub">
+          Entre com seus dados para acessar sua área, comprar ingressos e acompanhar tudo.
+        </p>
+
+        <div class="input-group">
+          <label class="input-label" for="loginEmail">E-mail</label>
+          <input id="loginEmail" type="email" placeholder="seuemail@exemplo.com" />
+        </div>
+
+        <div class="input-group">
+          <label class="input-label" for="loginSenha">Senha</label>
+          <input id="loginSenha" type="password" placeholder="Digite sua senha" />
+        </div>
+
+        <button class="submit-btn" onclick="login()">Entrar agora</button>
+        <div class="status" id="loginStatus"></div>
+      </div>
+
+      <div class="form-panel" id="cadastroPanel">
+        <h2 class="form-title">Criar nova conta</h2>
+        <p class="form-sub">
+          Cadastre-se para comprar ingressos, acompanhar seus pedidos e acessar sua área exclusiva.
+        </p>
+
+        <div class="input-group">
+          <label class="input-label" for="nome">Nome completo</label>
+          <input id="nome" type="text" placeholder="Digite seu nome" />
+        </div>
+
+        <div class="input-group">
+          <label class="input-label" for="email">E-mail</label>
+          <input id="email" type="email" placeholder="seuemail@exemplo.com" />
+        </div>
+
+        <div class="input-group">
+          <label class="input-label" for="senha">Senha</label>
+          <input id="senha" type="password" placeholder="Crie uma senha" />
+        </div>
+
+        <button class="submit-btn" onclick="register()">Criar conta</button>
+        <div class="status" id="cadastroStatus"></div>
+      </div>
+
+      <div class="footer-note">
+        Ao acessar, você poderá comprar ingressos e visualizar seus tickets digitais em um só lugar.
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function showTab(tab) {
+      const loginPanel = document.getElementById('loginPanel');
+      const cadastroPanel = document.getElementById('cadastroPanel');
+      const tabLoginBtn = document.getElementById('tabLoginBtn');
+      const tabCadastroBtn = document.getElementById('tabCadastroBtn');
+
+      if (tab === 'login') {
+        loginPanel.classList.add('active');
+        cadastroPanel.classList.remove('active');
+        tabLoginBtn.classList.add('active');
+        tabCadastroBtn.classList.remove('active');
+      } else {
+        cadastroPanel.classList.add('active');
+        loginPanel.classList.remove('active');
+        tabCadastroBtn.classList.add('active');
+        tabLoginBtn.classList.remove('active');
+      }
+    }
+
+    function setStatus(id, message, type) {
+      const el = document.getElementById(id);
+      el.textContent = message;
+      el.className = 'status ' + (type || '');
+    }
+
+    async function register() {
+      try {
+        const nome = document.getElementById('nome').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const senha = document.getElementById('senha').value.trim();
+
+        if (!nome || !email || !senha) {
+          setStatus('cadastroStatus', 'Preencha todos os campos.', 'err');
+          return;
+        }
+
+        setStatus('cadastroStatus', 'Criando conta...');
+
+        const res = await fetch('/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nome, email, senha })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          setStatus('cadastroStatus', data.error || 'Erro ao cadastrar.', 'err');
+          return;
+        }
+
+        setStatus('cadastroStatus', 'Conta criada com sucesso. Agora faça login.', 'ok');
+
+        document.getElementById('loginEmail').value = email;
+        document.getElementById('loginSenha').value = senha;
+
+        setTimeout(() => {
+          showTab('login');
+        }, 700);
+      } catch (error) {
+        setStatus('cadastroStatus', 'Erro de conexão.', 'err');
+      }
+    }
+
+    async function login() {
+      try {
+        const email = document.getElementById('loginEmail').value.trim();
+        const senha = document.getElementById('loginSenha').value.trim();
+
+        if (!email || !senha) {
+          setStatus('loginStatus', 'Preencha e-mail e senha.', 'err');
+          return;
+        }
+
+        setStatus('loginStatus', 'Entrando...');
+
+        const res = await fetch('/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, senha })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || !data.token) {
+          setStatus('loginStatus', data.error || 'Login inválido.', 'err');
+          return;
+        }
+
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('email', email);
+
+        if (data.user && typeof data.user.isAdmin !== 'undefined') {
+          localStorage.setItem('isAdmin', data.user.isAdmin ? 'true' : 'false');
+        }
+
+        setStatus('loginStatus', 'Login realizado com sucesso.', 'ok');
+
+        setTimeout(() => {
+          window.location.href = '/ingressos.html';
+        }, 700);
+      } catch (error) {
+        setStatus('loginStatus', 'Erro de conexão.', 'err');
+      }
+    }
+  </script>
+</body>
+</html>

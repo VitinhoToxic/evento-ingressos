@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <link rel="icon" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Validador - Sunset Open Bar</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(34, 197, 94, 0.12), transparent 25%),
+        radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.12), transparent 25%),
+        linear-gradient(135deg, #050816, #0f172a 45%, #111827);
+      color: white;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .navbar {
+      width: 100%;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(5, 8, 22, 0.84);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .logo span {
+      color: #22c55e;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: #dbe4ff;
+      font-size: 15px;
+      transition: 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: #22c55e;
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 42px 20px 70px;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 24px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 26px;
+      padding: 26px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(34, 197, 94, 0.14);
+      color: #4ade80;
+      border: 1px solid rgba(34,197,94,0.22);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 14px;
+    }
+
+    .title {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      color: #94a3b8;
+      line-height: 1.7;
+      margin-bottom: 24px;
+      max-width: 650px;
+    }
+
+    .reader-wrap {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 22px;
+      padding: 18px;
+      text-align: center;
+    }
+
+    #reader {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 14px 18px;
+      background: #22c55e;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #16a34a;
+      transform: translateY(-1px);
+    }
+
+    .secondary-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .secondary-btn:hover {
+      background: rgba(255,255,255,0.13);
+    }
+
+    .manual-box {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .manual-box h3 {
+      margin-bottom: 10px;
+      font-size: 22px;
+    }
+
+    .manual-box p {
+      color: #94a3b8;
+      line-height: 1.6;
+      margin-bottom: 14px;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px 16px;
+      border-radius: 14px;
+      border: 1px solid #334155;
+      background: #0b1220;
+      color: white;
+      outline: none;
+      margin-bottom: 12px;
+      font-size: 15px;
+    }
+
+    input:focus {
+      border-color: #22c55e;
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
+    }
+
+    .status-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .status-box {
+      border-radius: 22px;
+      padding: 24px;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin-bottom: 18px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .status-label {
+      color: #94a3b8;
+      font-size: 13px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .status-message {
+      font-size: 34px;
+      line-height: 1.15;
+      font-weight: bold;
+    }
+
+    .status-detail {
+      margin-top: 12px;
+      line-height: 1.6;
+      color: #cbd5e1;
+    }
+
+    .status-idle .status-message {
+      color: #facc15;
+    }
+
+    .status-ok {
+      background: rgba(34, 197, 94, 0.12);
+      border-color: rgba(34, 197, 94, 0.22);
+    }
+
+    .status-ok .status-message {
+      color: #4ade80;
+    }
+
+    .status-error {
+      background: rgba(239, 68, 68, 0.12);
+      border-color: rgba(239, 68, 68, 0.22);
+    }
+
+    .status-error .status-message {
+      color: #f87171;
+    }
+
+    .tips {
+      display: grid;
+      gap: 12px;
+    }
+
+    .tip {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 14px 16px;
+      color: #dbe4ff;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    @media (max-width: 980px) {
+      .page {
+        grid-template-columns: 1fr;
+      }
+
+      .title {
+        font-size: 32px;
+      }
+
+      .status-message {
+        font-size: 28px;
+      }
+    }
+  </style>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+<body>
+  <header class="navbar">
+    <div class="nav-content">
+      <div class="logo">SUNSET <span>OPEN BAR</span></div>
+      <nav class="nav-links">
+        <a href="/index.html">Início</a>
+        <a href="/ingressos.html">Ingressos</a>
+        <a href="/meus-ingressos.html">Meus ingressos</a>
+        <a href="/admin.html">Admin</a>
+        <a href="/login.html">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="card">
+      <div class="badge">Leitura com câmera</div>
+      <h1 class="title">Validação de ingresso</h1>
+      <p class="subtitle">
+        Escaneie o QR Code do ingresso pela câmera do dispositivo ou faça a validação manual
+        usando o código do ticket.
+      </p>
+
+      <div class="action-row">
+        <button onclick="iniciarLeitura()">Iniciar câmera</button>
+        <button class="secondary-btn" onclick="pararLeitura()">Parar câmera</button>
+      </div>
+
+      <div class="reader-wrap">
+        <div id="reader"></div>
+      </div>
+
+      <div class="manual-box">
+        <h3>Validação manual</h3>
+        <p>Cole o código do ingresso abaixo caso precise validar sem usar a câmera.</p>
+        <input id="codigoManual" type="text" placeholder="Digite ou cole o código do ingresso" />
+        <button onclick="validarManual()">Validar código</button>
+      </div>
+    </section>
+
+    <section class="status-panel">
+      <div class="status-box status-idle" id="statusBox">
+        <div class="status-label">Status da validação</div>
+        <div class="status-message" id="statusMessage">Aguardando leitura</div>
+        <div class="status-detail" id="statusDetail">
+          Inicie a câmera ou use a validação manual para verificar a entrada.
+        </div>
+      </div>
+
+      <div class="tips">
+        <div class="tip">✔️ Ingressos válidos serão marcados como usados automaticamente.</div>
+        <div class="tip">✔️ Se o mesmo ingresso for lido novamente, o sistema bloqueará a entrada.</div>
+        <div class="tip">✔️ Para usar a câmera, permita o acesso quando o navegador solicitar.</div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const token = localStorage.getItem('token');
+    const isAdmin = localStorage.getItem('isAdmin');
+    let html5QrCode = null;
+    let lendo = false;
+
+    if (!token) {
+      alert('Faça login primeiro.');
+      window.location.href = '/login.html';
+    }
+
+    if (isAdmin !== 'true') {
+      alert('Acesso permitido apenas para administrador.');
+      window.location.href = '/index.html';
+    }
+
+    function setStatus(type, message, detail) {
+      const box = document.getElementById('statusBox');
+      const messageEl = document.getElementById('statusMessage');
+      const detailEl = document.getElementById('statusDetail');
+
+      box.className = 'status-box';
+      if (type === 'ok') box.classList.add('status-ok');
+      else if (type === 'error') box.classList.add('status-error');
+      else box.classList.add('status-idle');
+
+      messageEl.textContent = message;
+      detailEl.textContent = detail || '';
+    }
+
+    function beepOk() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = ctx.createOscillator();
+        const gain = ctx.createGain();
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(880, ctx.currentTime);
+        gain.gain.setValueAtTime(0.12, ctx.currentTime);
+        oscillator.connect(gain);
+        gain.connect(ctx.destination);
+        oscillator.start();
+        oscillator.stop(ctx.currentTime + 0.15);
+      } catch (e) {}
+    }
+
+    function beepError() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = ctx.createOscillator();
+        const gain = ctx.createGain();
+        oscillator.type = 'square';
+        oscillator.frequency.setValueAtTime(220, ctx.currentTime);
+        gain.gain.setValueAtTime(0.12, ctx.currentTime);
+        oscillator.connect(gain);
+        gain.connect(ctx.destination);
+        oscillator.start();
+        oscillator.stop(ctx.currentTime + 0.18);
+      } catch (e) {}
+    }
+
+    async function enviarCodigo(codigo) {
+      try {
+        const res = await fetch('/validar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+          },
+          body: JSON.stringify({ codigo })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          setStatus('ok', data.message || 'Entrada liberada', `Código validado: ${codigo}`);
+          beepOk();
+        } else {
+          setStatus('error', data.message || data.error || 'Ingresso inválido', `Código informado: ${codigo}`);
+          beepError();
+        }
+      } catch (error) {
+        setStatus('error', 'Erro de conexão', 'Não foi possível validar o ingresso agora.');
+        beepError();
+      }
+    }
+
+    async function iniciarLeitura() {
+      if (lendo) return;
+
+      html5QrCode = new Html5Qrcode('reader');
+
+      try {
+        await html5QrCode.start(
+          { facingMode: 'environment' },
+          { fps: 10, qrbox: 260 },
+          async (decodedText) => {
+            await enviarCodigo(decodedText);
+            await pararLeitura();
+          },
+          () => {}
+        );
+
+        lendo = true;
+        setStatus('idle', 'Câmera ativa', 'Aponte para o QR Code do ingresso.');
+      } catch (error) {
+        setStatus('error', 'Não foi possível abrir a câmera', 'Verifique a permissão da câmera no navegador.');
+      }
+    }
+
+    async function pararLeitura() {
+      try {
+        if (html5QrCode && lendo) {
+          await html5QrCode.stop();
+          await html5QrCode.clear();
+          lendo = false;
+          setStatus('idle', 'Leitura pausada', 'Você pode iniciar a câmera novamente quando quiser.');
+        }
+      } catch (error) {
+        setStatus('error', 'Erro ao parar câmera', 'Tente recarregar a página.');
+      }
+    }
+
+    async function validarManual() {
+      const codigo = document.getElementById('codigoManual').value.trim();
+
+      if (!codigo) {
+        setStatus('error', 'Digite um código', 'Informe o código do ingresso para validar.');
+        return;
+      }
+
+      await enviarCodigo(codigo);
+    }
+  </script>
+</body>
+</html>

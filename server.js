@@ -1,0 +1,239 @@
+require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const { v4: uuidv4 } = require('uuid');
+const QRCode = require('qrcode');
+
+const User = require('./models/User');
+const Ticket = require('./models/Ticket');
+
+const app = express();
+app.use(express.json());
+app.use(express.static('public'));
+
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('Mongo conectado'))
+  .catch(err => console.error('Erro Mongo:', err));
+
+const LIMITE = 400;
+
+// AUTH
+app.post('/register', async (req, res) => {
+  try {
+    const { nome, email, senha } = req.body;
+
+    const existente = await User.findOne({ email });
+    if (existente) {
+      return res.status(400).json({ error: 'Email já cadastrado' });
+    }
+
+    const hash = await bcrypt.hash(senha, 10);
+
+    // Troque o email abaixo pelo seu se quiser virar admin automaticamente
+  const isAdmin = email === 'admin@evento.com' || email === 'vitor1234@gmail.com';
+
+    const user = await User.create({
+      nome,
+      email,
+      senha: hash,
+      isAdmin
+    });
+
+    res.json({
+      message: 'Usuário criado com sucesso',
+      user: {
+        id: user._id,
+        nome: user.nome,
+        email: user.email,
+        isAdmin: user.isAdmin
+      }
+    });
+  } catch (error) {
+    console.error('Erro no /register:', error);
+    res.status(500).json({ error: 'Erro ao cadastrar usuário' });
+  }
+});
+
+app.post('/login', async (req, res) => {
+  try {
+    const { email, senha } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ error: 'Email ou senha inválidos' });
+    }
+
+    const senhaOk = await bcrypt.compare(senha, user.senha);
+    if (!senhaOk) {
+      return res.status(401).json({ error: 'Email ou senha inválidos' });
+    }
+
+    const token = jwt.sign(
+      { id: user._id, isAdmin: user.isAdmin, email: user.email },
+      process.env.JWT_SECRET
+    );
+
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        nome: user.nome,
+        email: user.email,
+        isAdmin: user.isAdmin
+      }
+    });
+  } catch (error) {
+    console.error('Erro no /login:', error);
+    res.status(500).json({ error: 'Erro ao fazer login' });
+  }
+});
+
+function auth(req, res, next) {
+  try {
+    const token = req.headers.authorization;
+
+    if (!token) {
+      return res.status(401).json({ error: 'Token não enviado' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    return res.status(401).json({ error: 'Token inválido' });
+  }
+}
+
+function adminOnly(req, res, next) {
+  if (!req.user?.isAdmin) {
+    return res.status(403).json({ error: 'Acesso negado' });
+  }
+  next();
+}
+
+// COMPRA - MODO TESTE
+app.post('/comprar', auth, async (req, res) => {
+  try {
+    const { tipo } = req.body;
+
+    const tiposValidos = ['openbar', 'pista'];
+    if (!tiposValidos.includes(tipo)) {
+      return res.status(400).json({ error: 'Tipo de ingresso inválido' });
+    }
+
+    const preco = tipo === 'pista' ? 40 : 80;
+    const nomeTipo = tipo === 'pista' ? 'Pista Comum' : 'Open Bar Premium';
+
+    const count = await Ticket.countDocuments({ status: 'pago' });
+    if (count >= LIMITE) {
+      return res.status(400).json({ error: 'Ingressos esgotados' });
+    }
+
+    const codigo = uuidv4();
+
+    await Ticket.create({
+      userId: req.user.id,
+      codigo,
+      status: 'pago',
+      usado: false,
+      tipo,
+      preco
+    });
+
+    const qr = await QRCode.toDataURL(codigo);
+
+    res.json({
+      message: 'Ingresso gerado com sucesso',
+      codigo,
+      qr,
+      tipo: nomeTipo,
+      preco
+    });
+  } catch (error) {
+    console.error('Erro no /comprar:', error);
+    res.status(500).json({ error: 'Erro ao gerar ingresso' });
+  }
+});
+
+// MEUS INGRESSOS
+app.get('/meus-ingressos', auth, async (req, res) => {
+  try {
+    const tickets = await Ticket.find({ userId: req.user.id }).sort({ createdAt: -1 });
+    res.json(tickets);
+  } catch (error) {
+    console.error('Erro no /meus-ingressos:', error);
+    res.status(500).json({ error: 'Erro ao buscar ingressos' });
+  }
+});
+
+// VALIDAR INGRESSO
+app.post('/validar', auth, adminOnly, async (req, res) => {
+  try {
+    const { codigo } = req.body;
+
+    const ticket = await Ticket.findOne({ codigo });
+
+    if (!ticket) {
+      return res.status(404).json({ ok: false, message: 'Ingresso inválido' });
+    }
+
+    if (ticket.usado) {
+      return res.status(400).json({ ok: false, message: 'Ingresso já usado' });
+    }
+
+    ticket.usado = true;
+    await ticket.save();
+
+    return res.json({ ok: true, message: 'Entrada liberada' });
+  } catch (error) {
+    console.error('Erro no /validar:', error);
+    res.status(500).json({ ok: false, message: 'Erro ao validar ingresso' });
+  }
+});
+
+// ADMIN - RESUMO
+app.get('/admin/resumo', auth, adminOnly, async (req, res) => {
+  try {
+    const totalVendidos = await Ticket.countDocuments({ status: 'pago' });
+    const totalUsados = await Ticket.countDocuments({ usado: true });
+    const totalDisponiveis = Math.max(LIMITE - totalVendidos, 0);
+    const totalUsuarios = await User.countDocuments();
+
+    res.json({
+      limite: LIMITE,
+      totalVendidos,
+      totalUsados,
+      totalDisponiveis,
+      totalUsuarios
+    });
+  } catch (error) {
+    console.error('Erro no /admin/resumo:', error);
+    res.status(500).json({ error: 'Erro ao carregar resumo' });
+  }
+});
+
+// ADMIN - LISTA DE INGRESSOS
+app.get('/admin/ingressos', auth, adminOnly, async (req, res) => {
+  try {
+    const tickets = await Ticket.find().sort({ createdAt: -1 });
+    res.json(tickets);
+  } catch (error) {
+    console.error('Erro no /admin/ingressos:', error);
+    res.status(500).json({ error: 'Erro ao carregar ingressos' });
+  }
+});
+
+// ADMIN - USUÁRIOS
+app.get('/admin/usuarios', auth, adminOnly, async (req, res) => {
+  try {
+    const usuarios = await User.find({}, { senha: 0 }).sort({ createdAt: -1 });
+    res.json(usuarios);
+  } catch (error) {
+    console.error('Erro no /admin/usuarios:', error);
+    res.status(500).json({ error: 'Erro ao carregar usuários' });
+  }
+});
+
+app.listen(3000, () => console.log('Rodando em http://localhost:3000'));

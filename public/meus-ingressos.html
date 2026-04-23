@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <link rel="icon" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meus Ingressos - Sunset Open Bar</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at top left, rgba(168, 85, 247, 0.16), transparent 24%),
+        radial-gradient(circle at top right, rgba(236, 72, 153, 0.14), transparent 22%),
+        radial-gradient(circle at bottom left, rgba(34, 197, 94, 0.10), transparent 25%),
+        linear-gradient(135deg, #050816, #0b1020 45%, #111827);
+      color: white;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .navbar {
+      width: 100%;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(5, 8, 22, 0.82);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      letter-spacing: 0.03em;
+    }
+
+    .logo span {
+      color: #22c55e;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: #dbe4ff;
+      font-size: 15px;
+      transition: 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: #22c55e;
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 50px 20px 80px;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(236, 72, 153, 0.14);
+      color: #f9a8d4;
+      border: 1px solid rgba(236, 72, 153, 0.25);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 14px;
+    }
+
+    .hero h1 {
+      font-size: 44px;
+      margin-bottom: 12px;
+      line-height: 1.05;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(90deg, #22c55e, #a855f7, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      color: #94a3b8;
+      line-height: 1.7;
+      max-width: 760px;
+      font-size: 16px;
+    }
+
+    .refresh-btn {
+      border: none;
+      border-radius: 14px;
+      padding: 14px 18px;
+      background: linear-gradient(90deg, #22c55e, #16a34a);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 14px 30px rgba(34, 197, 94, 0.18);
+    }
+
+    .refresh-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .tickets-grid {
+      display: grid;
+      gap: 22px;
+    }
+
+    .ticket-card {
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03));
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: 0 28px 70px rgba(0,0,0,0.25);
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      position: relative;
+    }
+
+    .ticket-card::before,
+    .ticket-card::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 22px;
+      height: 22px;
+      background: #0b1020;
+      border-radius: 50%;
+      transform: translateY(-50%);
+      border: 1px solid rgba(255,255,255,0.05);
+      z-index: 2;
+    }
+
+    .ticket-card::before {
+      left: -11px;
+    }
+
+    .ticket-card::after {
+      right: -11px;
+    }
+
+    .ticket-left {
+      padding: 28px;
+      border-right: 1px dashed rgba(255,255,255,0.12);
+      position: relative;
+      z-index: 1;
+    }
+
+    .ticket-right {
+      padding: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        linear-gradient(180deg, rgba(168,85,247,0.10), rgba(236,72,153,0.08), rgba(34,197,94,0.07));
+      position: relative;
+      z-index: 1;
+    }
+
+    .ticket-tags {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+      border: 1px solid transparent;
+    }
+
+    .tag-green {
+      background: rgba(34, 197, 94, 0.14);
+      color: #4ade80;
+      border-color: rgba(34,197,94,0.22);
+    }
+
+    .tag-pink {
+      background: rgba(236, 72, 153, 0.14);
+      color: #f9a8d4;
+      border-color: rgba(236,72,153,0.22);
+    }
+
+    .tag-blue {
+      background: rgba(59, 130, 246, 0.14);
+      color: #93c5fd;
+      border-color: rgba(59,130,246,0.22);
+    }
+
+    .tag-red {
+      background: rgba(239, 68, 68, 0.14);
+      color: #fca5a5;
+      border-color: rgba(239,68,68,0.22);
+    }
+
+    .ticket-event {
+      font-size: 28px;
+      margin-bottom: 10px;
+      line-height: 1.1;
+    }
+
+    .ticket-sub {
+      color: #cbd5e1;
+      line-height: 1.7;
+      margin-bottom: 20px;
+      max-width: 580px;
+    }
+
+    .ticket-meta {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .meta-box {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 14px 16px;
+    }
+
+    .meta-box small {
+      display: block;
+      color: #94a3b8;
+      margin-bottom: 6px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .meta-box strong {
+      color: white;
+      line-height: 1.5;
+      font-size: 15px;
+      word-break: break-word;
+    }
+
+    .qr-panel {
+      width: 100%;
+      max-width: 280px;
+      text-align: center;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    .qr-panel img {
+      width: 100%;
+      max-width: 210px;
+      background: white;
+      padding: 12px;
+      border-radius: 18px;
+      margin-bottom: 14px;
+    }
+
+    .qr-panel h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .qr-panel p {
+      color: #dbe4ff;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .empty-box {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 28px;
+      padding: 34px;
+      text-align: center;
+      color: #cbd5e1;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.22);
+    }
+
+    .empty-box h2 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .empty-box p {
+      color: #94a3b8;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .empty-box a {
+      display: inline-block;
+      padding: 14px 20px;
+      border-radius: 14px;
+      background: linear-gradient(90deg, #22c55e, #16a34a);
+      color: white;
+      font-weight: bold;
+      box-shadow: 0 14px 30px rgba(34, 197, 94, 0.18);
+    }
+
+    .empty-box a:hover {
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 980px) {
+      .ticket-card {
+        grid-template-columns: 1fr;
+      }
+
+      .ticket-left {
+        border-right: none;
+        border-bottom: 1px dashed rgba(255,255,255,0.12);
+      }
+
+      .hero h1 {
+        font-size: 34px;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .ticket-meta {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="nav-content">
+      <div class="logo">SUNSET <span>OPEN BAR</span></div>
+      <nav class="nav-links">
+        <a href="/index.html">Início</a>
+        <a href="/ingressos.html">Ingressos</a>
+        <a href="/login.html">Login</a>
+        <a href="/admin.html">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <div>
+        <div class="badge">Área do cliente</div>
+        <h1>Seus <span>tickets digitais</span></h1>
+        <p>
+          Aqui ficam todos os seus ingressos emitidos, com QR Code individual
+          e status atualizado para facilitar sua entrada no evento.
+        </p>
+      </div>
+
+      <button class="refresh-btn" onclick="carregar()">Atualizar ingressos</button>
+    </section>
+
+    <section class="tickets-grid" id="lista"></section>
+  </main>
+
+  <script>
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      alert('Faça login primeiro.');
+      window.location.href = '/login.html';
+    }
+
+    function gerarQrLocal(codigo) {
+      return `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(codigo)}`;
+    }
+
+    function formatDate(data) {
+      if (!data) return '—';
+      return new Date(data).toLocaleString('pt-BR');
+    }
+
+    function getTipoInfo(ticket) {
+      const tipo = ticket.tipo || 'openbar';
+
+      if (tipo === 'pista') {
+        return {
+          nome: 'Pista Comum',
+          tag: '<span class="tag tag-blue">Pista</span>',
+          preco: ticket.preco ? `R$ ${ticket.preco},00` : 'R$ 40,00'
+        };
+      }
+
+      return {
+        nome: 'Open Bar Premium',
+        tag: '<span class="tag tag-pink">Open Bar</span>',
+        preco: ticket.preco ? `R$ ${ticket.preco},00` : 'R$ 80,00'
+      };
+    }
+
+    function renderTicket(ticket) {
+      const statusTag = ticket.usado
+        ? '<span class="tag tag-red">Ingresso usado</span>'
+        : '<span class="tag tag-green">Ingresso válido</span>';
+
+      const tipoInfo = getTipoInfo(ticket);
+
+      return `
+        <article class="ticket-card">
+          <div class="ticket-left">
+            <div class="ticket-tags">
+              ${tipoInfo.tag}
+              ${statusTag}
+            </div>
+
+            <h2 class="ticket-event">Sunset Open Bar 2026</h2>
+            <p class="ticket-sub">
+              Seu ingresso está salvo com segurança e pronto para ser validado na entrada.
+              Apresente o QR Code no acesso ao evento junto com documento com foto.
+            </p>
+
+            <div class="ticket-meta">
+              <div class="meta-box">
+                <small>Tipo de ingresso</small>
+                <strong>${tipoInfo.nome}</strong>
+              </div>
+
+              <div class="meta-box">
+                <small>Valor</small>
+                <strong>${tipoInfo.preco}</strong>
+              </div>
+
+              <div class="meta-box">
+                <small>Código do ingresso</small>
+                <strong>${ticket.codigo || '—'}</strong>
+              </div>
+
+              <div class="meta-box">
+                <small>Status</small>
+                <strong>${ticket.usado ? 'Já utilizado' : 'Disponível para uso'}</strong>
+              </div>
+
+              <div class="meta-box">
+                <small>Data da emissão</small>
+                <strong>${formatDate(ticket.createdAt)}</strong>
+              </div>
+
+              <div class="meta-box">
+                <small>Evento</small>
+                <strong>Sunset Open Bar 2026</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="ticket-right">
+            <div class="qr-panel">
+              <img src="${gerarQrLocal(ticket.codigo)}" alt="QR Code do ingresso" />
+              <h3>QR Code do ingresso</h3>
+              <p>
+                Apresente este QR Code na entrada para validar seu acesso ao evento.
+              </p>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    async function carregar() {
+      const lista = document.getElementById('lista');
+      lista.innerHTML = `
+        <div class="empty-box">
+          <h2>Carregando seus ingressos...</h2>
+          <p>Estamos buscando os tickets emitidos na sua conta.</p>
+        </div>
+      `;
+
+      try {
+        const res = await fetch('/meus-ingressos', {
+          headers: {
+            'Authorization': token
+          }
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          lista.innerHTML = `
+            <div class="empty-box">
+              <h2>Erro ao carregar ingressos</h2>
+              <p>Não foi possível buscar seus tickets agora.</p>
+            </div>
+          `;
+          return;
+        }
+
+        if (!data.length) {
+          lista.innerHTML = `
+            <div class="empty-box">
+              <h2>Nenhum ingresso encontrado</h2>
+              <p>Você ainda não possui ingressos emitidos na sua conta.</p>
+              <a href="/ingressos.html">Comprar ingresso</a>
+            </div>
+          `;
+          return;
+        }
+
+        lista.innerHTML = data.map(renderTicket).join('');
+      } catch (error) {
+        lista.innerHTML = `
+          <div class="empty-box">
+            <h2>Erro de conexão</h2>
+            <p>Não foi possível carregar seus ingressos no momento.</p>
+          </div>
+        `;
+      }
+    }
+
+    carregar();
+  </script>
+</body>
+</html>

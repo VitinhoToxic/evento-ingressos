@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <link rel="icon" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ingressos - Sunset Open Bar</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at top left, rgba(168, 85, 247, 0.16), transparent 24%),
+        radial-gradient(circle at top right, rgba(236, 72, 153, 0.14), transparent 22%),
+        radial-gradient(circle at bottom left, rgba(34, 197, 94, 0.10), transparent 25%),
+        linear-gradient(135deg, #050816, #0b1020 45%, #111827);
+      color: white;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .navbar {
+      width: 100%;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(5, 8, 22, 0.82);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      letter-spacing: 0.03em;
+    }
+
+    .logo span {
+      color: #22c55e;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: #dbe4ff;
+      font-size: 15px;
+      transition: 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: #22c55e;
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 50px 20px 80px;
+    }
+
+    .hero {
+      margin-bottom: 30px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(236, 72, 153, 0.14);
+      color: #f9a8d4;
+      border: 1px solid rgba(236, 72, 153, 0.25);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 {
+      font-size: 46px;
+      margin-bottom: 12px;
+      line-height: 1.05;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(90deg, #22c55e, #a855f7, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      color: #94a3b8;
+      line-height: 1.7;
+      max-width: 760px;
+      font-size: 16px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .tickets-list {
+      display: grid;
+      gap: 22px;
+    }
+
+    .ticket-card,
+    .status-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 28px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+      overflow: hidden;
+    }
+
+    .ticket-card {
+      position: relative;
+    }
+
+    .ticket-top {
+      padding: 26px 26px 18px;
+      background:
+        linear-gradient(90deg, rgba(168,85,247,0.16), rgba(236,72,153,0.12), rgba(34,197,94,0.10));
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .ticket-tags {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .tag-green,
+    .tag-pink,
+    .tag-gold,
+    .tag-blue {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+      border: 1px solid transparent;
+    }
+
+    .tag-green {
+      background: rgba(34, 197, 94, 0.14);
+      color: #4ade80;
+      border-color: rgba(34,197,94,0.22);
+    }
+
+    .tag-pink {
+      background: rgba(236, 72, 153, 0.14);
+      color: #f9a8d4;
+      border-color: rgba(236,72,153,0.22);
+    }
+
+    .tag-gold {
+      background: rgba(250, 204, 21, 0.12);
+      color: #fde68a;
+      border-color: rgba(250,204,21,0.2);
+    }
+
+    .tag-blue {
+      background: rgba(59, 130, 246, 0.14);
+      color: #93c5fd;
+      border-color: rgba(59,130,246,0.22);
+    }
+
+    .ticket-title {
+      font-size: 34px;
+      margin-bottom: 10px;
+    }
+
+    .ticket-desc {
+      color: #dbe4ff;
+      line-height: 1.7;
+      max-width: 680px;
+    }
+
+    .ticket-body {
+      padding: 26px;
+      display: grid;
+      grid-template-columns: 1fr 220px;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .ticket-left {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .lote-box {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 20px;
+      padding: 20px;
+    }
+
+    .lote-box small {
+      display: block;
+      color: #94a3b8;
+      font-size: 12px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .lote-box strong {
+      display: block;
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .lote-box p {
+      color: #cbd5e1;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .benefits {
+      display: grid;
+      gap: 12px;
+    }
+
+    .benefit {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 14px 16px;
+      color: #dbe4ff;
+      font-size: 14px;
+    }
+
+    .ticket-right {
+      text-align: center;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 22px;
+      padding: 22px 18px;
+      position: relative;
+    }
+
+    .ticket-right::before,
+    .ticket-right::after {
+      content: "";
+      position: absolute;
+      left: -10px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #0b1020;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .ticket-right::before {
+      top: 26px;
+    }
+
+    .ticket-right::after {
+      bottom: 26px;
+    }
+
+    .price-label {
+      color: #94a3b8;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+
+    .price {
+      font-size: 46px;
+      font-weight: bold;
+      color: #4ade80;
+      margin-bottom: 4px;
+    }
+
+    .price-sub {
+      color: #cbd5e1;
+      margin-bottom: 18px;
+      font-size: 14px;
+    }
+
+    .stock-alert {
+      background: rgba(239, 68, 68, 0.12);
+      color: #fca5a5;
+      border: 1px solid rgba(239,68,68,0.18);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 18px;
+    }
+
+    .buy-btn {
+      width: 100%;
+      border: none;
+      border-radius: 16px;
+      padding: 16px;
+      background: linear-gradient(90deg, #22c55e, #16a34a);
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 14px 30px rgba(34, 197, 94, 0.18);
+    }
+
+    .buy-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .status-card {
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      position: sticky;
+      top: 100px;
+    }
+
+    .status-card h2 {
+      font-size: 28px;
+      margin-bottom: 4px;
+    }
+
+    .status-card p {
+      color: #94a3b8;
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    .status-box {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 20px;
+      padding: 20px;
+    }
+
+    .status-label {
+      color: #94a3b8;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+
+    .status-message {
+      font-size: 22px;
+      font-weight: bold;
+      color: #facc15;
+      line-height: 1.4;
+    }
+
+    .status-detail {
+      margin-top: 10px;
+      color: #cbd5e1;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .qr-wrap {
+      display: none;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 22px;
+      padding: 22px;
+      text-align: center;
+    }
+
+    .qr-wrap img {
+      width: 100%;
+      max-width: 280px;
+      background: white;
+      padding: 12px;
+      border-radius: 18px;
+      margin-bottom: 14px;
+    }
+
+    .qr-code {
+      color: #e2e8f0;
+      font-size: 14px;
+      word-break: break-word;
+      line-height: 1.6;
+    }
+
+    .side-info {
+      display: grid;
+      gap: 12px;
+    }
+
+    .side-info-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .side-info-card strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+
+    .side-info-card span {
+      color: #cbd5e1;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .ticket-body {
+        grid-template-columns: 1fr;
+      }
+
+      .status-card {
+        position: static;
+      }
+
+      .hero h1 {
+        font-size: 36px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .ticket-title {
+        font-size: 28px;
+      }
+
+      .price {
+        font-size: 38px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="nav-content">
+      <div class="logo">SUNSET <span>OPEN BAR</span></div>
+      <nav class="nav-links">
+        <a href="/index.html">Início</a>
+        <a href="/login.html">Login</a>
+        <a href="/meus-ingressos.html">Meus ingressos</a>
+        <a href="/admin.html">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <div class="badge">Compra online oficial</div>
+      <h1>Escolha seu <span>ticket premium</span></h1>
+      <p>
+        Garanta sua entrada para a Sunset Open Bar com emissão digital,
+        QR Code individual e validação rápida no evento.
+      </p>
+    </section>
+
+    <section class="layout">
+      <div class="tickets-list">
+        <article class="ticket-card">
+          <div class="ticket-top">
+            <div class="ticket-tags">
+              <span class="tag-pink">Open Bar</span>
+              <span class="tag-green">Lote disponível</span>
+              <span class="tag-gold">Evento premium</span>
+            </div>
+
+            <h2 class="ticket-title">Ingresso Sunset Open Bar</h2>
+            <p class="ticket-desc">
+              Um ticket criado para oferecer acesso completo à experiência do evento,
+              com open bar, controle digital e entrada validada por QR Code único.
+            </p>
+          </div>
+
+          <div class="ticket-body">
+            <div class="ticket-left">
+              <div class="lote-box">
+                <small>Lote atual</small>
+                <strong>1º Lote • Open Bar Premium</strong>
+                <p>
+                  Lote promocional disponível por tempo limitado ou até esgotar a quantidade reservada.
+                </p>
+              </div>
+
+              <div class="benefits">
+                <div class="benefit">✔️ Open bar incluso</div>
+                <div class="benefit">✔️ Entrada com QR Code individual</div>
+                <div class="benefit">✔️ Acesso rápido pela sua área do cliente</div>
+                <div class="benefit">✔️ Validação segura na portaria</div>
+              </div>
+            </div>
+
+            <div class="ticket-right">
+              <div class="price-label">Valor do lote</div>
+              <div class="price">R$ 80,00</div>
+              <div class="price-sub">Ingresso individual</div>
+
+              <div class="stock-alert">⚠️ Poucos ingressos restantes neste lote</div>
+
+              <button class="buy-btn" onclick="comprar('openbar')">Garantir Open Bar</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="ticket-card">
+          <div class="ticket-top">
+            <div class="ticket-tags">
+              <span class="tag-blue">Pista</span>
+              <span class="tag-green">Mais acessível</span>
+              <span class="tag-gold">Entrada simples</span>
+            </div>
+
+            <h2 class="ticket-title">Ingresso Pista Comum</h2>
+            <p class="ticket-desc">
+              Ideal para quem quer curtir a festa e as atrações com um valor mais acessível,
+              mantendo o mesmo sistema de ingresso digital e validação por QR Code.
+            </p>
+          </div>
+
+          <div class="ticket-body">
+            <div class="ticket-left">
+              <div class="lote-box">
+                <small>Lote atual</small>
+                <strong>1º Lote • Pista Comum</strong>
+                <p>
+                  Entrada padrão no evento, sem open bar, com acesso à pista e às atrações da noite.
+                </p>
+              </div>
+
+              <div class="benefits">
+                <div class="benefit">✔️ Entrada no evento</div>
+                <div class="benefit">✔️ Acesso às atrações da noite</div>
+                <div class="benefit">✔️ QR Code individual</div>
+                <div class="benefit">✔️ Ticket salvo online em “Meus ingressos”</div>
+              </div>
+            </div>
+
+            <div class="ticket-right">
+              <div class="price-label">Valor do lote</div>
+              <div class="price">R$ 40,00</div>
+              <div class="price-sub">Ingresso individual</div>
+
+              <div class="stock-alert">🔥 Últimos ingressos promocionais desta faixa</div>
+
+              <button class="buy-btn" onclick="comprar('pista')">Garantir Pista</button>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <aside class="status-card">
+        <div>
+          <h2>Status da emissão</h2>
+          <p>
+            Assim que o ingresso for gerado, ele aparecerá abaixo com o QR Code
+            pronto para uso e também ficará salvo na sua conta.
+          </p>
+        </div>
+
+        <div class="status-box">
+          <div class="status-label">Acompanhamento</div>
+          <div class="status-message" id="statusMessage">Aguardando emissão do ingresso</div>
+          <div class="status-detail" id="statusDetail">
+            Escolha um tipo de ingresso para gerar seu ticket digital.
+          </div>
+        </div>
+
+        <div class="qr-wrap" id="qrWrap">
+          <img id="qr" alt="QR Code do ingresso" />
+          <div class="qr-code" id="qrCodeText"></div>
+        </div>
+
+        <div class="side-info">
+          <div class="side-info-card">
+            <strong>Como funciona?</strong>
+            <span>Seu ingresso é emitido online e fica salvo na área “Meus ingressos”.</span>
+          </div>
+
+          <div class="side-info-card">
+            <strong>Importante</strong>
+            <span>Apresente o QR Code na entrada junto com um documento com foto.</span>
+          </div>
+
+          <div class="side-info-card">
+            <strong>Dica</strong>
+            <span>Deixe o ingresso salvo ou tire print para facilitar o acesso no dia do evento.</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      alert('Faça login primeiro.');
+      window.location.href = '/login.html';
+    }
+
+    async function comprar(tipo) {
+      const statusMessage = document.getElementById('statusMessage');
+      const statusDetail = document.getElementById('statusDetail');
+      const qrWrap = document.getElementById('qrWrap');
+      const qr = document.getElementById('qr');
+      const qrCodeText = document.getElementById('qrCodeText');
+
+      statusMessage.textContent = 'Gerando ingresso...';
+      statusMessage.style.color = '#facc15';
+      statusDetail.textContent = 'Estamos preparando seu ticket digital.';
+      qrWrap.style.display = 'none';
+
+      try {
+        const res = await fetch('/comprar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+          },
+          body: JSON.stringify({ tipo })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          statusMessage.textContent = data.error || 'Erro ao gerar ingresso';
+          statusMessage.style.color = '#f87171';
+          statusDetail.textContent = 'Tente novamente em alguns instantes.';
+          return;
+        }
+
+        statusMessage.textContent = `${data.message || 'Ingresso gerado com sucesso'} (${data.tipo})`;
+        statusMessage.style.color = '#4ade80';
+        statusDetail.textContent = `Seu ingresso ${data.tipo || ''} já está pronto e salvo na sua conta.`;
+
+        if (data.qr) {
+          qr.src = data.qr;
+          qrWrap.style.display = 'block';
+        }
+
+        qrCodeText.textContent = data.codigo
+          ? `Código do ingresso: ${data.codigo} • ${data.tipo} • R$ ${data.preco}`
+          : 'QR Code do ingresso gerado com sucesso.';
+      } catch (error) {
+        statusMessage.textContent = 'Erro de conexão';
+        statusMessage.style.color = '#f87171';
+        statusDetail.textContent = 'Não foi possível concluir a emissão agora.';
+      }
+    }
+  </script>
+</body>
+</html>

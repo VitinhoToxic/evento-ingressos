@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <link rel="icon" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Admin - Sunset Open Bar</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(34, 197, 94, 0.12), transparent 25%),
+        radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.12), transparent 25%),
+        linear-gradient(135deg, #050816, #0f172a 45%, #111827);
+      color: white;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .navbar {
+      width: 100%;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(5, 8, 22, 0.84);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .logo span {
+      color: #22c55e;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: #dbe4ff;
+      font-size: 15px;
+      transition: 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: #22c55e;
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 42px 20px 70px;
+    }
+
+    .hero {
+      margin-bottom: 28px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(34, 197, 94, 0.14);
+      color: #4ade80;
+      border: 1px solid rgba(34,197,94,0.22);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 14px;
+    }
+
+    .hero h1 {
+      font-size: 42px;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      color: #94a3b8;
+      line-height: 1.7;
+      max-width: 760px;
+    }
+
+    .top-status {
+      margin-bottom: 18px;
+      min-height: 24px;
+      font-weight: bold;
+      color: #facc15;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 26px;
+    }
+
+    .stat-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+    }
+
+    .stat-card small {
+      display: block;
+      color: #94a3b8;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .stat-card strong {
+      font-size: 34px;
+      color: #4ade80;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .stat-card span {
+      color: #cbd5e1;
+      font-size: 14px;
+    }
+
+    .actions-bar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 14px 18px;
+      background: #22c55e;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #16a34a;
+      transform: translateY(-1px);
+    }
+
+    .secondary-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .secondary-btn:hover {
+      background: rgba(255,255,255,0.13);
+    }
+
+    .section {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+      margin-bottom: 22px;
+    }
+
+    .section h2 {
+      font-size: 26px;
+      margin-bottom: 8px;
+    }
+
+    .section-sub {
+      color: #94a3b8;
+      line-height: 1.6;
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .filters input,
+    .filters select {
+      background: #0b1220;
+      color: white;
+      border: 1px solid #334155;
+      border-radius: 14px;
+      padding: 14px 16px;
+      outline: none;
+      min-width: 220px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 980px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    thead {
+      background: rgba(255,255,255,0.04);
+    }
+
+    th, td {
+      padding: 14px;
+      text-align: left;
+      font-size: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      vertical-align: top;
+    }
+
+    th {
+      color: #cbd5e1;
+      font-weight: 700;
+    }
+
+    td {
+      color: #e2e8f0;
+    }
+
+    .status-ok {
+      color: #4ade80;
+      font-weight: bold;
+    }
+
+    .status-no {
+      color: #f87171;
+      font-weight: bold;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .pill-admin {
+      background: rgba(34, 197, 94, 0.14);
+      color: #4ade80;
+      border: 1px solid rgba(34,197,94,0.22);
+    }
+
+    .pill-user {
+      background: rgba(255,255,255,0.08);
+      color: #dbe4ff;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .pill-openbar {
+      background: rgba(236, 72, 153, 0.14);
+      color: #f9a8d4;
+      border: 1px solid rgba(236,72,153,0.22);
+    }
+
+    .pill-pista {
+      background: rgba(59, 130, 246, 0.14);
+      color: #93c5fd;
+      border: 1px solid rgba(59,130,246,0.22);
+    }
+
+    .empty {
+      color: #94a3b8;
+      padding: 18px 0;
+      font-size: 14px;
+    }
+
+    @media (max-width: 980px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hero h1 {
+        font-size: 34px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="nav-content">
+      <div class="logo">SUNSET <span>OPEN BAR</span></div>
+      <nav class="nav-links">
+        <a href="/index.html">Início</a>
+        <a href="/ingressos.html">Ingressos</a>
+        <a href="/meus-ingressos.html">Meus ingressos</a>
+        <a href="/validador.html">Validador</a>
+        <a href="/login.html">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <div class="badge">Painel administrativo</div>
+      <h1>Controle do evento</h1>
+      <p>
+        Acompanhe os números gerais do evento, visualize todos os ingressos emitidos
+        e gerencie os usuários cadastrados em um único lugar.
+      </p>
+    </section>
+
+    <div class="top-status" id="topStatus">Carregando painel...</div>
+
+    <section class="stats-grid">
+      <article class="stat-card">
+        <small>Limite total</small>
+        <strong id="limite">-</strong>
+        <span>Capacidade máxima do evento</span>
+      </article>
+
+      <article class="stat-card">
+        <small>Ingressos vendidos</small>
+        <strong id="vendidos">-</strong>
+        <span>Total emitido no sistema</span>
+      </article>
+
+      <article class="stat-card">
+        <small>Ingressos usados</small>
+        <strong id="usados">-</strong>
+        <span>Validados na entrada</span>
+      </article>
+
+      <article class="stat-card">
+        <small>Disponíveis</small>
+        <strong id="disponiveis">-</strong>
+        <span>Restantes para venda</span>
+      </article>
+    </section>
+
+    <section class="actions-bar">
+      <button onclick="carregarTudo()">Atualizar painel</button>
+      <button class="secondary-btn" onclick="carregarIngressos()">Atualizar ingressos</button>
+      <button class="secondary-btn" onclick="carregarUsuarios()">Atualizar usuários</button>
+    </section>
+
+    <section class="section">
+      <h2>🎟️ Ingressos</h2>
+      <p class="section-sub">
+        Veja todos os tickets emitidos, o status de cada um, o tipo comprado e o valor pago.
+      </p>
+
+      <div class="filters">
+        <input id="filtroCodigo" type="text" placeholder="Buscar ingresso por código..." oninput="renderTickets()" />
+        <select id="filtroUso" onchange="renderTickets()">
+          <option value="">Todos os ingressos</option>
+          <option value="nao-usado">Não usados</option>
+          <option value="usado">Usados</option>
+        </select>
+        <select id="filtroTipo" onchange="renderTickets()">
+          <option value="">Todos os tipos</option>
+          <option value="openbar">Open Bar</option>
+          <option value="pista">Pista</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Tipo</th>
+              <th>Preço</th>
+              <th>Status</th>
+              <th>Usado</th>
+              <th>User ID</th>
+              <th>Data</th>
+            </tr>
+          </thead>
+          <tbody id="ticketsBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>👤 Usuários</h2>
+      <p class="section-sub">
+        Lista das contas cadastradas no sistema, incluindo os administradores.
+      </p>
+
+      <div class="filters">
+        <input id="filtroUsuario" type="text" placeholder="Buscar usuário por nome ou e-mail..." oninput="renderUsers()" />
+        <select id="filtroAdmin" onchange="renderUsers()">
+          <option value="">Todos os usuários</option>
+          <option value="admin">Somente admins</option>
+          <option value="comum">Somente comuns</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>E-mail</th>
+              <th>Perfil</th>
+              <th>Data</th>
+            </tr>
+          </thead>
+          <tbody id="usersBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const token = localStorage.getItem('token');
+    const isAdmin = localStorage.getItem('isAdmin');
+
+    let todosIngressos = [];
+    let todosUsuarios = [];
+
+    if (!token) {
+      alert('Faça login primeiro.');
+      window.location.href = '/login.html';
+    }
+
+    if (isAdmin !== 'true') {
+      alert('Acesso permitido apenas para administrador.');
+      window.location.href = '/index.html';
+    }
+
+    function setTopStatus(message, ok = false) {
+      const el = document.getElementById('topStatus');
+      el.textContent = message;
+      el.style.color = ok ? '#4ade80' : '#facc15';
+    }
+
+    async function carregarResumo() {
+      const res = await fetch('/admin/resumo', {
+        headers: { Authorization: token }
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Erro ao carregar resumo');
+      }
+
+      document.getElementById('limite').textContent = data.limite ?? '-';
+      document.getElementById('vendidos').textContent = data.totalVendidos ?? '-';
+      document.getElementById('usados').textContent = data.totalUsados ?? '-';
+      document.getElementById('disponiveis').textContent = data.totalDisponiveis ?? '-';
+    }
+
+    async function carregarIngressos() {
+      const res = await fetch('/admin/ingressos', {
+        headers: { Authorization: token }
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Erro ao carregar ingressos');
+      }
+
+      todosIngressos = data;
+      renderTickets();
+    }
+
+    async function carregarUsuarios() {
+      const res = await fetch('/admin/usuarios', {
+        headers: { Authorization: token }
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Erro ao carregar usuários');
+      }
+
+      todosUsuarios = data;
+      renderUsers();
+    }
+
+    function formatTipo(ticket) {
+      if (ticket.tipo === 'pista') {
+        return '<span class="pill pill-pista">Pista</span>';
+      }
+      return '<span class="pill pill-openbar">Open Bar</span>';
+    }
+
+    function formatPreco(ticket) {
+      if (typeof ticket.preco === 'number') {
+        return `R$ ${ticket.preco},00`;
+      }
+      return ticket.tipo === 'pista' ? 'R$ 40,00' : 'R$ 80,00';
+    }
+
+    function renderTickets() {
+      const body = document.getElementById('ticketsBody');
+      const filtroCodigo = document.getElementById('filtroCodigo').value.toLowerCase().trim();
+      const filtroUso = document.getElementById('filtroUso').value;
+      const filtroTipo = document.getElementById('filtroTipo').value;
+
+      const filtrados = todosIngressos.filter(ticket => {
+        const matchCodigo = !filtroCodigo || (ticket.codigo || '').toLowerCase().includes(filtroCodigo);
+
+        const matchUso =
+          !filtroUso ||
+          (filtroUso === 'usado' && ticket.usado) ||
+          (filtroUso === 'nao-usado' && !ticket.usado);
+
+        const matchTipo =
+          !filtroTipo ||
+          (filtroTipo === 'openbar' && (ticket.tipo || 'openbar') === 'openbar') ||
+          (filtroTipo === 'pista' && ticket.tipo === 'pista');
+
+        return matchCodigo && matchUso && matchTipo;
+      });
+
+      body.innerHTML = '';
+
+      if (!filtrados.length) {
+        body.innerHTML = `<tr><td colspan="7" class="empty">Nenhum ingresso encontrado.</td></tr>`;
+        return;
+      }
+
+      filtrados.forEach(ticket => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${ticket.codigo || '-'}</td>
+          <td>${formatTipo(ticket)}</td>
+          <td>${formatPreco(ticket)}</td>
+          <td>${ticket.status || '-'}</td>
+          <td class="${ticket.usado ? 'status-ok' : 'status-no'}">${ticket.usado ? 'Sim' : 'Não'}</td>
+          <td>${ticket.userId || '-'}</td>
+          <td>${ticket.createdAt ? new Date(ticket.createdAt).toLocaleString('pt-BR') : '-'}</td>
+        `;
+        body.appendChild(tr);
+      });
+    }
+
+    function renderUsers() {
+      const body = document.getElementById('usersBody');
+      const filtroUsuario = document.getElementById('filtroUsuario').value.toLowerCase().trim();
+      const filtroAdmin = document.getElementById('filtroAdmin').value;
+
+      const filtrados = todosUsuarios.filter(user => {
+        const nome = (user.nome || '').toLowerCase();
+        const email = (user.email || '').toLowerCase();
+
+        const matchTexto =
+          !filtroUsuario ||
+          nome.includes(filtroUsuario) ||
+          email.includes(filtroUsuario);
+
+        const matchPerfil =
+          !filtroAdmin ||
+          (filtroAdmin === 'admin' && user.isAdmin) ||
+          (filtroAdmin === 'comum' && !user.isAdmin);
+
+        return matchTexto && matchPerfil;
+      });
+
+      body.innerHTML = '';
+
+      if (!filtrados.length) {
+        body.innerHTML = `<tr><td colspan="4" class="empty">Nenhum usuário encontrado.</td></tr>`;
+        return;
+      }
+
+      filtrados.forEach(user => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${user.nome || '-'}</td>
+          <td>${user.email || '-'}</td>
+          <td>
+            <span class="pill ${user.isAdmin ? 'pill-admin' : 'pill-user'}">
+              ${user.isAdmin ? 'Admin' : 'Usuário'}
+            </span>
+          </td>
+          <td>${user.createdAt ? new Date(user.createdAt).toLocaleString('pt-BR') : '-'}</td>
+        `;
+        body.appendChild(tr);
+      });
+    }
+
+    async function carregarTudo() {
+      try {
+        setTopStatus('Atualizando painel...');
+        await Promise.all([
+          carregarResumo(),
+          carregarIngressos(),
+          carregarUsuarios()
+        ]);
+        setTopStatus('Painel atualizado com sucesso.', true);
+      } catch (error) {
+        setTopStatus(error.message || 'Erro ao carregar painel.');
+      }
+    }
+
+    carregarTudo();
+  </script>
+</body>
+</html>
