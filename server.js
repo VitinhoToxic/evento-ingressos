@@ -92,16 +92,21 @@ app.post('/login', async (req, res) => {
 
 function auth(req, res, next) {
   try {
-    const token = req.headers.authorization;
+    let token = req.headers.authorization;
 
     if (!token) {
       return res.status(401).json({ error: 'Token não enviado' });
+    }
+
+    if (token.startsWith('Bearer ')) {
+      token = token.split(' ')[1];
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
   } catch (error) {
+    console.error('Erro auth:', error);
     return res.status(401).json({ error: 'Token inválido' });
   }
 }
