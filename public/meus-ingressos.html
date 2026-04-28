@@ -509,11 +509,11 @@
       `;
 
       try {
-        const res = await fetch('/meus-ingressos', {
-          headers: {
-            'Authorization': token
-          }
-        });
+       const res = await fetch('/meus-ingressos', {
+  headers: {
+    'Authorization': 'Bearer ' + token
+  }
+});
 
         const data = await res.json();
 
