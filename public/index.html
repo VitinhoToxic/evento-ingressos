@@ -2,10 +2,12 @@
 <html lang="pt-BR">
 <head>
   <link rel="icon" href="/favicon.png">
-<link rel="apple-touch-icon" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/favicon.png">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sunset Open Bar</title>
+
+  <title>Tropical Vibes - Evento</title>
+
   <style>
     * {
       box-sizing: border-box;
@@ -14,17 +16,10 @@
       font-family: Arial, sans-serif;
     }
 
-    html {
-      scroll-behavior: smooth;
-    }
-
     body {
-      background:
-        radial-gradient(circle at top left, rgba(168, 85, 247, 0.16), transparent 24%),
-        radial-gradient(circle at top right, rgba(236, 72, 153, 0.14), transparent 22%),
-        radial-gradient(circle at bottom left, rgba(34, 197, 94, 0.10), transparent 25%),
-        linear-gradient(135deg, #050816, #0b1020 45%, #111827);
-      color: white;
+      min-height: 100vh;
+      background: #f8feff;
+      color: #082f49;
       overflow-x: hidden;
     }
 
@@ -37,753 +32,600 @@
       width: 100%;
       position: sticky;
       top: 0;
-      z-index: 1000;
-      background: rgba(5, 8, 22, 0.82);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      z-index: 999;
+      background: rgba(255, 255, 255, 0.86);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(14, 165, 233, 0.12);
     }
 
     .nav-content {
-      max-width: 1200px;
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 18px 20px;
+      padding: 18px 22px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
+      gap: 18px;
       flex-wrap: wrap;
     }
 
     .logo {
-      font-size: 22px;
-      font-weight: bold;
-      letter-spacing: 0.03em;
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: #082f49;
     }
 
     .logo span {
-      color: #22c55e;
+      color: #14b8a6;
+      font-style: italic;
     }
 
     .nav-links {
       display: flex;
-      gap: 18px;
-      flex-wrap: wrap;
       align-items: center;
-    }
-
-    .nav-links a {
-      color: #dbe4ff;
-      font-size: 15px;
-      transition: 0.2s;
+      gap: 22px;
+      flex-wrap: wrap;
+      font-weight: 700;
+      font-size: 14px;
+      color: #0f3f55;
     }
 
     .nav-links a:hover {
-      color: #22c55e;
+      color: #14b8a6;
     }
 
-    .btn-nav {
-      background: linear-gradient(90deg, #22c55e, #16a34a);
+    .nav-cta {
+      background: linear-gradient(90deg, #14b8a6, #06b6d4);
       color: white !important;
-      padding: 10px 16px;
-      border-radius: 12px;
-      font-weight: bold;
-      box-shadow: 0 10px 24px rgba(34, 197, 94, 0.18);
-    }
-
-    .btn-nav:hover {
-      transform: translateY(-1px);
+      padding: 12px 18px;
+      border-radius: 999px;
+      box-shadow: 0 16px 34px rgba(20, 184, 166, 0.24);
     }
 
     .hero {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 56px 20px 70px;
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 30px;
-      align-items: center;
-      min-height: 88vh;
-    }
-
-    .hero-text {
-      animation: fadeUp 0.8s ease;
-    }
-
-    .badge {
-      display: inline-block;
-      background: rgba(236, 72, 153, 0.14);
-      color: #f9a8d4;
-      border: 1px solid rgba(236, 72, 153, 0.25);
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: bold;
-      margin-bottom: 18px;
-    }
-
-    .hero-text h1 {
-      font-size: 62px;
-      line-height: 0.98;
-      margin-bottom: 18px;
-      letter-spacing: -0.03em;
-    }
-
-    .hero-text h1 span {
-      background: linear-gradient(90deg, #22c55e, #a855f7, #ec4899);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero-text p {
-      font-size: 18px;
-      line-height: 1.75;
-      color: #cbd5e1;
-      max-width: 650px;
-      margin-bottom: 28px;
-    }
-
-    .hero-buttons {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-      margin-bottom: 28px;
-    }
-
-    .btn-primary,
-    .btn-secondary {
-      display: inline-block;
-      padding: 15px 22px;
-      border-radius: 14px;
-      font-weight: bold;
-      transition: 0.2s;
-    }
-
-    .btn-primary {
-      background: linear-gradient(90deg, #22c55e, #16a34a);
-      color: white;
-      box-shadow: 0 14px 30px rgba(34, 197, 94, 0.2);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-    }
-
-    .btn-secondary {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: white;
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255,255,255,0.1);
-    }
-
-    .hero-meta {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-    }
-
-    .meta-box {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 18px;
-      padding: 16px;
-    }
-
-    .meta-box small {
-      display: block;
-      color: #94a3b8;
-      font-size: 12px;
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-
-    .meta-box strong {
-      font-size: 15px;
-      color: white;
-      line-height: 1.5;
-    }
-
-    .hero-card {
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 28px;
-      padding: 28px;
       position: relative;
-      overflow: hidden;
-      box-shadow: 0 26px 60px rgba(0,0,0,0.3);
-      min-height: 540px;
+      min-height: calc(100vh - 74px);
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      animation: fadeUp 1s ease;
+      align-items: center;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 75% 15%, rgba(251, 191, 36, 0.32), transparent 26%),
+        radial-gradient(circle at 20% 25%, rgba(20, 184, 166, 0.18), transparent 28%),
+        linear-gradient(135deg, #ffffff 0%, #eefcff 46%, #dff8f7 100%);
     }
 
-    .hero-card::before {
+    .hero::before {
       content: "";
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(180deg, rgba(168,85,247,0.18), rgba(236,72,153,0.06) 45%, rgba(34,197,94,0.06));
-      pointer-events: none;
+        linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.82) 45%, rgba(255,255,255,0.22) 100%),
+        url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80");
+      background-size: cover;
+      background-position: center right;
+      opacity: 0.95;
+      z-index: 0;
     }
 
-    .hero-card-content {
-      position: relative;
+    .hero::after {
+      content: "🌴";
+      position: absolute;
+      right: 8%;
+      bottom: 6%;
+      font-size: 180px;
+      opacity: 0.13;
+      transform: rotate(-12deg);
       z-index: 1;
     }
 
-    .event-cover {
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 80px 22px;
       width: 100%;
-      height: 280px;
-      border-radius: 22px;
-      background:
-        linear-gradient(rgba(5,8,22,0.24), rgba(5,8,22,0.45)),
-        url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
-      border: 1px solid rgba(255,255,255,0.08);
-      margin-bottom: 18px;
-      box-shadow: inset 0 -40px 80px rgba(0,0,0,0.35);
-    }
-
-    .event-tag {
-      display: inline-block;
-      background: rgba(34, 197, 94, 0.14);
-      color: #4ade80;
-      border: 1px solid rgba(34,197,94,0.22);
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: bold;
-      margin-bottom: 14px;
-    }
-
-    .hero-card h2 {
-      font-size: 30px;
-      margin-bottom: 10px;
-    }
-
-    .hero-card p {
-      color: #dbe4ff;
-      line-height: 1.7;
-      margin-bottom: 16px;
-    }
-
-    .price {
-      font-size: 44px;
-      font-weight: bold;
-      color: #4ade80;
-      margin-bottom: 4px;
-    }
-
-    .price-sub {
-      color: #94a3b8;
-      margin-bottom: 18px;
-    }
-
-    .mini-features {
       display: grid;
-      gap: 10px;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 38px;
+      align-items: center;
     }
 
-    .mini-feature {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 14px;
-      padding: 12px 14px;
-      color: #dbe4ff;
+    .hero-text {
+      max-width: 650px;
+    }
+
+    .event-date {
+      display: inline-block;
+      color: #0891b2;
+      font-weight: 900;
+      letter-spacing: 0.12em;
       font-size: 14px;
+      margin-bottom: 18px;
+      text-transform: uppercase;
     }
 
-    .countdown-wrap {
-      margin-top: 10px;
+    .hero h1 {
+      font-size: clamp(54px, 8vw, 105px);
+      line-height: 0.88;
+      color: #082f49;
+      text-transform: uppercase;
+      letter-spacing: -0.08em;
+      margin-bottom: 18px;
     }
 
-    .countdown-title {
-      color: #cbd5e1;
-      margin-bottom: 10px;
-      font-size: 14px;
+    .hero h1 span {
+      display: block;
+      color: #14b8a6;
+      font-style: italic;
+      transform: rotate(-2deg);
+      text-shadow: 0 12px 30px rgba(20, 184, 166, 0.18);
+    }
+
+    .hero p {
+      font-size: 18px;
+      line-height: 1.7;
+      color: #164e63;
+      max-width: 620px;
+      margin-bottom: 28px;
+      font-weight: 600;
     }
 
     .countdown {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+      grid-template-columns: repeat(4, 92px);
+      gap: 12px;
+      margin-bottom: 28px;
     }
 
-    .count-item {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.05);
+    .time-box {
+      background: rgba(255,255,255,0.86);
+      border: 1px solid rgba(20, 184, 166, 0.16);
+      border-radius: 18px;
+      padding: 16px 10px;
+      text-align: center;
+      box-shadow: 0 18px 40px rgba(8, 47, 73, 0.10);
+    }
+
+    .time-box strong {
+      display: block;
+      font-size: 28px;
+      color: #14b8a6;
+      line-height: 1;
+    }
+
+    .time-box span {
+      display: block;
+      margin-top: 6px;
+      color: #075985;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+      border: none;
       border-radius: 16px;
-      padding: 16px 12px;
+      padding: 16px 24px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: 0.2s;
+      display: inline-block;
       text-align: center;
     }
 
-    .count-item strong {
-      display: block;
-      font-size: 28px;
-      color: #fff;
+    .btn-primary {
+      background: linear-gradient(90deg, #14b8a6, #06b6d4);
+      color: white;
+      box-shadow: 0 18px 38px rgba(20, 184, 166, 0.26);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.76);
+      color: #075985;
+      border: 1px solid rgba(14, 165, 233, 0.18);
+    }
+
+    .btn-primary:hover,
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+    }
+
+    .hero-card {
+      background: rgba(255,255,255,0.78);
+      border: 1px solid rgba(14, 165, 233, 0.14);
+      box-shadow: 0 30px 80px rgba(8, 47, 73, 0.18);
+      border-radius: 34px;
+      padding: 22px;
+      backdrop-filter: blur(14px);
+    }
+
+    .card-image {
+      height: 280px;
+      border-radius: 26px;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0.05), rgba(0,0,0,0.18)),
+        url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1100&q=80");
+      background-size: cover;
+      background-position: center;
+      margin-bottom: 20px;
+    }
+
+    .card-badge {
+      display: inline-block;
+      background: rgba(20, 184, 166, 0.14);
+      color: #0f766e;
+      border: 1px solid rgba(20, 184, 166, 0.18);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    .hero-card h2 {
+      font-size: 30px;
+      color: #082f49;
+      margin-bottom: 10px;
+    }
+
+    .hero-card p {
+      color: #164e63;
+      font-size: 15px;
+      margin-bottom: 18px;
+    }
+
+    .price {
+      font-size: 42px;
+      color: #14b8a6;
+      font-weight: 900;
       margin-bottom: 4px;
     }
 
-    .count-item span {
-      font-size: 12px;
-      color: #94a3b8;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+    .price-sub {
+      color: #64748b;
+      font-weight: 700;
+      margin-bottom: 18px;
     }
 
-    .section {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 14px 20px 80px;
-    }
-
-    .section-header {
-      margin-bottom: 26px;
-    }
-
-    .section-header h2 {
-      font-size: 38px;
-      margin-bottom: 10px;
-    }
-
-    .section-header p {
-      color: #94a3b8;
-      line-height: 1.7;
-      max-width: 760px;
-    }
-
-    .cards-3 {
+    .features {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
+      gap: 10px;
     }
 
-    .cards-2 {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 18px;
-    }
-
-    .card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 24px;
-      padding: 24px;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.18);
-    }
-
-    .card h3 {
-      font-size: 22px;
-      margin-bottom: 10px;
-    }
-
-    .card p {
-      color: #cbd5e1;
-      line-height: 1.7;
-    }
-
-    .lineup-card {
-      background:
-        linear-gradient(180deg, rgba(168,85,247,0.10), rgba(255,255,255,0.03));
-    }
-
-    .lineup-list {
-      display: grid;
-      gap: 12px;
-      margin-top: 16px;
-    }
-
-    .lineup-item {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 16px;
-      padding: 14px 16px;
-      display: flex;
-      justify-content: space-between;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
-
-    .lineup-item strong {
-      font-size: 16px;
-    }
-
-    .lineup-item span {
-      color: #94a3b8;
+    .feature {
+      background: rgba(8, 145, 178, 0.06);
+      color: #075985;
+      border: 1px solid rgba(8, 145, 178, 0.10);
+      padding: 13px 14px;
+      border-radius: 14px;
+      font-weight: 800;
       font-size: 14px;
     }
 
-    .faq-list {
+    .info-strip {
+      max-width: 1180px;
+      margin: -34px auto 0;
+      position: relative;
+      z-index: 5;
+      padding: 0 22px;
+    }
+
+    .info-grid {
+      background: white;
+      border: 1px solid rgba(14, 165, 233, 0.14);
+      box-shadow: 0 28px 60px rgba(8, 47, 73, 0.14);
+      border-radius: 26px;
+      padding: 22px;
       display: grid;
-      gap: 14px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
     }
 
-    .faq-item {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 20px;
-      padding: 20px;
+    .info-item {
+      padding: 18px;
+      text-align: center;
+      border-radius: 18px;
+      background: #f0fdfa;
+      color: #0f766e;
+      font-weight: 900;
     }
 
-    .faq-item h3 {
-      font-size: 18px;
+    .info-item div {
+      font-size: 28px;
       margin-bottom: 8px;
     }
 
-    .faq-item p {
-      color: #cbd5e1;
-      line-height: 1.7;
-    }
-
-    .cta-section {
-      max-width: 1200px;
+    .section {
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 0 20px 80px;
+      padding: 80px 22px;
     }
 
-    .cta-box {
-      background:
-        linear-gradient(90deg, rgba(168,85,247,0.18), rgba(236,72,153,0.16), rgba(34,197,94,0.16));
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 30px;
-      padding: 34px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-      flex-wrap: wrap;
-      box-shadow: 0 24px 50px rgba(0,0,0,0.22);
+    .section h2 {
+      font-size: 42px;
+      color: #082f49;
+      margin-bottom: 14px;
+      letter-spacing: -0.04em;
     }
 
-    .cta-box h2 {
-      font-size: 34px;
-      margin-bottom: 10px;
-    }
-
-    .cta-box p {
-      color: #e2e8f0;
+    .section p {
+      color: #475569;
       line-height: 1.7;
-      max-width: 680px;
+      max-width: 760px;
+      font-size: 17px;
+    }
+
+    .attractions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 28px;
+    }
+
+    .attraction-card {
+      background: white;
+      border: 1px solid rgba(14, 165, 233, 0.12);
+      box-shadow: 0 18px 44px rgba(8, 47, 73, 0.08);
+      border-radius: 24px;
+      padding: 26px;
+    }
+
+    .attraction-card .icon {
+      font-size: 34px;
+      margin-bottom: 14px;
+    }
+
+    .attraction-card h3 {
+      color: #082f49;
+      margin-bottom: 10px;
+      font-size: 22px;
+    }
+
+    .attraction-card p {
+      font-size: 15px;
+      color: #64748b;
     }
 
     .footer {
-      border-top: 1px solid rgba(255,255,255,0.06);
-      color: #94a3b8;
+      background: #082f49;
+      color: white;
+      padding: 28px 22px;
       text-align: center;
-      padding: 28px 20px;
-      font-size: 14px;
+      font-weight: 700;
     }
 
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(24px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .footer span {
+      color: #5eead4;
     }
 
-    @media (max-width: 1024px) {
-      .hero {
+    @media (max-width: 980px) {
+      .hero-content {
         grid-template-columns: 1fr;
-        min-height: auto;
       }
 
-      .hero-text h1 {
-        font-size: 46px;
+      .hero-card {
+        max-width: 620px;
       }
 
-      .cards-3,
-      .cards-2 {
-        grid-template-columns: 1fr;
+      .info-grid,
+      .attractions {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .countdown {
+        grid-template-columns: repeat(4, 1fr);
       }
     }
 
-    @media (max-width: 680px) {
-      .hero-text h1 {
-        font-size: 36px;
+    @media (max-width: 640px) {
+      .nav-content {
+        justify-content: center;
       }
 
-      .hero-meta {
-        grid-template-columns: 1fr;
+      .nav-links {
+        justify-content: center;
+      }
+
+      .hero-content {
+        padding: 56px 18px;
+      }
+
+      .hero h1 {
+        font-size: 58px;
       }
 
       .countdown {
         grid-template-columns: repeat(2, 1fr);
       }
 
-      .section-header h2,
-      .cta-box h2 {
-        font-size: 30px;
+      .info-grid,
+      .attractions {
+        grid-template-columns: 1fr;
+      }
+
+      .section h2 {
+        font-size: 32px;
       }
     }
   </style>
 </head>
+
 <body>
   <header class="navbar">
     <div class="nav-content">
-      <div class="logo">SUNSET <span>OPEN BAR</span></div>
+      <a href="/index.html" class="logo">TROPICAL <span>Vibes</span></a>
+
       <nav class="nav-links">
         <a href="#sobre">Sobre</a>
-        <a href="#lineup">Atrações</a>
-        <a href="#faq">FAQ</a>
+        <a href="#atracoes">Atrações</a>
         <a href="/login.html">Login</a>
         <a href="/ingressos.html">Ingressos</a>
-        <a class="btn-nav" href="/ingressos.html">Comprar agora</a>
+        <a href="/ingressos.html" class="nav-cta">Garantir ingresso</a>
       </nav>
     </div>
   </header>
 
-  <main class="hero">
-    <section class="hero-text">
-      <div class="badge">Evento oficial • Lote disponível</div>
-      <h1>A festa que vai marcar a sua <span>melhor noite do ano</span>.</h1>
-      <p>
-        Prepare-se para viver uma experiência intensa com open bar, estrutura premium,
-        line-up marcante e um ambiente feito para quem quer curtir até o amanhecer.
-      </p>
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="event-date">04 de Janeiro • Salvador/BA</div>
 
-      <div class="hero-buttons">
-        <a href="/ingressos.html" class="btn-primary">Garantir ingresso</a>
-        <a href="#lineup" class="btn-secondary">Ver atrações</a>
-      </div>
+        <h1>
+          Tropical
+          <span>Vibes</span>
+        </h1>
 
-      <div class="hero-meta">
-        <div class="meta-box">
-          <small>Data</small>
-          <strong>15 de Agosto de 2026</strong>
-        </div>
-        <div class="meta-box">
-          <small>Horário</small>
-          <strong>22h até 06h</strong>
-        </div>
-        <div class="meta-box">
-          <small>Local</small>
-          <strong>Sunset Hall • Brasília</strong>
-        </div>
-      </div>
-    </section>
-
-    <aside class="hero-card">
-      <div class="hero-card-content">
-        <div class="event-cover"></div>
-        <div class="event-tag">Open Bar Premium</div>
-        <h2>Sunset Open Bar 2026</h2>
         <p>
-          Uma noite criada para quem quer música, energia, estrutura de alto nível e
-          uma experiência completa do começo ao fim.
+          A festa que vai marcar seu verão com música boa, praia, amigos,
+          drinks e uma energia tropical do começo ao fim.
         </p>
 
-        <div class="price">R$ 80,00</div>
+        <div class="countdown">
+          <div class="time-box">
+            <strong id="dias">32</strong>
+            <span>Dias</span>
+          </div>
+          <div class="time-box">
+            <strong id="horas">11</strong>
+            <span>Horas</span>
+          </div>
+          <div class="time-box">
+            <strong id="minutos">58</strong>
+            <span>Min</span>
+          </div>
+          <div class="time-box">
+            <strong id="segundos">45</strong>
+            <span>Seg</span>
+          </div>
+        </div>
+
+        <div class="actions">
+          <a href="/ingressos.html" class="btn-primary">Garantir ingresso</a>
+          <a href="#atracoes" class="btn-secondary">Ver atrações</a>
+        </div>
+      </div>
+
+      <aside class="hero-card">
+        <div class="card-image"></div>
+        <span class="card-badge">Verão Premium</span>
+        <h2>Tropical Vibes 2026</h2>
+        <p>
+          Uma experiência tropical completa com estrutura premium,
+          entrada por QR Code e vibe perfeita para curtir o verão.
+        </p>
+
+        <div class="price">R$ 40,00</div>
         <div class="price-sub">Lote atual • compra online</div>
 
-        <div class="mini-features">
-          <div class="mini-feature">✔️ QR Code digital individual</div>
-          <div class="mini-feature">✔️ Validação rápida na entrada</div>
-          <div class="mini-feature">✔️ Área exclusiva para seus ingressos</div>
+        <div class="features">
+          <div class="feature">✔ QR Code digital individual</div>
+          <div class="feature">✔ Validação rápida na entrada</div>
+          <div class="feature">✔ Área exclusiva para seus ingressos</div>
         </div>
+      </aside>
+    </div>
+  </section>
 
-        <div class="countdown-wrap">
-          <div class="countdown-title">Contagem regressiva para o evento</div>
-          <div class="countdown" id="countdown">
-            <div class="count-item"><strong id="days">00</strong><span>Dias</span></div>
-            <div class="count-item"><strong id="hours">00</strong><span>Horas</span></div>
-            <div class="count-item"><strong id="minutes">00</strong><span>Min</span></div>
-            <div class="count-item"><strong id="seconds">00</strong><span>Seg</span></div>
-          </div>
-        </div>
+  <div class="info-strip">
+    <div class="info-grid">
+      <div class="info-item">
+        <div>🎵</div>
+        Música
       </div>
-    </aside>
-  </main>
+      <div class="info-item">
+        <div>🌴</div>
+        Praia
+      </div>
+      <div class="info-item">
+        <div>👥</div>
+        Amigos
+      </div>
+      <div class="info-item">
+        <div>☀️</div>
+        Boas energias
+      </div>
+    </div>
+  </div>
 
   <section class="section" id="sobre">
-    <div class="section-header">
-      <h2>Uma experiência feita para impressionar</h2>
-      <p>
-        O Sunset Open Bar foi pensado para reunir música, ambientação, energia e um público
-        que quer viver uma noite memorável em um evento com identidade forte.
-      </p>
-    </div>
+    <h2>Uma experiência feita para o verão</h2>
+    <p>
+      O Tropical Vibes une música, praia, tecnologia e organização.
+      Os ingressos são digitais, com QR Code individual e validação segura
+      na entrada do evento.
+    </p>
+  </section>
 
-    <div class="cards-3">
-      <div class="card">
-        <h3>Estrutura premium</h3>
-        <p>
-          Espaço preparado para receber o público com conforto, estética marcante,
-          iluminação envolvente e fluxo organizado.
-        </p>
+  <section class="section" id="atracoes">
+    <h2>Atrações do evento</h2>
+    <p>
+      Uma programação pensada para criar uma experiência completa,
+      do pôr do sol até a última música da noite.
+    </p>
+
+    <div class="attractions">
+      <div class="attraction-card">
+        <div class="icon">🎧</div>
+        <h3>DJs convidados</h3>
+        <p>Line-up com música eletrônica, funk, trap e brasilidades.</p>
       </div>
 
-      <div class="card">
-        <h3>Open bar</h3>
-        <p>
-          Uma proposta criada para oferecer experiência completa e elevar o nível da festa
-          do início ao fim da madrugada.
-        </p>
+      <div class="attraction-card">
+        <div class="icon">🍹</div>
+        <h3>Drinks e bar</h3>
+        <p>Estrutura completa para deixar a experiência mais confortável.</p>
       </div>
 
-      <div class="card">
+      <div class="attraction-card">
+        <div class="icon">📲</div>
         <h3>Entrada digital</h3>
-        <p>
-          Seu ingresso fica salvo online, com QR Code único, facilitando acesso e validação
-          com muito mais segurança.
-        </p>
+        <p>QR Code individual para validação rápida e segura na portaria.</p>
       </div>
-    </div>
-  </section>
-
-  <section class="section" id="lineup">
-    <div class="section-header">
-      <h2>Line-up da noite</h2>
-      <p>
-        Um time de atrações pensado para manter a pista pulsando em todos os momentos do evento.
-      </p>
-    </div>
-
-    <div class="cards-2">
-      <div class="card lineup-card">
-        <h3>Atrações principais</h3>
-        <div class="lineup-list">
-          <div class="lineup-item">
-            <strong>DJ Aurora</strong>
-            <span>22:30 • Warm Up Sunset</span>
-          </div>
-          <div class="lineup-item">
-            <strong>MC Vortex</strong>
-            <span>00:00 • Main Show</span>
-          </div>
-          <div class="lineup-item">
-            <strong>DJ Neon</strong>
-            <span>02:00 • Peak Time Set</span>
-          </div>
-          <div class="lineup-item">
-            <strong>DJ Lunar</strong>
-            <span>04:00 • Closing Vibes</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>Informações do evento</h3>
-        <p style="margin-bottom: 14px;">
-          Prepare-se para uma noite com ambientação premium, energia alta e um público
-          que busca uma experiência diferenciada.
-        </p>
-        <div class="lineup-list">
-          <div class="lineup-item">
-            <strong>Local</strong>
-            <span>Sunset Hall • Brasília</span>
-          </div>
-          <div class="lineup-item">
-            <strong>Dress code</strong>
-            <span>Night / Fashion / Premium</span>
-          </div>
-          <div class="lineup-item">
-            <strong>Classificação</strong>
-            <span>18 anos</span>
-          </div>
-          <div class="lineup-item">
-            <strong>Entrada</strong>
-            <span>QR Code + documento com foto</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="faq">
-    <div class="section-header">
-      <h2>Perguntas frequentes</h2>
-      <p>
-        Algumas respostas rápidas para facilitar sua compra e evitar dúvidas no dia do evento.
-      </p>
-    </div>
-
-    <div class="faq-list">
-      <div class="faq-item">
-        <h3>Como recebo meu ingresso?</h3>
-        <p>
-          Após a emissão, ele fica salvo na sua área de “Meus ingressos”, com QR Code individual
-          para apresentar na entrada.
-        </p>
-      </div>
-
-      <div class="faq-item">
-        <h3>Precisa levar documento?</h3>
-        <p>
-          Sim. Recomendamos levar documento oficial com foto para conferência no acesso ao evento.
-        </p>
-      </div>
-
-      <div class="faq-item">
-        <h3>Posso entrar sem internet no celular?</h3>
-        <p>
-          O ideal é deixar o QR Code salvo com antecedência ou tirar print, para facilitar
-          a entrada mesmo se a conexão oscilar.
-        </p>
-      </div>
-
-      <div class="faq-item">
-        <h3>O ingresso pode ser usado duas vezes?</h3>
-        <p>
-          Não. Cada ingresso possui um código único e, depois da validação, ele é marcado como usado.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section class="cta-section">
-    <div class="cta-box">
-      <div>
-        <h2>Garanta seu lugar agora</h2>
-        <p>
-          Os ingressos são limitados e o lote atual pode virar a qualquer momento.
-          Entre, compre online e tenha seu ticket digital pronto para uso.
-        </p>
-      </div>
-
-      <a href="/ingressos.html" class="btn-primary">Comprar ingresso</a>
     </div>
   </section>
 
   <footer class="footer">
-    © 2026 Sunset Open Bar — Todos os direitos reservados.
+    Desenvolvido por <span>Victor Hugo</span> • Sistema de ingressos com QR Code
   </footer>
 
   <script>
-    const eventDate = new Date('2026-08-15T22:00:00');
+    const dataEvento = new Date("2026-01-04T22:00:00").getTime();
 
-    function updateCountdown() {
-      const now = new Date();
-      const diff = eventDate - now;
+    function atualizarContagem() {
+      const agora = new Date().getTime();
+      const distancia = dataEvento - agora;
 
-      if (diff <= 0) {
-        document.getElementById('days').textContent = '00';
-        document.getElementById('hours').textContent = '00';
-        document.getElementById('minutes').textContent = '00';
-        document.getElementById('seconds').textContent = '00';
+      if (distancia <= 0) {
+        document.getElementById("dias").textContent = "00";
+        document.getElementById("horas").textContent = "00";
+        document.getElementById("minutos").textContent = "00";
+        document.getElementById("segundos").textContent = "00";
         return;
       }
 
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
-      const seconds = Math.floor((diff / 1000) % 60);
+      const dias = Math.floor(distancia / (1000 * 60 * 60 * 24));
+      const horas = Math.floor((distancia / (1000 * 60 * 60)) % 24);
+      const minutos = Math.floor((distancia / (1000 * 60)) % 60);
+      const segundos = Math.floor((distancia / 1000) % 60);
 
-      document.getElementById('days').textContent = String(days).padStart(2, '0');
-      document.getElementById('hours').textContent = String(hours).padStart(2, '0');
-      document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
-      document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+      document.getElementById("dias").textContent = String(dias).padStart(2, "0");
+      document.getElementById("horas").textContent = String(horas).padStart(2, "0");
+      document.getElementById("minutos").textContent = String(minutos).padStart(2, "0");
+      document.getElementById("segundos").textContent = String(segundos).padStart(2, "0");
     }
 
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
+    atualizarContagem();
+    setInterval(atualizarContagem, 1000);
   </script>
 </body>
 </html>
