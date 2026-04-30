@@ -36,9 +36,13 @@ function criarTransporterEmail() {
     port: 587,
     secure: false,
     requireTLS: true,
+    family: 4,
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS
+    },
+    tls: {
+      servername: 'smtp.gmail.com'
     },
     connectionTimeout: 30000,
     greetingTimeout: 30000,
