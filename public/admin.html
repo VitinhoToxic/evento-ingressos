@@ -455,17 +455,31 @@
         <input id="imagemEvento" type="text" placeholder="URL da imagem/banner do evento" />
       </div>
 
-      <button onclick="salvarConfigEvento()">Salvar configuração</button>
-    </section>
+  <button onclick="salvarConfigEvento()">Salvar configuração</button>
+</section>
 
-    <section class="actions-bar">
-      <button onclick="carregarTudo()">Atualizar painel</button>
-      <button class="secondary-btn" onclick="carregarIngressos()">Atualizar ingressos</button>
-      <button class="secondary-btn" onclick="carregarUsuarios()">Atualizar usuários</button>
-    </section>
+<section class="section">
+  <h2>⚠️ Reset de ingressos</h2>
+  <p class="section-sub">
+    Use esta opção apenas em testes. Ela apaga todos os ingressos gerados, mas mantém os usuários cadastrados.
+  </p>
 
-    <section class="section">
-      <h2>🎟️ Ingressos</h2>
+  <div class="filters">
+    <input id="senhaReset" type="password" placeholder="Digite sua senha de admin" />
+    <input id="confirmarReset" type="text" placeholder="Digite RESETAR_INGRESSOS" />
+  </div>
+
+  <button class="danger-btn" onclick="resetarIngressos()">Resetar todos os ingressos</button>
+</section>
+
+<section class="actions-bar">
+  <button onclick="carregarTudo()">Atualizar painel</button>
+  <button class="secondary-btn" onclick="carregarIngressos()">Atualizar ingressos</button>
+  <button class="secondary-btn" onclick="carregarUsuarios()">Atualizar usuários</button>
+</section>
+
+<section class="section">
+  <h2>🎟️ Ingressos</h2>
       <p class="section-sub">
         Veja todos os tickets emitidos, o tipo comprado, valor, status, quem validou e quando foi validado.
       </p>
@@ -811,6 +825,61 @@
         setTopStatus(error.message || 'Erro ao salvar configuração.');
       }
     }
+
+    async function resetarIngressos() {
+  const senha = document.getElementById('senhaReset').value.trim();
+  const confirmar = document.getElementById('confirmarReset').value.trim();
+
+  if (!senha) {
+    alert('Digite sua senha de admin.');
+    return;
+  }
+
+  if (confirmar !== 'RESETAR_INGRESSOS') {
+    alert('Digite exatamente RESETAR_INGRESSOS para confirmar.');
+    return;
+  }
+
+  const certeza = confirm(
+    'Tem certeza que deseja apagar TODOS os ingressos? Essa ação não pode ser desfeita.'
+  );
+
+  if (!certeza) return;
+
+  try {
+    setTopStatus('Resetando ingressos...');
+
+    const res = await fetch('/admin/reset-ingressos', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token
+      },
+      body: JSON.stringify({
+        senha,
+        confirmar
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Erro ao resetar ingressos.');
+    }
+
+    alert(`${data.message} Total apagado: ${data.apagados}`);
+
+    document.getElementById('senhaReset').value = '';
+    document.getElementById('confirmarReset').value = '';
+
+    await carregarTudo();
+
+    setTopStatus('Ingressos resetados com sucesso.', true);
+  } catch (error) {
+    setTopStatus(error.message || 'Erro ao resetar ingressos.');
+    alert(error.message || 'Erro ao resetar ingressos.');
+  }
+}
 
     carregarConfigEvento();
     carregarTudo();

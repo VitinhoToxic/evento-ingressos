@@ -330,5 +330,52 @@ app.put('/admin/evento-config', auth, adminOnly, async (req, res) => {
     res.status(500).json({ error: 'Erro ao atualizar configuração do evento' });
   }
 });
+// ADMIN - RESETAR TODOS OS INGRESSOS COM SENHA E CONFIRMAÇÃO
+app.delete('/admin/reset-ingressos', auth, adminOnly, async (req, res) => {
+  try {
+    const { senha, confirmar } = req.body;
+
+    if (confirmar !== 'RESETAR_INGRESSOS') {
+      return res.status(400).json({
+        error: 'Confirmação inválida. Digite RESETAR_INGRESSOS para confirmar.'
+      });
+    }
+
+    if (!senha) {
+      return res.status(400).json({
+        error: 'Senha do admin é obrigatória.'
+      });
+    }
+
+    const admin = await User.findById(req.user.id);
+
+    if (!admin) {
+      return res.status(404).json({
+        error: 'Admin não encontrado.'
+      });
+    }
+
+    const senhaOk = await bcrypt.compare(senha, admin.senha);
+
+    if (!senhaOk) {
+      return res.status(401).json({
+        error: 'Senha incorreta.'
+      });
+    }
+
+    const resultado = await Ticket.deleteMany({});
+
+    res.json({
+      message: 'Todos os ingressos foram apagados com sucesso.',
+      apagados: resultado.deletedCount
+    });
+  } catch (error) {
+    console.error('Erro ao resetar ingressos:', error);
+    res.status(500).json({
+      error: 'Erro ao resetar ingressos.'
+    });
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Rodando na porta ${PORT}`));
