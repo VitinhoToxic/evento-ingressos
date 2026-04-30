@@ -2,10 +2,12 @@
 <html lang="pt-BR">
 <head>
   <link rel="icon" href="/favicon.png">
-<link rel="apple-touch-icon" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/favicon.png">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login - Sunset Open Bar</title>
+
+  <title>Login - Tropical Vibes</title>
+
   <style>
     * {
       box-sizing: border-box;
@@ -17,10 +19,11 @@
     body {
       min-height: 100vh;
       background:
-        radial-gradient(circle at top left, rgba(34, 197, 94, 0.15), transparent 30%),
-        radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.14), transparent 30%),
-        linear-gradient(135deg, #050816, #0f172a 45%, #111827);
-      color: white;
+        radial-gradient(circle at 12% 12%, rgba(251, 191, 36, 0.22), transparent 24%),
+        radial-gradient(circle at 85% 20%, rgba(20, 184, 166, 0.22), transparent 24%),
+        linear-gradient(135deg, #ffffff 0%, #effcff 45%, #dff8f7 100%);
+      color: #082f49;
+      overflow-x: hidden;
     }
 
     a {
@@ -32,53 +35,53 @@
       width: 100%;
       position: sticky;
       top: 0;
-      z-index: 1000;
-      background: rgba(5, 8, 22, 0.82);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      z-index: 999;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(14, 165, 233, 0.12);
     }
 
     .nav-content {
-      max-width: 1200px;
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 18px 20px;
+      padding: 18px 22px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
+      gap: 18px;
       flex-wrap: wrap;
     }
 
     .logo {
-      font-size: 22px;
-      font-weight: bold;
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: #082f49;
     }
 
     .logo span {
-      color: #22c55e;
+      color: #14b8a6;
+      font-style: italic;
     }
 
     .nav-links {
       display: flex;
-      gap: 18px;
-      flex-wrap: wrap;
       align-items: center;
-    }
-
-    .nav-links a {
-      color: #dbe4ff;
-      font-size: 15px;
-      transition: 0.2s;
+      gap: 22px;
+      flex-wrap: wrap;
+      font-weight: 700;
+      font-size: 14px;
+      color: #0f3f55;
     }
 
     .nav-links a:hover {
-      color: #22c55e;
+      color: #14b8a6;
     }
 
     .page {
-      max-width: 1200px;
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 56px 20px 70px;
+      padding: 56px 22px 80px;
       display: grid;
       grid-template-columns: 1.05fr 0.95fr;
       gap: 28px;
@@ -87,95 +90,96 @@
 
     .hero-card,
     .form-card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 28px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.28);
+      background: rgba(255, 255, 255, 0.84);
+      border: 1px solid rgba(14, 165, 233, 0.14);
+      border-radius: 32px;
+      box-shadow: 0 28px 70px rgba(8, 47, 73, 0.14);
+      backdrop-filter: blur(14px);
+      overflow: hidden;
     }
 
     .hero-card {
       padding: 34px;
+      position: relative;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-card::before {
-      content: "";
-      position: absolute;
-      top: -80px;
-      right: -80px;
-      width: 220px;
-      height: 220px;
-      background: rgba(34, 197, 94, 0.12);
-      border-radius: 50%;
-      filter: blur(10px);
+      min-height: 560px;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0.88), rgba(255,255,255,0.72)),
+        url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1300&q=80");
+      background-size: cover;
+      background-position: center;
     }
 
     .hero-card::after {
-      content: "";
+      content: "🌴";
       position: absolute;
-      bottom: -70px;
-      left: -70px;
-      width: 200px;
-      height: 200px;
-      background: rgba(59, 130, 246, 0.10);
-      border-radius: 50%;
-      filter: blur(10px);
+      right: 28px;
+      bottom: 20px;
+      font-size: 150px;
+      opacity: 0.13;
+      transform: rotate(-12deg);
     }
 
     .badge {
       display: inline-block;
       width: fit-content;
-      background: rgba(34, 197, 94, 0.14);
-      color: #4ade80;
-      border: 1px solid rgba(34,197,94,0.22);
-      padding: 8px 12px;
+      background: rgba(20, 184, 166, 0.14);
+      color: #0f766e;
+      border: 1px solid rgba(20, 184, 166, 0.18);
+      padding: 9px 14px;
       border-radius: 999px;
       font-size: 13px;
-      font-weight: bold;
-      margin-bottom: 18px;
+      font-weight: 900;
+      margin-bottom: 16px;
       position: relative;
-      z-index: 1;
+      z-index: 2;
     }
 
     .hero-card h1 {
-      font-size: 46px;
-      line-height: 1.04;
-      margin-bottom: 16px;
+      font-size: clamp(42px, 6vw, 74px);
+      line-height: 0.92;
+      letter-spacing: -0.07em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      color: #082f49;
       position: relative;
-      z-index: 1;
+      z-index: 2;
     }
 
     .hero-card h1 span {
-      color: #22c55e;
+      display: block;
+      color: #14b8a6;
+      font-style: italic;
+      transform: rotate(-1deg);
     }
 
     .hero-card p {
-      color: #cbd5e1;
+      color: #164e63;
       line-height: 1.7;
+      max-width: 610px;
       font-size: 17px;
-      margin-bottom: 24px;
-      max-width: 560px;
+      font-weight: 600;
+      margin-bottom: 22px;
       position: relative;
-      z-index: 1;
+      z-index: 2;
     }
 
     .hero-list {
       display: grid;
       gap: 12px;
       position: relative;
-      z-index: 1;
+      z-index: 2;
     }
 
     .hero-item {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 14px;
-      padding: 14px 16px;
-      color: #dbe4ff;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(14, 165, 233, 0.12);
+      border-radius: 18px;
+      padding: 15px 16px;
+      color: #075985;
+      font-weight: 800;
     }
 
     .form-card {
@@ -186,30 +190,28 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      background: rgba(255,255,255,0.04);
+      background: #f0fdfa;
       padding: 8px;
-      border-radius: 16px;
+      border-radius: 18px;
       margin-bottom: 24px;
+      border: 1px solid rgba(20, 184, 166, 0.14);
     }
 
     .tab-btn {
       border: none;
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 14px;
       background: transparent;
-      color: #cbd5e1;
-      font-weight: bold;
+      color: #075985;
+      font-weight: 900;
       cursor: pointer;
       transition: 0.2s;
     }
 
     .tab-btn.active {
-      background: #22c55e;
+      background: linear-gradient(90deg, #14b8a6, #06b6d4);
       color: white;
-    }
-
-    .tab-btn:not(.active):hover {
-      background: rgba(255,255,255,0.06);
+      box-shadow: 0 14px 30px rgba(20, 184, 166, 0.20);
     }
 
     .form-panel {
@@ -221,14 +223,17 @@
     }
 
     .form-title {
-      font-size: 28px;
+      font-size: 30px;
+      color: #082f49;
       margin-bottom: 10px;
+      letter-spacing: -0.04em;
     }
 
     .form-sub {
-      color: #94a3b8;
-      line-height: 1.6;
+      color: #475569;
+      line-height: 1.7;
       margin-bottom: 22px;
+      font-weight: 600;
     }
 
     .input-group {
@@ -238,68 +243,70 @@
     .input-label {
       display: block;
       margin-bottom: 8px;
-      color: #dbe4ff;
+      color: #075985;
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 900;
     }
 
     input {
       width: 100%;
       padding: 15px 16px;
-      border-radius: 14px;
-      border: 1px solid #334155;
-      background: #0b1220;
-      color: white;
+      border-radius: 16px;
+      border: 1px solid rgba(14, 165, 233, 0.18);
+      background: #ffffff;
+      color: #082f49;
       outline: none;
       transition: 0.2s;
       font-size: 15px;
+      font-weight: 600;
     }
 
     input:focus {
-      border-color: #22c55e;
-      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
+      border-color: #14b8a6;
+      box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.12);
     }
 
     .submit-btn {
       width: 100%;
       border: none;
-      border-radius: 14px;
+      border-radius: 18px;
       padding: 16px;
-      background: #22c55e;
+      background: linear-gradient(90deg, #14b8a6, #06b6d4);
       color: white;
       font-size: 16px;
-      font-weight: bold;
+      font-weight: 900;
       cursor: pointer;
       transition: 0.2s;
       margin-top: 6px;
+      box-shadow: 0 18px 36px rgba(20, 184, 166, 0.22);
     }
 
     .submit-btn:hover {
-      background: #16a34a;
-      transform: translateY(-1px);
+      transform: translateY(-2px);
     }
 
     .status {
       margin-top: 14px;
       min-height: 24px;
-      font-weight: 600;
+      font-weight: 800;
       font-size: 14px;
     }
 
     .status.ok {
-      color: #4ade80;
+      color: #0f766e;
     }
 
     .status.err {
-      color: #f87171;
+      color: #dc2626;
     }
 
     .footer-note {
       margin-top: 24px;
-      color: #94a3b8;
+      color: #64748b;
       font-size: 13px;
       line-height: 1.6;
       text-align: center;
+      font-weight: 600;
     }
 
     @media (max-width: 980px) {
@@ -307,31 +314,41 @@
         grid-template-columns: 1fr;
       }
 
-      .hero-card h1 {
-        font-size: 36px;
+      .hero-card {
+        min-height: 440px;
       }
     }
 
     @media (max-width: 560px) {
+      .nav-content {
+        justify-content: center;
+      }
+
+      .nav-links {
+        justify-content: center;
+      }
+
       .hero-card,
       .form-card {
         padding: 22px;
       }
 
       .hero-card h1 {
-        font-size: 30px;
+        font-size: 46px;
       }
 
       .form-title {
-        font-size: 24px;
+        font-size: 25px;
       }
     }
   </style>
 </head>
+
 <body>
   <header class="navbar">
     <div class="nav-content">
-      <div class="logo">SUNSET <span>OPEN BAR</span></div>
+      <a href="/index.html" class="logo">TROPICAL <span>Vibes</span></a>
+
       <nav class="nav-links">
         <a href="/index.html">Início</a>
         <a href="/ingressos.html">Ingressos</a>
@@ -343,17 +360,22 @@
 
   <main class="page">
     <section class="hero-card">
-      <div class="badge">Acesso do cliente</div>
-      <h1>Entre na sua conta e <span>garanta sua vaga</span>.</h1>
+      <div class="badge">Acesso tropical 🌴</div>
+
+      <h1>
+        Entre na
+        <span>sua vibe</span>
+      </h1>
+
       <p>
-        Faça login para comprar seu ingresso, acompanhar seus tickets emitidos
-        e ter acesso rápido ao QR Code da sua entrada.
+        Faça login para comprar seus ingressos, acessar seus tickets digitais
+        e apresentar seu QR Code na entrada do evento.
       </p>
 
       <div class="hero-list">
-        <div class="hero-item">✔️ Compra de ingresso em poucos passos</div>
-        <div class="hero-item">✔️ Área exclusiva para visualizar seus ingressos</div>
-        <div class="hero-item">✔️ QR Code individual para validação na entrada</div>
+        <div class="hero-item">✔ Compra de ingresso em poucos passos</div>
+        <div class="hero-item">✔ QR Code individual salvo na sua conta</div>
+        <div class="hero-item">✔ Acesso rápido ao evento</div>
       </div>
     </section>
 
@@ -366,7 +388,7 @@
       <div class="form-panel active" id="loginPanel">
         <h2 class="form-title">Bem-vindo de volta</h2>
         <p class="form-sub">
-          Entre com seus dados para acessar sua área, comprar ingressos e acompanhar tudo.
+          Entre para comprar ingressos e visualizar seus tickets digitais.
         </p>
 
         <div class="input-group">
@@ -386,7 +408,7 @@
       <div class="form-panel" id="cadastroPanel">
         <h2 class="form-title">Criar nova conta</h2>
         <p class="form-sub">
-          Cadastre-se para comprar ingressos, acompanhar seus pedidos e acessar sua área exclusiva.
+          Cadastre-se para comprar ingressos e acessar sua área exclusiva.
         </p>
 
         <div class="input-group">
@@ -409,7 +431,7 @@
       </div>
 
       <div class="footer-note">
-        Ao acessar, você poderá comprar ingressos e visualizar seus tickets digitais em um só lugar.
+        Seus ingressos ficam salvos com segurança e podem ser acessados a qualquer momento.
       </div>
     </section>
   </main>
