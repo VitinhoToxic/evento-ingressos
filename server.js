@@ -233,22 +233,6 @@ app.post('/comprar', auth, async (req, res) => {
 
 const qr = await QRCode.toDataURL(codigo);
 
-const user = await User.findById(req.user.id);
-
-if (user) {
-  await enviarEmailIngresso({
-    user,
-    ticket: {
-      codigo,
-      tipo,
-      preco
-    },
-    qr,
-    config,
-    nomeTipo
-  });
-}
-
 res.json({
   message: 'Ingresso gerado com sucesso',
   codigo,
@@ -256,6 +240,26 @@ res.json({
   tipo: nomeTipo,
   preco
 });
+
+User.findById(req.user.id)
+  .then((user) => {
+    if (!user) return;
+
+    return enviarEmailIngresso({
+      user,
+      ticket: {
+        codigo,
+        tipo,
+        preco
+      },
+      qr,
+      config,
+      nomeTipo
+    });
+  })
+  .catch((error) => {
+    console.error('Erro ao enviar e-mail em segundo plano:', error);
+  });
   } catch (error) {
     console.error('Erro no /comprar:', error);
     res.status(500).json({ error: 'Erro ao gerar ingresso' });
