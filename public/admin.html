@@ -78,6 +78,11 @@
       color: #14b8a6;
     }
 
+    .logout-link {
+      color: #dc2626 !important;
+      font-weight: 900;
+    }
+
     .page {
       max-width: 1180px;
       margin: 0 auto;
@@ -203,6 +208,11 @@
       box-shadow: none;
     }
 
+    .danger-btn {
+      background: linear-gradient(90deg, #dc2626, #ef4444);
+      box-shadow: 0 18px 36px rgba(220, 38, 38, 0.18);
+    }
+
     .section {
       background: rgba(255, 255, 255, 0.84);
       border: 1px solid rgba(14, 165, 233, 0.14);
@@ -263,7 +273,7 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 980px;
+      min-width: 1180px;
       background: white;
     }
 
@@ -385,6 +395,7 @@
         <a href="/meus-ingressos.html">Meus ingressos</a>
         <a href="/validador.html">Validador</a>
         <a href="/login.html">Login</a>
+        <a href="#" class="logout-link" onclick="logout()">Sair</a>
       </nav>
     </div>
   </header>
@@ -428,24 +439,24 @@
     </section>
 
     <section class="section">
-  <h2>🌴 Configuração do evento</h2>
-  <p class="section-sub">
-    Altere as informações principais do evento sem precisar mexer no código.
-  </p>
+      <h2>🌴 Configuração do evento</h2>
+      <p class="section-sub">
+        Altere as informações principais do evento sem precisar mexer no código.
+      </p>
 
-  <div class="filters">
-    <input id="nomeEvento" type="text" placeholder="Nome do evento" />
-    <input id="dataEvento" type="text" placeholder="Data do evento" />
-    <input id="horarioEvento" type="text" placeholder="Horário do evento" />
-    <input id="localEvento" type="text" placeholder="Local do evento" />
-    <input id="precoOpenBar" type="number" placeholder="Preço Open Bar" />
-    <input id="precoPista" type="number" placeholder="Preço Pista" />
-    <input id="limiteIngressos" type="number" placeholder="Limite de ingressos" />
-    <input id="imagemEvento" type="text" placeholder="URL da imagem/banner do evento" />
-  </div>
+      <div class="filters">
+        <input id="nomeEvento" type="text" placeholder="Nome do evento" />
+        <input id="dataEvento" type="text" placeholder="Data do evento" />
+        <input id="horarioEvento" type="text" placeholder="Horário do evento" />
+        <input id="localEvento" type="text" placeholder="Local do evento" />
+        <input id="precoOpenBar" type="number" placeholder="Preço Open Bar" />
+        <input id="precoPista" type="number" placeholder="Preço Pista" />
+        <input id="limiteIngressos" type="number" placeholder="Limite de ingressos" />
+        <input id="imagemEvento" type="text" placeholder="URL da imagem/banner do evento" />
+      </div>
 
-  <button onclick="salvarConfigEvento()">Salvar configuração</button>
-</section>
+      <button onclick="salvarConfigEvento()">Salvar configuração</button>
+    </section>
 
     <section class="actions-bar">
       <button onclick="carregarTudo()">Atualizar painel</button>
@@ -456,7 +467,7 @@
     <section class="section">
       <h2>🎟️ Ingressos</h2>
       <p class="section-sub">
-        Veja todos os tickets emitidos, o tipo comprado, valor, status e se já foram usados na entrada.
+        Veja todos os tickets emitidos, o tipo comprado, valor, status, quem validou e quando foi validado.
       </p>
 
       <div class="filters">
@@ -484,8 +495,10 @@
               <th>Preço</th>
               <th>Status</th>
               <th>Usado</th>
+              <th>Validado por</th>
+              <th>Validado em</th>
               <th>User ID</th>
-              <th>Data</th>
+              <th>Data da compra</th>
             </tr>
           </thead>
           <tbody id="ticketsBody"></tbody>
@@ -540,6 +553,15 @@
     if (isAdmin !== 'true') {
       alert('Acesso permitido apenas para administrador.');
       window.location.href = '/index.html';
+    }
+
+    function logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('email');
+      localStorage.removeItem('isAdmin');
+
+      alert('Você saiu da conta.');
+      window.location.href = '/login.html';
     }
 
     function setTopStatus(message, ok = false) {
@@ -613,6 +635,11 @@
       return ticket.tipo === 'pista' ? 'R$ 40,00' : 'R$ 80,00';
     }
 
+    function formatDate(data) {
+      if (!data) return '-';
+      return new Date(data).toLocaleString('pt-BR');
+    }
+
     function renderTickets() {
       const body = document.getElementById('ticketsBody');
       const filtroCodigo = document.getElementById('filtroCodigo').value.toLowerCase().trim();
@@ -641,7 +668,7 @@
       body.innerHTML = '';
 
       if (!filtrados.length) {
-        body.innerHTML = `<tr><td colspan="7" class="empty">Nenhum ingresso encontrado.</td></tr>`;
+        body.innerHTML = `<tr><td colspan="9" class="empty">Nenhum ingresso encontrado.</td></tr>`;
         return;
       }
 
@@ -654,8 +681,10 @@
           <td>${formatPreco(ticket)}</td>
           <td>${ticket.status || '-'}</td>
           <td class="${ticket.usado ? 'status-ok' : 'status-no'}">${ticket.usado ? 'Sim' : 'Não'}</td>
+          <td>${ticket.validadoPor || '-'}</td>
+          <td>${formatDate(ticket.validadoEm)}</td>
           <td>${ticket.userId || '-'}</td>
-          <td>${ticket.createdAt ? new Date(ticket.createdAt).toLocaleString('pt-BR') : '-'}</td>
+          <td>${formatDate(ticket.createdAt)}</td>
         `;
 
         body.appendChild(tr);
@@ -702,7 +731,7 @@
               ${user.isAdmin ? 'Admin' : 'Usuário'}
             </span>
           </td>
-          <td>${user.createdAt ? new Date(user.createdAt).toLocaleString('pt-BR') : '-'}</td>
+          <td>${formatDate(user.createdAt)}</td>
         `;
 
         body.appendChild(tr);
@@ -722,67 +751,69 @@
         setTopStatus(error.message || 'Erro ao carregar painel.');
       }
     }
+
     async function carregarConfigEvento() {
-  try {
-    const res = await fetch('/evento-config');
-    const config = await res.json();
+      try {
+        const res = await fetch('/evento-config');
+        const config = await res.json();
 
-    if (!res.ok) {
-      throw new Error(config.error || 'Erro ao carregar configuração do evento');
+        if (!res.ok) {
+          throw new Error(config.error || 'Erro ao carregar configuração do evento');
+        }
+
+        document.getElementById('nomeEvento').value = config.nomeEvento || '';
+        document.getElementById('dataEvento').value = config.dataEvento || '';
+        document.getElementById('horarioEvento').value = config.horarioEvento || '';
+        document.getElementById('localEvento').value = config.localEvento || '';
+        document.getElementById('precoOpenBar').value = config.precoOpenBar || '';
+        document.getElementById('precoPista').value = config.precoPista || '';
+        document.getElementById('limiteIngressos').value = config.limiteIngressos || '';
+        document.getElementById('imagemEvento').value = config.imagemEvento || '';
+      } catch (error) {
+        setTopStatus(error.message || 'Erro ao carregar configuração.');
+      }
     }
 
-    document.getElementById('nomeEvento').value = config.nomeEvento || '';
-    document.getElementById('dataEvento').value = config.dataEvento || '';
-    document.getElementById('horarioEvento').value = config.horarioEvento || '';
-    document.getElementById('localEvento').value = config.localEvento || '';
-    document.getElementById('precoOpenBar').value = config.precoOpenBar || '';
-    document.getElementById('precoPista').value = config.precoPista || '';
-    document.getElementById('limiteIngressos').value = config.limiteIngressos || '';
-    document.getElementById('imagemEvento').value = config.imagemEvento || '';
-  } catch (error) {
-    setTopStatus(error.message || 'Erro ao carregar configuração.');
-  }
-}
+    async function salvarConfigEvento() {
+      try {
+        setTopStatus('Salvando configuração do evento...');
 
-async function salvarConfigEvento() {
-  try {
-    setTopStatus('Salvando configuração do evento...');
+        const body = {
+          nomeEvento: document.getElementById('nomeEvento').value.trim(),
+          dataEvento: document.getElementById('dataEvento').value.trim(),
+          horarioEvento: document.getElementById('horarioEvento').value.trim(),
+          localEvento: document.getElementById('localEvento').value.trim(),
+          precoOpenBar: Number(document.getElementById('precoOpenBar').value),
+          precoPista: Number(document.getElementById('precoPista').value),
+          limiteIngressos: Number(document.getElementById('limiteIngressos').value),
+          imagemEvento: document.getElementById('imagemEvento').value.trim()
+        };
 
-    const body = {
-      nomeEvento: document.getElementById('nomeEvento').value.trim(),
-      dataEvento: document.getElementById('dataEvento').value.trim(),
-      horarioEvento: document.getElementById('horarioEvento').value.trim(),
-      localEvento: document.getElementById('localEvento').value.trim(),
-      precoOpenBar: Number(document.getElementById('precoOpenBar').value),
-      precoPista: Number(document.getElementById('precoPista').value),
-      limiteIngressos: Number(document.getElementById('limiteIngressos').value),
-      imagemEvento: document.getElementById('imagemEvento').value.trim()
-    };
+        const res = await fetch('/admin/evento-config', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token
+          },
+          body: JSON.stringify(body)
+        });
 
-    const res = await fetch('/admin/evento-config', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token
-      },
-      body: JSON.stringify(body)
-    });
+        const data = await res.json();
 
-    const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || 'Erro ao salvar configuração');
+        }
 
-    if (!res.ok) {
-      throw new Error(data.error || 'Erro ao salvar configuração');
+        setTopStatus('Configuração salva com sucesso.', true);
+
+        await carregarResumo();
+      } catch (error) {
+        setTopStatus(error.message || 'Erro ao salvar configuração.');
+      }
     }
 
-    setTopStatus('Configuração salva com sucesso.', true);
-
-    await carregarResumo();
-  } catch (error) {
-    setTopStatus(error.message || 'Erro ao salvar configuração.');
-  }
-}
-carregarConfigEvento();
-carregarTudo();
+    carregarConfigEvento();
+    carregarTudo();
   </script>
 </body>
 </html>
