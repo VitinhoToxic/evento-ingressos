@@ -29,7 +29,7 @@ async function getEventConfig() {
   return config;
 }
 
-async function enviarEmailIngresso({ user, ticket, qr, config, nomeTipo }) {
+async function enviarEmailIngresso({ user, ticket, config, nomeTipo }) {
   try {
     if (!process.env.BREVO_API_KEY) {
       console.log('BREVO_API_KEY não configurada. E-mail não enviado.');
@@ -47,6 +47,8 @@ async function enviarEmailIngresso({ user, ticket, qr, config, nomeTipo }) {
 
     const remetenteNome =
       process.env.EMAIL_FROM_NAME || config.nomeEvento || 'Tropical Vibes';
+
+    const qrUrl = `${siteUrl}/api/tickets/${ticket.codigo}/qrcode`;
 
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; background:#f0fdfa; padding:30px;">
@@ -69,7 +71,7 @@ async function enviarEmailIngresso({ user, ticket, qr, config, nomeTipo }) {
 
           <div style="text-align:center; margin:24px 0;">
             <p style="font-weight:bold; color:#082f49;">Apresente este QR Code na entrada:</p>
-            <img src="${qr}" alt="QR Code do ingresso" style="max-width:240px; width:100%; border:12px solid white; border-radius:18px;" />
+            <img src="${qrUrl}" alt="QR Code do ingresso" style="max-width:240px; width:100%; border:12px solid white; border-radius:18px;" />
           </div>
 
           <p style="color:#475569; line-height:1.6;">
@@ -90,7 +92,7 @@ async function enviarEmailIngresso({ user, ticket, qr, config, nomeTipo }) {
     const response = await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
       headers: {
-        'accept': 'application/json',
+        accept: 'application/json',
         'api-key': process.env.BREVO_API_KEY,
         'content-type': 'application/json'
       },
@@ -490,6 +492,31 @@ app.delete('/admin/reset-ingressos', auth, adminOnly, async (req, res) => {
     res.status(500).json({
       error: 'Erro ao resetar ingressos.'
     });
+  }
+});
+// QR CODE PÚBLICO DO INGRESSO PARA O E-MAIL
+app.get('/api/tickets/:codigo/qrcode', async (req, res) => {
+  try {
+    const { codigo } = req.params;
+
+    const ticket = await Ticket.findOne({ codigo });
+
+    if (!ticket) {
+      return res.status(404).send('Ingresso não encontrado');
+    }
+
+    const qrBuffer = await QRCode.toBuffer(ticket.codigo, {
+      width: 300,
+      margin: 2
+    });
+
+    res.setHeader('Content-Type', 'image/png');
+    res.setHeader('Cache-Control', 'no-store');
+
+    return res.send(qrBuffer);
+  } catch (error) {
+    console.error('Erro ao gerar QR Code do e-mail:', error);
+    return res.status(500).send('Erro ao gerar QR Code');
   }
 });
 
