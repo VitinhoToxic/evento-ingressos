@@ -8,6 +8,7 @@ const QRCode = require('qrcode');
 
 const User = require('./models/User');
 const Ticket = require('./models/Ticket');
+const EventConfig = require('./models/EventConfig');
 
 const app = express();
 app.use(express.json());
@@ -18,6 +19,15 @@ mongoose.connect(process.env.MONGO_URI)
   .catch(err => console.error('Erro Mongo:', err));
 
 const LIMITE = 400;
+async function getEventConfig() {
+  let config = await EventConfig.findOne();
+
+  if (!config) {
+    config = await EventConfig.create({});
+  }
+
+  return config;
+}
 
 // AUTH
 app.post('/register', async (req, res) => {
@@ -128,11 +138,13 @@ app.post('/comprar', auth, async (req, res) => {
       return res.status(400).json({ error: 'Tipo de ingresso inválido' });
     }
 
-    const preco = tipo === 'pista' ? 40 : 80;
-    const nomeTipo = tipo === 'pista' ? 'Pista Comum' : 'Open Bar Premium';
+    const config = await getEventConfig();
+
+    const preco = tipo === 'pista' ? config.precoPista : config.precoOpenBar;
+    const nomeTipo = tipo === 'pista' ? 'Pista Tropical' : 'Open Bar Tropical';
 
     const count = await Ticket.countDocuments({ status: 'pago' });
-    if (count >= LIMITE) {
+    if (count >= config.limiteIngressos) {
       return res.status(400).json({ error: 'Ingressos esgotados' });
     }
 
@@ -242,5 +254,52 @@ app.get('/admin/usuarios', auth, adminOnly, async (req, res) => {
   }
 });
 
+// CONFIGURAÇÃO PÚBLICA DO EVENTO
+app.get('/evento-config', async (req, res) => {
+  try {
+    const config = await getEventConfig();
+    res.json(config);
+  } catch (error) {
+    console.error('Erro no /evento-config:', error);
+    res.status(500).json({ error: 'Erro ao carregar configuração do evento' });
+  }
+});
+
+// ADMIN - ATUALIZAR CONFIGURAÇÃO DO EVENTO
+app.put('/admin/evento-config', auth, adminOnly, async (req, res) => {
+  try {
+    const {
+      nomeEvento,
+      dataEvento,
+      horarioEvento,
+      localEvento,
+      precoOpenBar,
+      precoPista,
+      limiteIngressos,
+      imagemEvento
+    } = req.body;
+
+    let config = await getEventConfig();
+
+    config.nomeEvento = nomeEvento || config.nomeEvento;
+    config.dataEvento = dataEvento || config.dataEvento;
+    config.horarioEvento = horarioEvento || config.horarioEvento;
+    config.localEvento = localEvento || config.localEvento;
+    config.precoOpenBar = Number(precoOpenBar) || config.precoOpenBar;
+    config.precoPista = Number(precoPista) || config.precoPista;
+    config.limiteIngressos = Number(limiteIngressos) || config.limiteIngressos;
+    config.imagemEvento = imagemEvento || config.imagemEvento;
+
+    await config.save();
+
+    res.json({
+      message: 'Configuração do evento atualizada com sucesso',
+      config
+    });
+  } catch (error) {
+    console.error('Erro no /admin/evento-config:', error);
+    res.status(500).json({ error: 'Erro ao atualizar configuração do evento' });
+  }
+});
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Rodando na porta ${PORT}`));
