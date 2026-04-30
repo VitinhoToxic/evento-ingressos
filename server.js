@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
 const { v4: uuidv4 } = require('uuid');
 const QRCode = require('qrcode');
@@ -27,6 +28,77 @@ async function getEventConfig() {
   }
 
   return config;
+}
+
+function criarTransporterEmail() {
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS
+    }
+  });
+}
+
+async function enviarEmailIngresso({ user, ticket, qr, config, nomeTipo }) {
+  try {
+    if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+      console.log('SMTP não configurado. E-mail não enviado.');
+      return;
+    }
+
+    const transporter = criarTransporterEmail();
+
+    const siteUrl = process.env.SITE_URL || 'http://localhost:3000';
+
+    await transporter.sendMail({
+      from: `"${config.nomeEvento || 'Tropical Vibes'}" <${process.env.SMTP_USER}>`,
+      to: user.email,
+      subject: `Seu ingresso para ${config.nomeEvento || 'Tropical Vibes'}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; background:#f0fdfa; padding:30px;">
+          <div style="max-width:600px; margin:0 auto; background:white; border-radius:22px; padding:28px; border:1px solid #ccfbf1;">
+            <h1 style="color:#0f766e; margin-bottom:10px;">Ingresso confirmado 🌴</h1>
+
+            <p style="color:#164e63; font-size:16px; line-height:1.6;">
+              Olá, <strong>${user.nome || 'cliente'}</strong>! Seu ingresso foi gerado com sucesso.
+            </p>
+
+            <div style="background:#f0fdfa; border-radius:16px; padding:18px; margin:22px 0;">
+              <p><strong>Evento:</strong> ${config.nomeEvento || 'Tropical Vibes'}</p>
+              <p><strong>Data:</strong> ${config.dataEvento || '-'}</p>
+              <p><strong>Horário:</strong> ${config.horarioEvento || '-'}</p>
+              <p><strong>Local:</strong> ${config.localEvento || '-'}</p>
+              <p><strong>Tipo:</strong> ${nomeTipo}</p>
+              <p><strong>Valor:</strong> R$ ${ticket.preco},00</p>
+              <p><strong>Código:</strong> ${ticket.codigo}</p>
+            </div>
+
+            <div style="text-align:center; margin:24px 0;">
+              <p style="font-weight:bold; color:#082f49;">Apresente este QR Code na entrada:</p>
+              <img src="${qr}" alt="QR Code do ingresso" style="max-width:240px; width:100%; border:12px solid white; border-radius:18px;" />
+            </div>
+
+            <p style="color:#475569; line-height:1.6;">
+              Você também pode acessar seus ingressos pelo site:
+            </p>
+
+            <a href="${siteUrl}/meus-ingressos.html" style="display:inline-block; background:#14b8a6; color:white; text-decoration:none; padding:14px 20px; border-radius:14px; font-weight:bold;">
+              Ver meus ingressos
+            </a>
+
+            <p style="margin-top:24px; color:#64748b; font-size:13px;">
+              Guarde este e-mail. O ingresso é individual e será validado na entrada do evento.
+            </p>
+          </div>
+        </div>
+      `
+    });
+
+    console.log('E-mail do ingresso enviado para:', user.email);
+  } catch (error) {
+    console.error('Erro ao enviar e-mail do ingresso:', error);
+  }
 }
 
 // AUTH
@@ -159,15 +231,31 @@ app.post('/comprar', auth, async (req, res) => {
       preco
     });
 
-    const qr = await QRCode.toDataURL(codigo);
+const qr = await QRCode.toDataURL(codigo);
 
-    res.json({
-      message: 'Ingresso gerado com sucesso',
+const user = await User.findById(req.user.id);
+
+if (user) {
+  await enviarEmailIngresso({
+    user,
+    ticket: {
       codigo,
-      qr,
-      tipo: nomeTipo,
+      tipo,
       preco
-    });
+    },
+    qr,
+    config,
+    nomeTipo
+  });
+}
+
+res.json({
+  message: 'Ingresso gerado com sucesso',
+  codigo,
+  qr,
+  tipo: nomeTipo,
+  preco
+});
   } catch (error) {
     console.error('Erro no /comprar:', error);
     res.status(500).json({ error: 'Erro ao gerar ingresso' });
@@ -242,13 +330,15 @@ app.post('/validar', auth, adminOnly, async (req, res) => {
 // ADMIN - RESUMO
 app.get('/admin/resumo', auth, adminOnly, async (req, res) => {
   try {
+    const config = await getEventConfig();
+
     const totalVendidos = await Ticket.countDocuments({ status: 'pago' });
     const totalUsados = await Ticket.countDocuments({ usado: true });
-    const totalDisponiveis = Math.max(LIMITE - totalVendidos, 0);
+    const totalDisponiveis = Math.max(config.limiteIngressos - totalVendidos, 0);
     const totalUsuarios = await User.countDocuments();
 
     res.json({
-      limite: LIMITE,
+      limite: config.limiteIngressos,
       totalVendidos,
       totalUsados,
       totalDisponiveis,
