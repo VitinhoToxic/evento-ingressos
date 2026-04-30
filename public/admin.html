@@ -2,10 +2,12 @@
 <html lang="pt-BR">
 <head>
   <link rel="icon" href="/favicon.png">
-<link rel="apple-touch-icon" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/favicon.png">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Painel Admin - Sunset Open Bar</title>
+
+  <title>Admin - Tropical Vibes</title>
+
   <style>
     * {
       box-sizing: border-box;
@@ -17,10 +19,11 @@
     body {
       min-height: 100vh;
       background:
-        radial-gradient(circle at top left, rgba(34, 197, 94, 0.12), transparent 25%),
-        radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.12), transparent 25%),
-        linear-gradient(135deg, #050816, #0f172a 45%, #111827);
-      color: white;
+        radial-gradient(circle at 12% 12%, rgba(251, 191, 36, 0.22), transparent 24%),
+        radial-gradient(circle at 85% 20%, rgba(20, 184, 166, 0.22), transparent 24%),
+        linear-gradient(135deg, #ffffff 0%, #effcff 45%, #dff8f7 100%);
+      color: #082f49;
+      overflow-x: hidden;
     }
 
     a {
@@ -32,274 +35,312 @@
       width: 100%;
       position: sticky;
       top: 0;
-      z-index: 1000;
-      background: rgba(5, 8, 22, 0.84);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      z-index: 999;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(14, 165, 233, 0.12);
     }
 
     .nav-content {
-      max-width: 1200px;
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 18px 20px;
+      padding: 18px 22px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
+      gap: 18px;
       flex-wrap: wrap;
     }
 
     .logo {
-      font-size: 22px;
-      font-weight: bold;
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: #082f49;
     }
 
     .logo span {
-      color: #22c55e;
+      color: #14b8a6;
+      font-style: italic;
     }
 
     .nav-links {
       display: flex;
-      gap: 18px;
-      flex-wrap: wrap;
       align-items: center;
-    }
-
-    .nav-links a {
-      color: #dbe4ff;
-      font-size: 15px;
-      transition: 0.2s;
+      gap: 22px;
+      flex-wrap: wrap;
+      font-weight: 700;
+      font-size: 14px;
+      color: #0f3f55;
     }
 
     .nav-links a:hover {
-      color: #22c55e;
+      color: #14b8a6;
     }
 
     .page {
-      max-width: 1200px;
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 42px 20px 70px;
+      padding: 56px 22px 80px;
     }
 
     .hero {
-      margin-bottom: 28px;
+      margin-bottom: 30px;
     }
 
     .badge {
       display: inline-block;
-      background: rgba(34, 197, 94, 0.14);
-      color: #4ade80;
-      border: 1px solid rgba(34,197,94,0.22);
-      padding: 8px 12px;
+      background: rgba(20, 184, 166, 0.14);
+      color: #0f766e;
+      border: 1px solid rgba(20, 184, 166, 0.18);
+      padding: 9px 14px;
       border-radius: 999px;
       font-size: 13px;
-      font-weight: bold;
-      margin-bottom: 14px;
+      font-weight: 900;
+      margin-bottom: 16px;
     }
 
     .hero h1 {
-      font-size: 42px;
-      margin-bottom: 12px;
+      font-size: clamp(42px, 6vw, 72px);
+      line-height: 0.95;
+      letter-spacing: -0.07em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      color: #082f49;
+    }
+
+    .hero h1 span {
+      display: block;
+      color: #14b8a6;
+      font-style: italic;
+      transform: rotate(-1deg);
     }
 
     .hero p {
-      color: #94a3b8;
+      color: #164e63;
       line-height: 1.7;
       max-width: 760px;
+      font-size: 17px;
+      font-weight: 600;
     }
 
     .top-status {
-      margin-bottom: 18px;
+      margin-bottom: 22px;
       min-height: 24px;
-      font-weight: bold;
-      color: #facc15;
+      font-weight: 900;
+      color: #d97706;
     }
 
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 18px;
-      margin-bottom: 26px;
+      margin-bottom: 24px;
     }
 
     .stat-card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 22px;
-      padding: 22px;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+      background: rgba(255, 255, 255, 0.84);
+      border: 1px solid rgba(14, 165, 233, 0.14);
+      border-radius: 28px;
+      padding: 24px;
+      box-shadow: 0 24px 60px rgba(8, 47, 73, 0.12);
+      backdrop-filter: blur(14px);
     }
 
     .stat-card small {
       display: block;
-      color: #94a3b8;
-      font-size: 13px;
+      color: #0891b2;
+      font-size: 12px;
       margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 900;
     }
 
     .stat-card strong {
-      font-size: 34px;
-      color: #4ade80;
       display: block;
+      color: #14b8a6;
+      font-size: 36px;
+      font-weight: 900;
+      letter-spacing: -0.06em;
       margin-bottom: 6px;
     }
 
     .stat-card span {
-      color: #cbd5e1;
+      color: #475569;
       font-size: 14px;
+      font-weight: 700;
+      line-height: 1.5;
     }
 
     .actions-bar {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
-      margin-bottom: 22px;
+      margin-bottom: 24px;
     }
 
     button {
       border: none;
-      border-radius: 14px;
-      padding: 14px 18px;
-      background: #22c55e;
+      border-radius: 18px;
+      padding: 15px 20px;
+      background: linear-gradient(90deg, #14b8a6, #06b6d4);
       color: white;
-      font-weight: bold;
+      font-weight: 900;
       cursor: pointer;
       transition: 0.2s;
+      box-shadow: 0 18px 36px rgba(20, 184, 166, 0.22);
     }
 
     button:hover {
-      background: #16a34a;
-      transform: translateY(-1px);
+      transform: translateY(-2px);
     }
 
     .secondary-btn {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .secondary-btn:hover {
-      background: rgba(255,255,255,0.13);
+      background: rgba(255, 255, 255, 0.80);
+      color: #075985;
+      border: 1px solid rgba(14, 165, 233, 0.16);
+      box-shadow: none;
     }
 
     .section {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 24px;
-      padding: 24px;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.22);
-      margin-bottom: 22px;
+      background: rgba(255, 255, 255, 0.84);
+      border: 1px solid rgba(14, 165, 233, 0.14);
+      border-radius: 32px;
+      padding: 26px;
+      box-shadow: 0 28px 70px rgba(8, 47, 73, 0.14);
+      backdrop-filter: blur(14px);
+      margin-bottom: 24px;
     }
 
     .section h2 {
-      font-size: 26px;
+      color: #082f49;
+      font-size: 30px;
       margin-bottom: 8px;
+      letter-spacing: -0.04em;
     }
 
     .section-sub {
-      color: #94a3b8;
-      line-height: 1.6;
-      font-size: 14px;
-      margin-bottom: 18px;
+      color: #475569;
+      line-height: 1.7;
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 20px;
     }
 
     .filters {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
 
     .filters input,
     .filters select {
-      background: #0b1220;
-      color: white;
-      border: 1px solid #334155;
-      border-radius: 14px;
+      background: #ffffff;
+      color: #082f49;
+      border: 1px solid rgba(14, 165, 233, 0.18);
+      border-radius: 16px;
       padding: 14px 16px;
       outline: none;
       min-width: 220px;
+      font-weight: 700;
+    }
+
+    .filters input:focus,
+    .filters select:focus {
+      border-color: #14b8a6;
+      box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.12);
     }
 
     .table-wrap {
       overflow-x: auto;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 22px;
+      border: 1px solid rgba(14, 165, 233, 0.14);
+      background: white;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
       min-width: 980px;
-      background: rgba(255,255,255,0.02);
+      background: white;
     }
 
     thead {
-      background: rgba(255,255,255,0.04);
+      background: linear-gradient(90deg, #14b8a6, #06b6d4);
+      color: white;
     }
 
     th, td {
-      padding: 14px;
+      padding: 15px;
       text-align: left;
       font-size: 14px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(14, 165, 233, 0.10);
       vertical-align: top;
     }
 
     th {
-      color: #cbd5e1;
-      font-weight: 700;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-size: 12px;
     }
 
     td {
-      color: #e2e8f0;
+      color: #164e63;
+      font-weight: 700;
     }
 
     .status-ok {
-      color: #4ade80;
-      font-weight: bold;
+      color: #0f766e;
+      font-weight: 900;
     }
 
     .status-no {
-      color: #f87171;
-      font-weight: bold;
+      color: #dc2626;
+      font-weight: 900;
     }
 
     .pill {
       display: inline-block;
-      padding: 6px 10px;
+      padding: 7px 11px;
       border-radius: 999px;
       font-size: 12px;
-      font-weight: bold;
+      font-weight: 900;
+      border: 1px solid transparent;
+      white-space: nowrap;
     }
 
     .pill-admin {
-      background: rgba(34, 197, 94, 0.14);
-      color: #4ade80;
-      border: 1px solid rgba(34,197,94,0.22);
+      background: rgba(20, 184, 166, 0.14);
+      color: #0f766e;
+      border-color: rgba(20, 184, 166, 0.18);
     }
 
     .pill-user {
-      background: rgba(255,255,255,0.08);
-      color: #dbe4ff;
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(14, 165, 233, 0.12);
+      color: #0369a1;
+      border-color: rgba(14, 165, 233, 0.16);
     }
 
     .pill-openbar {
-      background: rgba(236, 72, 153, 0.14);
-      color: #f9a8d4;
-      border: 1px solid rgba(236,72,153,0.22);
+      background: rgba(20, 184, 166, 0.14);
+      color: #0f766e;
+      border-color: rgba(20, 184, 166, 0.18);
     }
 
     .pill-pista {
-      background: rgba(59, 130, 246, 0.14);
-      color: #93c5fd;
-      border: 1px solid rgba(59,130,246,0.22);
+      background: rgba(14, 165, 233, 0.12);
+      color: #0369a1;
+      border-color: rgba(14, 165, 233, 0.16);
     }
 
     .empty {
-      color: #94a3b8;
-      padding: 18px 0;
+      color: #64748b;
+      padding: 20px;
       font-size: 14px;
+      font-weight: 700;
     }
 
     @media (max-width: 980px) {
@@ -308,21 +349,36 @@
       }
 
       .hero h1 {
-        font-size: 34px;
+        font-size: 44px;
       }
     }
 
     @media (max-width: 640px) {
+      .nav-content {
+        justify-content: center;
+      }
+
+      .nav-links {
+        justify-content: center;
+      }
+
       .stats-grid {
         grid-template-columns: 1fr;
+      }
+
+      .filters input,
+      .filters select {
+        width: 100%;
       }
     }
   </style>
 </head>
+
 <body>
   <header class="navbar">
     <div class="nav-content">
-      <div class="logo">SUNSET <span>OPEN BAR</span></div>
+      <a href="/index.html" class="logo">TROPICAL <span>Vibes</span></a>
+
       <nav class="nav-links">
         <a href="/index.html">Início</a>
         <a href="/ingressos.html">Ingressos</a>
@@ -335,11 +391,11 @@
 
   <main class="page">
     <section class="hero">
-      <div class="badge">Painel administrativo</div>
-      <h1>Controle do evento</h1>
+      <div class="badge">Painel administrativo 🌴</div>
+      <h1>Controle do <span>evento</span></h1>
       <p>
-        Acompanhe os números gerais do evento, visualize todos os ingressos emitidos
-        e gerencie os usuários cadastrados em um único lugar.
+        Acompanhe os números gerais do Tropical Vibes, visualize ingressos emitidos,
+        controle usuários cadastrados e monitore a validação na entrada.
       </p>
     </section>
 
@@ -380,16 +436,18 @@
     <section class="section">
       <h2>🎟️ Ingressos</h2>
       <p class="section-sub">
-        Veja todos os tickets emitidos, o status de cada um, o tipo comprado e o valor pago.
+        Veja todos os tickets emitidos, o tipo comprado, valor, status e se já foram usados na entrada.
       </p>
 
       <div class="filters">
         <input id="filtroCodigo" type="text" placeholder="Buscar ingresso por código..." oninput="renderTickets()" />
+
         <select id="filtroUso" onchange="renderTickets()">
           <option value="">Todos os ingressos</option>
           <option value="nao-usado">Não usados</option>
           <option value="usado">Usados</option>
         </select>
+
         <select id="filtroTipo" onchange="renderTickets()">
           <option value="">Todos os tipos</option>
           <option value="openbar">Open Bar</option>
@@ -418,11 +476,12 @@
     <section class="section">
       <h2>👤 Usuários</h2>
       <p class="section-sub">
-        Lista das contas cadastradas no sistema, incluindo os administradores.
+        Lista das contas cadastradas no sistema, incluindo usuários comuns e administradores.
       </p>
 
       <div class="filters">
         <input id="filtroUsuario" type="text" placeholder="Buscar usuário por nome ou e-mail..." oninput="renderUsers()" />
+
         <select id="filtroAdmin" onchange="renderUsers()">
           <option value="">Todos os usuários</option>
           <option value="admin">Somente admins</option>
@@ -466,7 +525,7 @@
     function setTopStatus(message, ok = false) {
       const el = document.getElementById('topStatus');
       el.textContent = message;
-      el.style.color = ok ? '#4ade80' : '#facc15';
+      el.style.color = ok ? '#0f766e' : '#d97706';
     }
 
     async function carregarResumo() {
@@ -517,9 +576,12 @@
     }
 
     function formatTipo(ticket) {
-      if (ticket.tipo === 'pista') {
+      const tipo = ticket.tipo || 'openbar';
+
+      if (tipo === 'pista') {
         return '<span class="pill pill-pista">Pista</span>';
       }
+
       return '<span class="pill pill-openbar">Open Bar</span>';
     }
 
@@ -527,6 +589,7 @@
       if (typeof ticket.preco === 'number') {
         return `R$ ${ticket.preco},00`;
       }
+
       return ticket.tipo === 'pista' ? 'R$ 40,00' : 'R$ 80,00';
     }
 
@@ -537,7 +600,11 @@
       const filtroTipo = document.getElementById('filtroTipo').value;
 
       const filtrados = todosIngressos.filter(ticket => {
-        const matchCodigo = !filtroCodigo || (ticket.codigo || '').toLowerCase().includes(filtroCodigo);
+        const tipo = ticket.tipo || 'openbar';
+
+        const matchCodigo =
+          !filtroCodigo ||
+          (ticket.codigo || '').toLowerCase().includes(filtroCodigo);
 
         const matchUso =
           !filtroUso ||
@@ -546,8 +613,7 @@
 
         const matchTipo =
           !filtroTipo ||
-          (filtroTipo === 'openbar' && (ticket.tipo || 'openbar') === 'openbar') ||
-          (filtroTipo === 'pista' && ticket.tipo === 'pista');
+          tipo === filtroTipo;
 
         return matchCodigo && matchUso && matchTipo;
       });
@@ -561,6 +627,7 @@
 
       filtrados.forEach(ticket => {
         const tr = document.createElement('tr');
+
         tr.innerHTML = `
           <td>${ticket.codigo || '-'}</td>
           <td>${formatTipo(ticket)}</td>
@@ -570,6 +637,7 @@
           <td>${ticket.userId || '-'}</td>
           <td>${ticket.createdAt ? new Date(ticket.createdAt).toLocaleString('pt-BR') : '-'}</td>
         `;
+
         body.appendChild(tr);
       });
     }
@@ -605,6 +673,7 @@
 
       filtrados.forEach(user => {
         const tr = document.createElement('tr');
+
         tr.innerHTML = `
           <td>${user.nome || '-'}</td>
           <td>${user.email || '-'}</td>
@@ -615,6 +684,7 @@
           </td>
           <td>${user.createdAt ? new Date(user.createdAt).toLocaleString('pt-BR') : '-'}</td>
         `;
+
         body.appendChild(tr);
       });
     }
