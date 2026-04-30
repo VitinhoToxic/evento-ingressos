@@ -2,10 +2,12 @@
 <html lang="pt-BR">
 <head>
   <link rel="icon" href="/favicon.png">
-<link rel="apple-touch-icon" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/favicon.png">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Meus Ingressos - Sunset Open Bar</title>
+
+  <title>Meus Ingressos - Tropical Vibes</title>
+
   <style>
     * {
       box-sizing: border-box;
@@ -15,13 +17,12 @@
     }
 
     body {
-      background:
-        radial-gradient(circle at top left, rgba(168, 85, 247, 0.16), transparent 24%),
-        radial-gradient(circle at top right, rgba(236, 72, 153, 0.14), transparent 22%),
-        radial-gradient(circle at bottom left, rgba(34, 197, 94, 0.10), transparent 25%),
-        linear-gradient(135deg, #050816, #0b1020 45%, #111827);
-      color: white;
       min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 12%, rgba(251, 191, 36, 0.22), transparent 24%),
+        radial-gradient(circle at 85% 20%, rgba(20, 184, 166, 0.22), transparent 24%),
+        linear-gradient(135deg, #ffffff 0%, #effcff 45%, #dff8f7 100%);
+      color: #082f49;
       overflow-x: hidden;
     }
 
@@ -34,54 +35,53 @@
       width: 100%;
       position: sticky;
       top: 0;
-      z-index: 1000;
-      background: rgba(5, 8, 22, 0.82);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      z-index: 999;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(14, 165, 233, 0.12);
     }
 
     .nav-content {
-      max-width: 1200px;
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 18px 20px;
+      padding: 18px 22px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
+      gap: 18px;
       flex-wrap: wrap;
     }
 
     .logo {
-      font-size: 22px;
-      font-weight: bold;
-      letter-spacing: 0.03em;
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: #082f49;
     }
 
     .logo span {
-      color: #22c55e;
+      color: #14b8a6;
+      font-style: italic;
     }
 
     .nav-links {
       display: flex;
-      gap: 18px;
-      flex-wrap: wrap;
       align-items: center;
-    }
-
-    .nav-links a {
-      color: #dbe4ff;
-      font-size: 15px;
-      transition: 0.2s;
+      gap: 22px;
+      flex-wrap: wrap;
+      font-weight: 700;
+      font-size: 14px;
+      color: #0f3f55;
     }
 
     .nav-links a:hover {
-      color: #22c55e;
+      color: #14b8a6;
     }
 
     .page {
-      max-width: 1200px;
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 50px 20px 80px;
+      padding: 56px 22px 80px;
     }
 
     .hero {
@@ -90,50 +90,55 @@
       align-items: flex-end;
       gap: 18px;
       flex-wrap: wrap;
-      margin-bottom: 28px;
+      margin-bottom: 30px;
     }
 
     .badge {
       display: inline-block;
-      background: rgba(236, 72, 153, 0.14);
-      color: #f9a8d4;
-      border: 1px solid rgba(236, 72, 153, 0.25);
-      padding: 8px 12px;
+      background: rgba(20, 184, 166, 0.14);
+      color: #0f766e;
+      border: 1px solid rgba(20, 184, 166, 0.18);
+      padding: 9px 14px;
       border-radius: 999px;
       font-size: 13px;
-      font-weight: bold;
-      margin-bottom: 14px;
+      font-weight: 900;
+      margin-bottom: 16px;
     }
 
     .hero h1 {
-      font-size: 44px;
-      margin-bottom: 12px;
-      line-height: 1.05;
+      font-size: clamp(42px, 6vw, 72px);
+      line-height: 0.95;
+      letter-spacing: -0.07em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      color: #082f49;
     }
 
     .hero h1 span {
-      background: linear-gradient(90deg, #22c55e, #a855f7, #ec4899);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      display: block;
+      color: #14b8a6;
+      font-style: italic;
+      transform: rotate(-1deg);
     }
 
     .hero p {
-      color: #94a3b8;
+      color: #164e63;
       line-height: 1.7;
       max-width: 760px;
-      font-size: 16px;
+      font-size: 17px;
+      font-weight: 600;
     }
 
     .refresh-btn {
       border: none;
-      border-radius: 14px;
-      padding: 14px 18px;
-      background: linear-gradient(90deg, #22c55e, #16a34a);
+      border-radius: 18px;
+      padding: 16px 22px;
+      background: linear-gradient(90deg, #14b8a6, #06b6d4);
       color: white;
-      font-weight: bold;
+      font-weight: 900;
       cursor: pointer;
       transition: 0.2s;
-      box-shadow: 0 14px 30px rgba(34, 197, 94, 0.18);
+      box-shadow: 0 18px 36px rgba(20, 184, 166, 0.24);
     }
 
     .refresh-btn:hover {
@@ -142,16 +147,16 @@
 
     .tickets-grid {
       display: grid;
-      gap: 22px;
+      gap: 24px;
     }
 
     .ticket-card {
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03));
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.84);
+      border: 1px solid rgba(14, 165, 233, 0.14);
+      border-radius: 34px;
       overflow: hidden;
-      box-shadow: 0 28px 70px rgba(0,0,0,0.25);
+      box-shadow: 0 28px 70px rgba(8, 47, 73, 0.14);
+      backdrop-filter: blur(14px);
       display: grid;
       grid-template-columns: 1.1fr 0.9fr;
       position: relative;
@@ -164,10 +169,10 @@
       top: 50%;
       width: 22px;
       height: 22px;
-      background: #0b1020;
+      background: #effcff;
       border-radius: 50%;
       transform: translateY(-50%);
-      border: 1px solid rgba(255,255,255,0.05);
+      border: 1px solid rgba(14, 165, 233, 0.14);
       z-index: 2;
     }
 
@@ -180,21 +185,18 @@
     }
 
     .ticket-left {
-      padding: 28px;
-      border-right: 1px dashed rgba(255,255,255,0.12);
-      position: relative;
-      z-index: 1;
+      padding: 30px;
+      border-right: 1px dashed rgba(14, 165, 233, 0.25);
     }
 
     .ticket-right {
-      padding: 28px;
+      padding: 30px;
       display: flex;
       align-items: center;
       justify-content: center;
       background:
-        linear-gradient(180deg, rgba(168,85,247,0.10), rgba(236,72,153,0.08), rgba(34,197,94,0.07));
-      position: relative;
-      z-index: 1;
+        radial-gradient(circle at top right, rgba(251, 191, 36, 0.20), transparent 34%),
+        linear-gradient(180deg, #ffffff, #ecfeff);
     }
 
     .ticket-tags {
@@ -209,45 +211,47 @@
       padding: 8px 12px;
       border-radius: 999px;
       font-size: 12px;
-      font-weight: bold;
+      font-weight: 900;
       border: 1px solid transparent;
     }
 
-    .tag-green {
-      background: rgba(34, 197, 94, 0.14);
-      color: #4ade80;
-      border-color: rgba(34,197,94,0.22);
+    .tag-teal {
+      background: rgba(20, 184, 166, 0.14);
+      color: #0f766e;
+      border-color: rgba(20, 184, 166, 0.18);
     }
 
-    .tag-pink {
-      background: rgba(236, 72, 153, 0.14);
-      color: #f9a8d4;
-      border-color: rgba(236,72,153,0.22);
+    .tag-sky {
+      background: rgba(14, 165, 233, 0.12);
+      color: #0369a1;
+      border-color: rgba(14, 165, 233, 0.16);
     }
 
-    .tag-blue {
-      background: rgba(59, 130, 246, 0.14);
-      color: #93c5fd;
-      border-color: rgba(59,130,246,0.22);
+    .tag-gold {
+      background: rgba(251, 191, 36, 0.18);
+      color: #92400e;
+      border-color: rgba(251, 191, 36, 0.24);
     }
 
     .tag-red {
-      background: rgba(239, 68, 68, 0.14);
-      color: #fca5a5;
-      border-color: rgba(239,68,68,0.22);
+      background: rgba(239, 68, 68, 0.12);
+      color: #dc2626;
+      border-color: rgba(239, 68, 68, 0.18);
     }
 
     .ticket-event {
-      font-size: 28px;
+      font-size: 32px;
+      color: #082f49;
       margin-bottom: 10px;
-      line-height: 1.1;
+      letter-spacing: -0.05em;
     }
 
     .ticket-sub {
-      color: #cbd5e1;
+      color: #475569;
       line-height: 1.7;
-      margin-bottom: 20px;
-      max-width: 580px;
+      margin-bottom: 22px;
+      max-width: 620px;
+      font-weight: 600;
     }
 
     .ticket-meta {
@@ -257,23 +261,24 @@
     }
 
     .meta-box {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 16px;
-      padding: 14px 16px;
+      background: #f0fdfa;
+      border: 1px solid rgba(20, 184, 166, 0.16);
+      border-radius: 18px;
+      padding: 15px 16px;
     }
 
     .meta-box small {
       display: block;
-      color: #94a3b8;
-      margin-bottom: 6px;
+      color: #0891b2;
+      margin-bottom: 7px;
       font-size: 12px;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
+      font-weight: 900;
     }
 
     .meta-box strong {
-      color: white;
+      color: #082f49;
       line-height: 1.5;
       font-size: 15px;
       word-break: break-word;
@@ -281,68 +286,72 @@
 
     .qr-panel {
       width: 100%;
-      max-width: 280px;
+      max-width: 290px;
       text-align: center;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 24px;
-      padding: 20px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.88);
+      border: 1px solid rgba(14, 165, 233, 0.14);
+      border-radius: 28px;
+      padding: 22px;
+      box-shadow: 0 18px 44px rgba(8, 47, 73, 0.10);
     }
 
     .qr-panel img {
       width: 100%;
-      max-width: 210px;
+      max-width: 220px;
       background: white;
       padding: 12px;
-      border-radius: 18px;
+      border-radius: 20px;
       margin-bottom: 14px;
+      border: 1px solid rgba(14, 165, 233, 0.12);
     }
 
     .qr-panel h3 {
-      font-size: 18px;
+      font-size: 20px;
+      color: #082f49;
       margin-bottom: 8px;
+      letter-spacing: -0.03em;
     }
 
     .qr-panel p {
-      color: #dbe4ff;
+      color: #475569;
       line-height: 1.6;
       font-size: 14px;
+      font-weight: 600;
     }
 
     .empty-box {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 28px;
-      padding: 34px;
+      background: rgba(255, 255, 255, 0.84);
+      border: 1px solid rgba(14, 165, 233, 0.14);
+      border-radius: 32px;
+      padding: 36px;
       text-align: center;
-      color: #cbd5e1;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.22);
+      color: #475569;
+      box-shadow: 0 28px 70px rgba(8, 47, 73, 0.14);
+      backdrop-filter: blur(14px);
     }
 
     .empty-box h2 {
-      font-size: 28px;
+      font-size: 30px;
+      color: #082f49;
       margin-bottom: 10px;
+      letter-spacing: -0.04em;
     }
 
     .empty-box p {
-      color: #94a3b8;
+      color: #475569;
       line-height: 1.7;
       margin-bottom: 20px;
+      font-weight: 600;
     }
 
     .empty-box a {
       display: inline-block;
-      padding: 14px 20px;
-      border-radius: 14px;
-      background: linear-gradient(90deg, #22c55e, #16a34a);
+      padding: 15px 22px;
+      border-radius: 18px;
+      background: linear-gradient(90deg, #14b8a6, #06b6d4);
       color: white;
-      font-weight: bold;
-      box-shadow: 0 14px 30px rgba(34, 197, 94, 0.18);
-    }
-
-    .empty-box a:hover {
-      transform: translateY(-2px);
+      font-weight: 900;
+      box-shadow: 0 18px 36px rgba(20, 184, 166, 0.24);
     }
 
     @media (max-width: 980px) {
@@ -352,25 +361,40 @@
 
       .ticket-left {
         border-right: none;
-        border-bottom: 1px dashed rgba(255,255,255,0.12);
+        border-bottom: 1px dashed rgba(14, 165, 233, 0.25);
       }
 
       .hero h1 {
-        font-size: 34px;
+        font-size: 44px;
       }
     }
 
     @media (max-width: 680px) {
+      .nav-content {
+        justify-content: center;
+      }
+
+      .nav-links {
+        justify-content: center;
+      }
+
       .ticket-meta {
         grid-template-columns: 1fr;
+      }
+
+      .ticket-left,
+      .ticket-right {
+        padding: 22px;
       }
     }
   </style>
 </head>
+
 <body>
   <header class="navbar">
     <div class="nav-content">
-      <div class="logo">SUNSET <span>OPEN BAR</span></div>
+      <a href="/index.html" class="logo">TROPICAL <span>Vibes</span></a>
+
       <nav class="nav-links">
         <a href="/index.html">Início</a>
         <a href="/ingressos.html">Ingressos</a>
@@ -383,11 +407,11 @@
   <main class="page">
     <section class="hero">
       <div>
-        <div class="badge">Área do cliente</div>
+        <div class="badge">Área do cliente 🌴</div>
         <h1>Seus <span>tickets digitais</span></h1>
         <p>
           Aqui ficam todos os seus ingressos emitidos, com QR Code individual
-          e status atualizado para facilitar sua entrada no evento.
+          e status atualizado para facilitar sua entrada no Tropical Vibes.
         </p>
       </div>
 
@@ -419,15 +443,15 @@
 
       if (tipo === 'pista') {
         return {
-          nome: 'Pista Comum',
-          tag: '<span class="tag tag-blue">Pista</span>',
+          nome: 'Pista Tropical',
+          tag: '<span class="tag tag-sky">Pista</span>',
           preco: ticket.preco ? `R$ ${ticket.preco},00` : 'R$ 40,00'
         };
       }
 
       return {
-        nome: 'Open Bar Premium',
-        tag: '<span class="tag tag-pink">Open Bar</span>',
+        nome: 'Open Bar Tropical',
+        tag: '<span class="tag tag-teal">Open Bar</span>',
         preco: ticket.preco ? `R$ ${ticket.preco},00` : 'R$ 80,00'
       };
     }
@@ -435,7 +459,7 @@
     function renderTicket(ticket) {
       const statusTag = ticket.usado
         ? '<span class="tag tag-red">Ingresso usado</span>'
-        : '<span class="tag tag-green">Ingresso válido</span>';
+        : '<span class="tag tag-gold">Ingresso válido</span>';
 
       const tipoInfo = getTipoInfo(ticket);
 
@@ -447,7 +471,7 @@
               ${statusTag}
             </div>
 
-            <h2 class="ticket-event">Sunset Open Bar 2026</h2>
+            <h2 class="ticket-event">Tropical Vibes 2026</h2>
             <p class="ticket-sub">
               Seu ingresso está salvo com segurança e pronto para ser validado na entrada.
               Apresente o QR Code no acesso ao evento junto com documento com foto.
@@ -481,7 +505,7 @@
 
               <div class="meta-box">
                 <small>Evento</small>
-                <strong>Sunset Open Bar 2026</strong>
+                <strong>Tropical Vibes 2026</strong>
               </div>
             </div>
           </div>
@@ -509,11 +533,11 @@
       `;
 
       try {
-       const res = await fetch('/meus-ingressos', {
-  headers: {
-    'Authorization': 'Bearer ' + token
-  }
-});
+        const res = await fetch('/meus-ingressos', {
+          headers: {
+            'Authorization': token
+          }
+        });
 
         const data = await res.json();
 
