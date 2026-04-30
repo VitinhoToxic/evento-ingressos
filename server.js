@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const brevo = require('@getbrevo/brevo');
+const { TransactionalEmailsApi, SendSmtpEmail } = require('@getbrevo/brevo');
 const bcrypt = require('bcrypt');
 const { v4: uuidv4 } = require('uuid');
 const QRCode = require('qrcode');
@@ -31,13 +31,12 @@ async function getEventConfig() {
 }
 
 function criarClienteBrevo() {
-  const apiInstance = new brevo.TransactionalEmailsApi();
+  const apiInstance = new TransactionalEmailsApi();
 
   apiInstance.authentications.apiKey.apiKey = process.env.BREVO_API_KEY;
 
   return apiInstance;
 }
-
 async function enviarEmailIngresso({ user, ticket, qr, config, nomeTipo }) {
   try {
     if (!process.env.BREVO_API_KEY) {
@@ -58,7 +57,7 @@ async function enviarEmailIngresso({ user, ticket, qr, config, nomeTipo }) {
     const remetenteNome =
       process.env.EMAIL_FROM_NAME || config.nomeEvento || 'Tropical Vibes';
 
-    const sendSmtpEmail = new brevo.SendSmtpEmail();
+    const sendSmtpEmail = new SendSmtpEmail();
 
     sendSmtpEmail.sender = {
       name: remetenteNome,
