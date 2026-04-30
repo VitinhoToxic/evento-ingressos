@@ -507,7 +507,7 @@
     <section class="hero">
       <div class="badge">Compra online oficial 🌴</div>
       <h1>Escolha seu <span>ingresso</span></h1>
-      <p>
+      <p id="descricaoEvento">
         Garanta sua entrada para o Tropical Vibes com ingresso digital,
         QR Code individual e validação rápida na entrada do evento.
       </p>
@@ -524,7 +524,7 @@
               <span class="tag tag-gold">Premium</span>
             </div>
 
-            <h2 class="ticket-title">Open Bar Tropical</h2>
+            <h2 class="ticket-title" id="tituloOpenBar">Open Bar Tropical</h2>
             <p class="ticket-desc">
               Experiência completa para curtir a festa com vibe tropical,
               acesso ao evento e open bar incluso.
@@ -535,7 +535,7 @@
             <div class="ticket-left">
               <div class="lote-box">
                 <small>Lote atual</small>
-                <strong>1º Lote • Open Bar</strong>
+                <strong id="loteOpenBar">1º Lote • Open Bar</strong>
                 <p>
                   Lote promocional disponível por tempo limitado ou até esgotar.
                 </p>
@@ -551,7 +551,7 @@
 
             <div class="ticket-right">
               <div class="price-label">Valor do lote</div>
-              <div class="price">R$ 80</div>
+              <div class="price" id="precoOpenBarTela">R$ 80</div>
               <div class="price-sub">Ingresso individual</div>
 
               <div class="stock-alert">⚠️ Poucos ingressos neste lote</div>
@@ -571,7 +571,7 @@
               <span class="tag tag-gold">Entrada simples</span>
             </div>
 
-            <h2 class="ticket-title">Pista Tropical</h2>
+            <h2 class="ticket-title" id="tituloPista">Pista Tropical</h2>
             <p class="ticket-desc">
               Perfeito para quem quer curtir o evento, a música, a praia
               e toda a energia tropical por um valor mais acessível.
@@ -582,7 +582,7 @@
             <div class="ticket-left">
               <div class="lote-box">
                 <small>Lote atual</small>
-                <strong>1º Lote • Pista</strong>
+                <strong id="lotePista">1º Lote • Pista</strong>
                 <p>
                   Entrada padrão no evento, sem open bar, com acesso à pista e às atrações.
                 </p>
@@ -598,7 +598,7 @@
 
             <div class="ticket-right">
               <div class="price-label">Valor do lote</div>
-              <div class="price">R$ 40</div>
+              <div class="price" id="precoPistaTela">R$ 40</div>
               <div class="price-sub">Ingresso individual</div>
 
               <div class="stock-alert">🔥 Últimos ingressos promocionais</div>
@@ -658,10 +658,56 @@
 
   <script>
     const token = localStorage.getItem('token');
+    let configEvento = null;
 
     if (!token) {
       alert('Faça login primeiro.');
       window.location.href = '/login.html';
+    }
+
+    function formatarMoeda(valor) {
+      return `R$ ${Number(valor || 0).toFixed(0)}`;
+    }
+
+    async function carregarConfigEvento() {
+      try {
+        const res = await fetch('/evento-config');
+        const config = await res.json();
+
+        if (!res.ok) return;
+
+        configEvento = config;
+
+        const nomeEvento = config.nomeEvento || 'Tropical Vibes 2026';
+        const localEvento = config.localEvento || 'Salvador/BA';
+        const dataEvento = config.dataEvento || '04 de Janeiro de 2026';
+
+        document.title = `Ingressos - ${nomeEvento}`;
+
+        document.getElementById('descricaoEvento').textContent =
+          `Garanta sua entrada para o ${nomeEvento} em ${localEvento}, no dia ${dataEvento}, com ingresso digital, QR Code individual e validação rápida na entrada.`;
+
+        document.getElementById('precoOpenBarTela').textContent =
+          formatarMoeda(config.precoOpenBar || 80);
+
+        document.getElementById('precoPistaTela').textContent =
+          formatarMoeda(config.precoPista || 40);
+
+        document.getElementById('tituloOpenBar').textContent =
+          `Open Bar ${nomeEvento}`;
+
+        document.getElementById('tituloPista').textContent =
+          `Pista ${nomeEvento}`;
+
+        document.getElementById('loteOpenBar').textContent =
+          `1º Lote • Open Bar • ${nomeEvento}`;
+
+        document.getElementById('lotePista').textContent =
+          `1º Lote • Pista • ${nomeEvento}`;
+
+      } catch (error) {
+        console.log('Erro ao carregar configuração do evento:', error);
+      }
     }
 
     async function comprar(tipo) {
@@ -713,6 +759,8 @@
         statusDetail.textContent = 'Não foi possível concluir a emissão agora.';
       }
     }
+
+    carregarConfigEvento();
   </script>
 </body>
 </html>
