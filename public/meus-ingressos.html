@@ -421,159 +421,236 @@
     <section class="tickets-grid" id="lista"></section>
   </main>
 
-  <script>
-    const token = localStorage.getItem('token');
+<script>
+  const token = localStorage.getItem('token');
 
-    if (!token) {
-      alert('Faça login primeiro.');
-      window.location.href = '/login.html';
-    }
+  let configEvento = {
+    nomeEvento: 'Tropical Vibes 2026',
+    dataEvento: '',
+    horarioEvento: '',
+    localEvento: ''
+  };
 
-    function gerarQrLocal(codigo) {
-      return `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(codigo)}`;
-    }
+  if (!token) {
+    alert('Faça login primeiro.');
+    window.location.href = '/login.html';
+  }
 
-    function formatDate(data) {
-      if (!data) return '—';
-      return new Date(data).toLocaleString('pt-BR');
-    }
+  function separarNomeEvento(nome) {
+    const partes = (nome || 'Tropical Vibes').split(' ');
 
-    function getTipoInfo(ticket) {
-      const tipo = ticket.tipo || 'openbar';
-
-      if (tipo === 'pista') {
-        return {
-          nome: 'Pista Tropical',
-          tag: '<span class="tag tag-sky">Pista</span>',
-          preco: ticket.preco ? `R$ ${ticket.preco},00` : 'R$ 40,00'
-        };
-      }
-
+    if (partes.length >= 2) {
       return {
-        nome: 'Open Bar Tropical',
-        tag: '<span class="tag tag-teal">Open Bar</span>',
-        preco: ticket.preco ? `R$ ${ticket.preco},00` : 'R$ 80,00'
+        linha1: partes.slice(0, -1).join(' '),
+        linha2: partes[partes.length - 1]
       };
     }
 
-    function renderTicket(ticket) {
-      const statusTag = ticket.usado
-        ? '<span class="tag tag-red">Ingresso usado</span>'
-        : '<span class="tag tag-gold">Ingresso válido</span>';
+    return {
+      linha1: nome || 'Tropical',
+      linha2: 'Vibes'
+    };
+  }
 
-      const tipoInfo = getTipoInfo(ticket);
+  async function carregarConfigEvento() {
+    try {
+      const res = await fetch('/evento-config');
+      const config = await res.json();
 
-      return `
-        <article class="ticket-card">
-          <div class="ticket-left">
-            <div class="ticket-tags">
-              ${tipoInfo.tag}
-              ${statusTag}
-            </div>
+      if (!res.ok) return;
 
-            <h2 class="ticket-event">Tropical Vibes 2026</h2>
-            <p class="ticket-sub">
-              Seu ingresso está salvo com segurança e pronto para ser validado na entrada.
-              Apresente o QR Code no acesso ao evento junto com documento com foto.
-            </p>
+      configEvento = config;
 
-            <div class="ticket-meta">
-              <div class="meta-box">
-                <small>Tipo de ingresso</small>
-                <strong>${tipoInfo.nome}</strong>
-              </div>
+      const nomeEvento = configEvento.nomeEvento || 'Tropical Vibes 2026';
+      const nomeSeparado = separarNomeEvento(nomeEvento);
 
-              <div class="meta-box">
-                <small>Valor</small>
-                <strong>${tipoInfo.preco}</strong>
-              </div>
+      document.title = `Meus Ingressos - ${nomeEvento}`;
 
-              <div class="meta-box">
-                <small>Código do ingresso</small>
-                <strong>${ticket.codigo || '—'}</strong>
-              </div>
+      const logo = document.querySelector('.logo');
+      if (logo) {
+        logo.innerHTML = `${nomeSeparado.linha1.toUpperCase()} <span>${nomeSeparado.linha2}</span>`;
+      }
 
-              <div class="meta-box">
-                <small>Status</small>
-                <strong>${ticket.usado ? 'Já utilizado' : 'Disponível para uso'}</strong>
-              </div>
+      const heroTexto = document.querySelector('.hero p');
+      if (heroTexto) {
+        heroTexto.textContent =
+          `Aqui ficam todos os seus ingressos emitidos para ${nomeEvento}, com QR Code individual e status atualizado para facilitar sua entrada no evento.`;
+      }
+    } catch (error) {
+      console.log('Erro ao carregar configuração do evento:', error);
+    }
+  }
 
-              <div class="meta-box">
-                <small>Data da emissão</small>
-                <strong>${formatDate(ticket.createdAt)}</strong>
-              </div>
+  function gerarQrLocal(codigo) {
+    return `/api/tickets/${codigo}/qrcode`;
+  }
 
-              <div class="meta-box">
-                <small>Evento</small>
-                <strong>Tropical Vibes 2026</strong>
-              </div>
-            </div>
-          </div>
+  function formatDate(data) {
+    if (!data) return '—';
+    return new Date(data).toLocaleString('pt-BR');
+  }
 
-          <div class="ticket-right">
-            <div class="qr-panel">
-              <img src="${gerarQrLocal(ticket.codigo)}" alt="QR Code do ingresso" />
-              <h3>QR Code do ingresso</h3>
-              <p>
-                Apresente este QR Code na entrada para validar seu acesso ao evento.
-              </p>
-            </div>
-          </div>
-        </article>
-      `;
+  function getTipoInfo(ticket) {
+    const tipo = ticket.tipo || 'openbar';
+
+    if (tipo === 'pista') {
+      return {
+        nome: 'Pista',
+        tag: '<span class="tag tag-sky">Pista</span>',
+        preco: ticket.preco ? `R$ ${ticket.preco},00` : 'R$ 40,00'
+      };
     }
 
-    async function carregar() {
-      const lista = document.getElementById('lista');
-      lista.innerHTML = `
-        <div class="empty-box">
-          <h2>Carregando seus ingressos...</h2>
-          <p>Estamos buscando os tickets emitidos na sua conta.</p>
+    return {
+      nome: 'Open Bar',
+      tag: '<span class="tag tag-teal">Open Bar</span>',
+      preco: ticket.preco ? `R$ ${ticket.preco},00` : 'R$ 80,00'
+    };
+  }
+
+  function renderTicket(ticket) {
+    const nomeEvento = configEvento?.nomeEvento || 'Tropical Vibes 2026';
+    const dataEvento = configEvento?.dataEvento || '—';
+    const horarioEvento = configEvento?.horarioEvento || '—';
+    const localEvento = configEvento?.localEvento || '—';
+
+    const statusTag = ticket.usado
+      ? '<span class="tag tag-red">Ingresso usado</span>'
+      : '<span class="tag tag-gold">Ingresso válido</span>';
+
+    const tipoInfo = getTipoInfo(ticket);
+
+    return `
+      <article class="ticket-card">
+        <div class="ticket-left">
+          <div class="ticket-tags">
+            ${tipoInfo.tag}
+            ${statusTag}
+          </div>
+
+          <h2 class="ticket-event">${nomeEvento}</h2>
+          <p class="ticket-sub">
+            Seu ingresso está salvo com segurança e pronto para ser validado na entrada.
+            Apresente o QR Code no acesso ao evento junto com documento com foto.
+          </p>
+
+          <div class="ticket-meta">
+            <div class="meta-box">
+              <small>Tipo de ingresso</small>
+              <strong>${tipoInfo.nome}</strong>
+            </div>
+
+            <div class="meta-box">
+              <small>Valor</small>
+              <strong>${tipoInfo.preco}</strong>
+            </div>
+
+            <div class="meta-box">
+              <small>Código do ingresso</small>
+              <strong>${ticket.codigo || '—'}</strong>
+            </div>
+
+            <div class="meta-box">
+              <small>Status</small>
+              <strong>${ticket.usado ? 'Já utilizado' : 'Disponível para uso'}</strong>
+            </div>
+
+            <div class="meta-box">
+              <small>Data da emissão</small>
+              <strong>${formatDate(ticket.createdAt)}</strong>
+            </div>
+
+            <div class="meta-box">
+              <small>Evento</small>
+              <strong>${nomeEvento}</strong>
+            </div>
+
+            <div class="meta-box">
+              <small>Data do evento</small>
+              <strong>${dataEvento}</strong>
+            </div>
+
+            <div class="meta-box">
+              <small>Horário</small>
+              <strong>${horarioEvento}</strong>
+            </div>
+
+            <div class="meta-box">
+              <small>Local</small>
+              <strong>${localEvento}</strong>
+            </div>
+          </div>
         </div>
-      `;
 
-      try {
-        const res = await fetch('/meus-ingressos', {
-          headers: {
-            'Authorization': token
-          }
-        });
+        <div class="ticket-right">
+          <div class="qr-panel">
+            <img src="${gerarQrLocal(ticket.codigo)}" alt="QR Code do ingresso" />
+            <h3>QR Code do ingresso</h3>
+            <p>
+              Apresente este QR Code na entrada para validar seu acesso ao evento.
+            </p>
+          </div>
+        </div>
+      </article>
+    `;
+  }
 
-        const data = await res.json();
+  async function carregar() {
+    const lista = document.getElementById('lista');
+    lista.innerHTML = `
+      <div class="empty-box">
+        <h2>Carregando seus ingressos...</h2>
+        <p>Estamos buscando os tickets emitidos na sua conta.</p>
+      </div>
+    `;
 
-        if (!res.ok) {
-          lista.innerHTML = `
-            <div class="empty-box">
-              <h2>Erro ao carregar ingressos</h2>
-              <p>Não foi possível buscar seus tickets agora.</p>
-            </div>
-          `;
-          return;
+    try {
+      const res = await fetch('/meus-ingressos', {
+        headers: {
+          'Authorization': token
         }
+      });
 
-        if (!data.length) {
-          lista.innerHTML = `
-            <div class="empty-box">
-              <h2>Nenhum ingresso encontrado</h2>
-              <p>Você ainda não possui ingressos emitidos na sua conta.</p>
-              <a href="/ingressos.html">Comprar ingresso</a>
-            </div>
-          `;
-          return;
-        }
+      const data = await res.json();
 
-        lista.innerHTML = data.map(renderTicket).join('');
-      } catch (error) {
+      if (!res.ok) {
         lista.innerHTML = `
           <div class="empty-box">
-            <h2>Erro de conexão</h2>
-            <p>Não foi possível carregar seus ingressos no momento.</p>
+            <h2>Erro ao carregar ingressos</h2>
+            <p>Não foi possível buscar seus tickets agora.</p>
           </div>
         `;
+        return;
       }
-    }
 
-    carregar();
-  </script>
+      if (!data.length) {
+        lista.innerHTML = `
+          <div class="empty-box">
+            <h2>Nenhum ingresso encontrado</h2>
+            <p>Você ainda não possui ingressos emitidos para ${configEvento?.nomeEvento || 'este evento'}.</p>
+            <a href="/ingressos.html">Comprar ingresso</a>
+          </div>
+        `;
+        return;
+      }
+
+      lista.innerHTML = data.map(renderTicket).join('');
+    } catch (error) {
+      lista.innerHTML = `
+        <div class="empty-box">
+          <h2>Erro de conexão</h2>
+          <p>Não foi possível carregar seus ingressos no momento.</p>
+        </div>
+      `;
+    }
+  }
+
+  async function iniciarPagina() {
+    await carregarConfigEvento();
+    await carregar();
+  }
+
+  iniciarPagina();
+</script>
 </body>
 </html>
