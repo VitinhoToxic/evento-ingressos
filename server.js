@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
+const brevo = require('@getbrevo/brevo');
 const bcrypt = require('bcrypt');
 const { v4: uuidv4 } = require('uuid');
 const QRCode = require('qrcode');
@@ -30,84 +30,94 @@ async function getEventConfig() {
   return config;
 }
 
-function criarTransporterEmail() {
-  return nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    requireTLS: true,
-    family: 4,
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS
-    },
-    tls: {
-      servername: 'smtp.gmail.com'
-    },
-    connectionTimeout: 30000,
-    greetingTimeout: 30000,
-    socketTimeout: 30000
-  });
+function criarClienteBrevo() {
+  const apiInstance = new brevo.TransactionalEmailsApi();
+
+  apiInstance.authentications.apiKey.apiKey = process.env.BREVO_API_KEY;
+
+  return apiInstance;
 }
 
 async function enviarEmailIngresso({ user, ticket, qr, config, nomeTipo }) {
   try {
-    if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-      console.log('SMTP não configurado. E-mail não enviado.');
+    if (!process.env.BREVO_API_KEY) {
+      console.log('BREVO_API_KEY não configurada. E-mail não enviado.');
       return;
     }
 
-    const transporter = criarTransporterEmail();
+    const remetenteEmail = process.env.EMAIL_FROM_EMAIL;
 
+    if (!remetenteEmail) {
+      console.log('EMAIL_FROM_EMAIL não configurado. E-mail não enviado.');
+      return;
+    }
+
+    const apiInstance = criarClienteBrevo();
     const siteUrl = process.env.SITE_URL || 'http://localhost:3000';
 
-    await transporter.sendMail({
-      from: `"${config.nomeEvento || 'Tropical Vibes'}" <${process.env.SMTP_USER}>`,
-      to: user.email,
-      subject: `Seu ingresso para ${config.nomeEvento || 'Tropical Vibes'}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; background:#f0fdfa; padding:30px;">
-          <div style="max-width:600px; margin:0 auto; background:white; border-radius:22px; padding:28px; border:1px solid #ccfbf1;">
-            <h1 style="color:#0f766e; margin-bottom:10px;">Ingresso confirmado 🌴</h1>
+    const remetenteNome =
+      process.env.EMAIL_FROM_NAME || config.nomeEvento || 'Tropical Vibes';
 
-            <p style="color:#164e63; font-size:16px; line-height:1.6;">
-              Olá, <strong>${user.nome || 'cliente'}</strong>! Seu ingresso foi gerado com sucesso.
-            </p>
+    const sendSmtpEmail = new brevo.SendSmtpEmail();
 
-            <div style="background:#f0fdfa; border-radius:16px; padding:18px; margin:22px 0;">
-              <p><strong>Evento:</strong> ${config.nomeEvento || 'Tropical Vibes'}</p>
-              <p><strong>Data:</strong> ${config.dataEvento || '-'}</p>
-              <p><strong>Horário:</strong> ${config.horarioEvento || '-'}</p>
-              <p><strong>Local:</strong> ${config.localEvento || '-'}</p>
-              <p><strong>Tipo:</strong> ${nomeTipo}</p>
-              <p><strong>Valor:</strong> R$ ${ticket.preco},00</p>
-              <p><strong>Código:</strong> ${ticket.codigo}</p>
-            </div>
+    sendSmtpEmail.sender = {
+      name: remetenteNome,
+      email: remetenteEmail
+    };
 
-            <div style="text-align:center; margin:24px 0;">
-              <p style="font-weight:bold; color:#082f49;">Apresente este QR Code na entrada:</p>
-              <img src="${qr}" alt="QR Code do ingresso" style="max-width:240px; width:100%; border:12px solid white; border-radius:18px;" />
-            </div>
+    sendSmtpEmail.to = [
+      {
+        email: user.email,
+        name: user.nome || 'Cliente'
+      }
+    ];
 
-            <p style="color:#475569; line-height:1.6;">
-              Você também pode acessar seus ingressos pelo site:
-            </p>
+    sendSmtpEmail.subject = `Seu ingresso para ${config.nomeEvento || 'Tropical Vibes'}`;
 
-            <a href="${siteUrl}/meus-ingressos.html" style="display:inline-block; background:#14b8a6; color:white; text-decoration:none; padding:14px 20px; border-radius:14px; font-weight:bold;">
-              Ver meus ingressos
-            </a>
+    sendSmtpEmail.htmlContent = `
+      <div style="font-family: Arial, sans-serif; background:#f0fdfa; padding:30px;">
+        <div style="max-width:600px; margin:0 auto; background:white; border-radius:22px; padding:28px; border:1px solid #ccfbf1;">
+          <h1 style="color:#0f766e; margin-bottom:10px;">Ingresso confirmado 🌴</h1>
 
-            <p style="margin-top:24px; color:#64748b; font-size:13px;">
-              Guarde este e-mail. O ingresso é individual e será validado na entrada do evento.
-            </p>
+          <p style="color:#164e63; font-size:16px; line-height:1.6;">
+            Olá, <strong>${user.nome || 'cliente'}</strong>! Seu ingresso foi gerado com sucesso.
+          </p>
+
+          <div style="background:#f0fdfa; border-radius:16px; padding:18px; margin:22px 0;">
+            <p><strong>Evento:</strong> ${config.nomeEvento || 'Tropical Vibes'}</p>
+            <p><strong>Data:</strong> ${config.dataEvento || '-'}</p>
+            <p><strong>Horário:</strong> ${config.horarioEvento || '-'}</p>
+            <p><strong>Local:</strong> ${config.localEvento || '-'}</p>
+            <p><strong>Tipo:</strong> ${nomeTipo}</p>
+            <p><strong>Valor:</strong> R$ ${ticket.preco},00</p>
+            <p><strong>Código:</strong> ${ticket.codigo}</p>
           </div>
-        </div>
-      `
-    });
 
-    console.log('E-mail do ingresso enviado para:', user.email);
+          <div style="text-align:center; margin:24px 0;">
+            <p style="font-weight:bold; color:#082f49;">Apresente este QR Code na entrada:</p>
+            <img src="${qr}" alt="QR Code do ingresso" style="max-width:240px; width:100%; border:12px solid white; border-radius:18px;" />
+          </div>
+
+          <p style="color:#475569; line-height:1.6;">
+            Você também pode acessar seus ingressos pelo site:
+          </p>
+
+          <a href="${siteUrl}/meus-ingressos.html" style="display:inline-block; background:#14b8a6; color:white; text-decoration:none; padding:14px 20px; border-radius:14px; font-weight:bold;">
+            Ver meus ingressos
+          </a>
+
+          <p style="margin-top:24px; color:#64748b; font-size:13px;">
+            Guarde este e-mail. O ingresso é individual e será validado na entrada do evento.
+          </p>
+        </div>
+      </div>
+    `;
+
+    await apiInstance.sendTransacEmail(sendSmtpEmail);
+
+    console.log('E-mail do ingresso enviado pela Brevo para:', user.email);
   } catch (error) {
-    console.error('Erro ao enviar e-mail do ingresso:', error);
+    console.error('Erro ao enviar e-mail pela Brevo:', error.response?.body || error.body || error);
   }
 }
 
