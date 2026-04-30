@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const { TransactionalEmailsApi, SendSmtpEmail } = require('@getbrevo/brevo');
 const bcrypt = require('bcrypt');
 const { v4: uuidv4 } = require('uuid');
 const QRCode = require('qrcode');
@@ -30,13 +29,6 @@ async function getEventConfig() {
   return config;
 }
 
-function criarClienteBrevo() {
-  const apiInstance = new TransactionalEmailsApi();
-
-  apiInstance.authentications.apiKey.apiKey = process.env.BREVO_API_KEY;
-
-  return apiInstance;
-}
 async function enviarEmailIngresso({ user, ticket, qr, config, nomeTipo }) {
   try {
     if (!process.env.BREVO_API_KEY) {
@@ -51,29 +43,12 @@ async function enviarEmailIngresso({ user, ticket, qr, config, nomeTipo }) {
       return;
     }
 
-    const apiInstance = criarClienteBrevo();
     const siteUrl = process.env.SITE_URL || 'http://localhost:3000';
 
     const remetenteNome =
       process.env.EMAIL_FROM_NAME || config.nomeEvento || 'Tropical Vibes';
 
-    const sendSmtpEmail = new SendSmtpEmail();
-
-    sendSmtpEmail.sender = {
-      name: remetenteNome,
-      email: remetenteEmail
-    };
-
-    sendSmtpEmail.to = [
-      {
-        email: user.email,
-        name: user.nome || 'Cliente'
-      }
-    ];
-
-    sendSmtpEmail.subject = `Seu ingresso para ${config.nomeEvento || 'Tropical Vibes'}`;
-
-    sendSmtpEmail.htmlContent = `
+    const htmlContent = `
       <div style="font-family: Arial, sans-serif; background:#f0fdfa; padding:30px;">
         <div style="max-width:600px; margin:0 auto; background:white; border-radius:22px; padding:28px; border:1px solid #ccfbf1;">
           <h1 style="color:#0f766e; margin-bottom:10px;">Ingresso confirmado 🌴</h1>
@@ -112,11 +87,39 @@ async function enviarEmailIngresso({ user, ticket, qr, config, nomeTipo }) {
       </div>
     `;
 
-    await apiInstance.sendTransacEmail(sendSmtpEmail);
+    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'api-key': process.env.BREVO_API_KEY,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        sender: {
+          name: remetenteNome,
+          email: remetenteEmail
+        },
+        to: [
+          {
+            email: user.email,
+            name: user.nome || 'Cliente'
+          }
+        ],
+        subject: `Seu ingresso para ${config.nomeEvento || 'Tropical Vibes'}`,
+        htmlContent
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error('Erro ao enviar e-mail pela Brevo:', data);
+      return;
+    }
 
     console.log('E-mail do ingresso enviado pela Brevo para:', user.email);
   } catch (error) {
-    console.error('Erro ao enviar e-mail pela Brevo:', error.response?.body || error.body || error);
+    console.error('Erro ao enviar e-mail pela Brevo:', error);
   }
 }
 
