@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  <link rel="icon" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/favicon.png">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Validador - Sunset Open Bar</title>
+
+  <title>Validador - Tropical Vibes</title>
+
   <style>
     * {
       box-sizing: border-box;
@@ -15,10 +19,11 @@
     body {
       min-height: 100vh;
       background:
-        radial-gradient(circle at top left, rgba(34, 197, 94, 0.12), transparent 25%),
-        radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.12), transparent 25%),
-        linear-gradient(135deg, #050816, #0f172a 45%, #111827);
-      color: white;
+        radial-gradient(circle at 12% 12%, rgba(251, 191, 36, 0.22), transparent 24%),
+        radial-gradient(circle at 85% 20%, rgba(20, 184, 166, 0.22), transparent 24%),
+        linear-gradient(135deg, #ffffff 0%, #effcff 45%, #dff8f7 100%);
+      color: #082f49;
+      overflow-x: hidden;
     }
 
     a {
@@ -30,119 +35,166 @@
       width: 100%;
       position: sticky;
       top: 0;
-      z-index: 1000;
-      background: rgba(5, 8, 22, 0.84);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      z-index: 999;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(14, 165, 233, 0.12);
     }
 
     .nav-content {
-      max-width: 1200px;
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 18px 20px;
+      padding: 18px 22px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
+      gap: 18px;
       flex-wrap: wrap;
     }
 
     .logo {
-      font-size: 22px;
-      font-weight: bold;
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: #082f49;
     }
 
     .logo span {
-      color: #22c55e;
+      color: #14b8a6;
+      font-style: italic;
     }
 
     .nav-links {
       display: flex;
-      gap: 18px;
-      flex-wrap: wrap;
       align-items: center;
+      gap: 22px;
+      flex-wrap: wrap;
+      font-weight: 700;
+      font-size: 14px;
+      color: #0f3f55;
     }
 
-    .nav-links a {
-      color: #dbe4ff;
-      font-size: 15px;
+    .nav-links a:hover {
+      color: #14b8a6;
     }
 
     .page {
-      max-width: 1200px;
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 42px 20px 70px;
+      padding: 56px 22px 80px;
       display: grid;
       grid-template-columns: 1.05fr 0.95fr;
-      gap: 24px;
+      gap: 26px;
+      align-items: start;
     }
 
-    .card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 26px;
-      padding: 26px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    .card,
+    .status-area {
+      background: rgba(255, 255, 255, 0.84);
+      border: 1px solid rgba(14, 165, 233, 0.14);
+      border-radius: 32px;
+      padding: 28px;
+      box-shadow: 0 28px 70px rgba(8, 47, 73, 0.14);
+      backdrop-filter: blur(14px);
     }
 
     .badge {
       display: inline-block;
-      background: rgba(34, 197, 94, 0.14);
-      color: #4ade80;
-      border: 1px solid rgba(34,197,94,0.22);
-      padding: 8px 12px;
+      background: rgba(20, 184, 166, 0.14);
+      color: #0f766e;
+      border: 1px solid rgba(20, 184, 166, 0.18);
+      padding: 9px 14px;
       border-radius: 999px;
       font-size: 13px;
-      font-weight: bold;
-      margin-bottom: 14px;
+      font-weight: 900;
+      margin-bottom: 16px;
     }
 
     .title {
-      font-size: 38px;
-      margin-bottom: 12px;
+      font-size: clamp(38px, 5vw, 62px);
+      line-height: 0.95;
+      letter-spacing: -0.07em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      color: #082f49;
+    }
+
+    .title span {
+      display: block;
+      color: #14b8a6;
+      font-style: italic;
+      transform: rotate(-1deg);
     }
 
     .subtitle {
-      color: #94a3b8;
+      color: #164e63;
       line-height: 1.7;
+      font-size: 16px;
+      font-weight: 600;
       margin-bottom: 22px;
+    }
+
+    .camera-select {
+      margin-bottom: 16px;
+    }
+
+    select,
+    input {
+      width: 100%;
+      padding: 15px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(14, 165, 233, 0.18);
+      background: #ffffff;
+      color: #082f49;
+      outline: none;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    select:focus,
+    input:focus {
+      border-color: #14b8a6;
+      box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.12);
     }
 
     .row {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
-      margin-bottom: 16px;
-    }
-
-    select, input {
-      width: 100%;
-      padding: 15px 16px;
-      border-radius: 14px;
-      border: 1px solid #334155;
-      background: #0b1220;
-      color: white;
-      outline: none;
-      font-size: 15px;
-    }
-
-    .camera-select {
-      margin-bottom: 14px;
+      margin-bottom: 18px;
     }
 
     button {
       border: none;
-      border-radius: 14px;
-      padding: 14px 18px;
-      background: #22c55e;
+      border-radius: 18px;
+      padding: 15px 20px;
+      background: linear-gradient(90deg, #14b8a6, #06b6d4);
       color: white;
-      font-weight: bold;
+      font-weight: 900;
       cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 18px 36px rgba(20, 184, 166, 0.22);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
     }
 
     .secondary-btn {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255, 255, 255, 0.80);
+      color: #075985;
+      border: 1px solid rgba(14, 165, 233, 0.16);
+      box-shadow: none;
+    }
+
+    .reader-wrap {
+      background: linear-gradient(180deg, #ffffff, #ecfeff);
+      border: 1px solid rgba(14, 165, 233, 0.14);
+      border-radius: 26px;
+      padding: 18px;
+      text-align: center;
+      margin-top: 12px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
     }
 
     #reader {
@@ -150,90 +202,91 @@
       max-width: 520px;
       margin: 0 auto;
       background: white;
-      border-radius: 18px;
+      border-radius: 20px;
       overflow: hidden;
-    }
-
-    .reader-wrap {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 22px;
-      padding: 18px;
-      text-align: center;
-      margin-top: 12px;
     }
 
     .manual-box {
       margin-top: 24px;
-      padding-top: 22px;
-      border-top: 1px solid rgba(255,255,255,0.06);
+      padding-top: 24px;
+      border-top: 1px solid rgba(14, 165, 233, 0.16);
     }
 
     .manual-box h3 {
+      color: #082f49;
       margin-bottom: 10px;
-      font-size: 22px;
+      font-size: 24px;
+      letter-spacing: -0.04em;
     }
 
     .manual-box p {
-      color: #94a3b8;
+      color: #475569;
       line-height: 1.6;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       font-size: 14px;
+      font-weight: 600;
+    }
+
+    .manual-box button {
+      margin-top: 12px;
     }
 
     .status-box {
-      border-radius: 22px;
-      padding: 24px;
+      border-radius: 28px;
+      padding: 26px;
       min-height: 220px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       margin-bottom: 18px;
-      border: 1px solid rgba(255,255,255,0.06);
-      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(14, 165, 233, 0.14);
+      background: #f0fdfa;
     }
 
     .status-label {
-      color: #94a3b8;
-      font-size: 13px;
+      color: #0891b2;
+      font-size: 12px;
       margin-bottom: 10px;
       text-transform: uppercase;
       letter-spacing: 0.08em;
+      font-weight: 900;
     }
 
     .status-message {
-      font-size: 32px;
-      line-height: 1.15;
-      font-weight: bold;
+      font-size: 34px;
+      line-height: 1.1;
+      font-weight: 900;
+      letter-spacing: -0.05em;
     }
 
     .status-detail {
       margin-top: 12px;
       line-height: 1.6;
-      color: #cbd5e1;
+      color: #475569;
       word-break: break-word;
+      font-weight: 600;
     }
 
     .status-idle .status-message {
-      color: #facc15;
+      color: #d97706;
     }
 
     .status-ok {
-      background: rgba(34, 197, 94, 0.12);
-      border-color: rgba(34, 197, 94, 0.22);
+      background: rgba(20, 184, 166, 0.12);
+      border-color: rgba(20, 184, 166, 0.22);
     }
 
     .status-ok .status-message {
-      color: #4ade80;
+      color: #0f766e;
     }
 
     .status-error {
-      background: rgba(239, 68, 68, 0.12);
-      border-color: rgba(239, 68, 68, 0.22);
+      background: rgba(239, 68, 68, 0.10);
+      border-color: rgba(239, 68, 68, 0.18);
     }
 
     .status-error .status-message {
-      color: #f87171;
+      color: #dc2626;
     }
 
     .tips {
@@ -242,12 +295,38 @@
     }
 
     .tip {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 16px;
-      padding: 14px 16px;
-      color: #dbe4ff;
+      background: rgba(255,255,255,0.76);
+      border: 1px solid rgba(14, 165, 233, 0.12);
+      border-radius: 18px;
+      padding: 15px 16px;
+      color: #075985;
       line-height: 1.6;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .last-code {
+      margin-top: 16px;
+      background: #ffffff;
+      border: 1px solid rgba(14, 165, 233, 0.14);
+      border-radius: 20px;
+      padding: 16px;
+    }
+
+    .last-code small {
+      display: block;
+      color: #0891b2;
+      font-size: 12px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 900;
+    }
+
+    .last-code strong {
+      color: #082f49;
+      word-break: break-word;
+      line-height: 1.5;
       font-size: 14px;
     }
 
@@ -256,21 +335,39 @@
         grid-template-columns: 1fr;
       }
 
-      .title {
-        font-size: 32px;
-      }
-
       .status-message {
         font-size: 28px;
       }
     }
+
+    @media (max-width: 640px) {
+      .nav-content {
+        justify-content: center;
+      }
+
+      .nav-links {
+        justify-content: center;
+      }
+
+      .card,
+      .status-area {
+        padding: 22px;
+      }
+
+      .row button {
+        width: 100%;
+      }
+    }
   </style>
+
   <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
+
 <body>
   <header class="navbar">
     <div class="nav-content">
-      <div class="logo">SUNSET <span>OPEN BAR</span></div>
+      <a href="/index.html" class="logo">TROPICAL <span>Vibes</span></a>
+
       <nav class="nav-links">
         <a href="/index.html">Início</a>
         <a href="/ingressos.html">Ingressos</a>
@@ -282,10 +379,16 @@
 
   <main class="page">
     <section class="card">
-      <div class="badge">Leitura com câmera</div>
-      <h1 class="title">Validação de ingresso</h1>
+      <div class="badge">Leitura com câmera 🌴</div>
+
+      <h1 class="title">
+        Validar
+        <span>entrada</span>
+      </h1>
+
       <p class="subtitle">
-        Abra a câmera, aponte para o QR Code ou valide manualmente pelo código do ingresso.
+        Abra a câmera, aponte para o QR Code do ingresso ou use a validação manual
+        para liberar a entrada no Tropical Vibes.
       </p>
 
       <div class="camera-select">
@@ -305,25 +408,34 @@
 
       <div class="manual-box">
         <h3>Validação manual</h3>
-        <p>Se a câmera não ler, cole o código do ingresso abaixo.</p>
+        <p>
+          Se a câmera não conseguir ler, cole o código do ingresso abaixo
+          e valide manualmente.
+        </p>
+
         <input id="codigoManual" type="text" placeholder="Digite ou cole o código do ingresso" />
         <button onclick="validarManual()">Validar código</button>
       </div>
     </section>
 
-    <section>
+    <section class="status-area">
       <div class="status-box status-idle" id="statusBox">
         <div class="status-label">Status da validação</div>
         <div class="status-message" id="statusMessage">Aguardando leitura</div>
         <div class="status-detail" id="statusDetail">
-          Faça login como admin no site online e permita a câmera no navegador.
+          Faça login como admin, permita a câmera e escaneie o QR Code do ingresso.
+        </div>
+
+        <div class="last-code">
+          <small>Último código lido</small>
+          <strong id="lastCode">Nenhum código lido ainda.</strong>
         </div>
       </div>
 
       <div class="tips">
-        <div class="tip">✔️ Teste primeiro com a validação manual para confirmar que o backend está funcionando.</div>
-        <div class="tip">✔️ No celular, prefira o Chrome e permita acesso à câmera no cadeado do navegador.</div>
-        <div class="tip">✔️ O login de admin precisa ser feito no domínio do Render, não no localhost.</div>
+        <div class="tip">✔ Primeira leitura válida libera a entrada automaticamente.</div>
+        <div class="tip">✔ Se o mesmo ingresso for lido novamente, ele será bloqueado.</div>
+        <div class="tip">✔ No celular, prefira o Chrome e permita o acesso à câmera.</div>
       </div>
     </section>
   </main>
@@ -353,12 +465,21 @@
       const detailEl = document.getElementById('statusDetail');
 
       box.className = 'status-box';
-      if (type === 'ok') box.classList.add('status-ok');
-      else if (type === 'error') box.classList.add('status-error');
-      else box.classList.add('status-idle');
+
+      if (type === 'ok') {
+        box.classList.add('status-ok');
+      } else if (type === 'error') {
+        box.classList.add('status-error');
+      } else {
+        box.classList.add('status-idle');
+      }
 
       messageEl.textContent = message;
       detailEl.textContent = detail || '';
+    }
+
+    function setLastCode(codigo) {
+      document.getElementById('lastCode').textContent = codigo || 'Nenhum código lido ainda.';
     }
 
     async function carregarCameras() {
@@ -383,6 +504,8 @@
 
     async function enviarCodigo(codigo) {
       try {
+        setLastCode(codigo);
+
         const res = await fetch('/validar', {
           method: 'POST',
           headers: {
@@ -395,9 +518,9 @@
         const data = await res.json();
 
         if (res.ok) {
-          setStatus('ok', data.message || 'Entrada liberada', `Código lido: ${codigo}`);
+          setStatus('ok', data.message || 'Entrada liberada', `Código validado: ${codigo}`);
         } else {
-          setStatus('error', data.message || data.error || 'Erro ao validar', `Código lido: ${codigo}`);
+          setStatus('error', data.message || data.error || 'Erro ao validar', `Código informado: ${codigo}`);
         }
       } catch (error) {
         setStatus('error', 'Erro de conexão', 'Não foi possível validar o ingresso no servidor.');
@@ -424,7 +547,9 @@
             if (processandoLeitura) return;
 
             processandoLeitura = true;
+
             setStatus('idle', 'QR detectado', `Conteúdo lido: ${decodedText}`);
+            setLastCode(decodedText);
 
             await pararLeitura();
             await enviarCodigo(decodedText);
