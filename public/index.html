@@ -101,7 +101,7 @@
       inset: 0;
       background:
         linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.82) 45%, rgba(255,255,255,0.22) 100%),
-        url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80");
+        var(--hero-image);
       background-size: cover;
       background-position: center right;
       opacity: 0.95;
@@ -254,7 +254,7 @@
       border-radius: 26px;
       background:
         linear-gradient(180deg, rgba(0,0,0,0.05), rgba(0,0,0,0.18)),
-        url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1100&q=80");
+        var(--card-image);
       background-size: cover;
       background-position: center;
       margin-bottom: 20px;
@@ -284,11 +284,34 @@
       margin-bottom: 18px;
     }
 
+    .price-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .price-box {
+      background: #f0fdfa;
+      border: 1px solid rgba(20, 184, 166, 0.16);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .price-box small {
+      display: block;
+      color: #0891b2;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
     .price {
-      font-size: 42px;
+      font-size: 32px;
       color: #14b8a6;
       font-weight: 900;
-      margin-bottom: 4px;
+      line-height: 1;
     }
 
     .price-sub {
@@ -456,6 +479,10 @@
       .section h2 {
         font-size: 32px;
       }
+
+      .price-row {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -469,7 +496,7 @@
         <a href="#sobre">Sobre</a>
         <a href="#atracoes">Atrações</a>
         <a href="/login.html">Login</a>
-        <a href="/ingressos.html">Ingressos</a>
+        <a href="/meus-ingressos.html">Meus ingressos</a>
         <a href="/ingressos.html" class="nav-cta">Garantir ingresso</a>
       </nav>
     </div>
@@ -478,33 +505,33 @@
   <section class="hero">
     <div class="hero-content">
       <div class="hero-text">
-        <div class="event-date">04 de Janeiro • Brasília/DF</div>
+        <div class="event-date" id="eventDate">04 de Janeiro • Salvador/BA</div>
 
         <h1>
-          Tropical
-          <span>Vibes</span>
+          <span id="heroNomeLinha1">Tropical</span>
+          <span id="heroNomeLinha2">Vibes</span>
         </h1>
 
-        <p>
+        <p id="heroDescricao">
           A festa que vai marcar seu verão com música boa, praia, amigos,
           drinks e uma energia tropical do começo ao fim.
         </p>
 
         <div class="countdown">
           <div class="time-box">
-            <strong id="dias">32</strong>
+            <strong id="dias">00</strong>
             <span>Dias</span>
           </div>
           <div class="time-box">
-            <strong id="horas">11</strong>
+            <strong id="horas">00</strong>
             <span>Horas</span>
           </div>
           <div class="time-box">
-            <strong id="minutos">58</strong>
+            <strong id="minutos">00</strong>
             <span>Min</span>
           </div>
           <div class="time-box">
-            <strong id="segundos">45</strong>
+            <strong id="segundos">00</strong>
             <span>Seg</span>
           </div>
         </div>
@@ -518,13 +545,24 @@
       <aside class="hero-card">
         <div class="card-image"></div>
         <span class="card-badge">Verão Premium</span>
-        <h2>Tropical Vibes 2026</h2>
-        <p>
+        <h2 id="cardNomeEvento">Tropical Vibes 2026</h2>
+        <p id="cardDescricao">
           Uma experiência tropical completa com estrutura premium,
           entrada por QR Code e vibe perfeita para curtir o verão.
         </p>
 
-        <div class="price">R$ 40,00</div>
+        <div class="price-row">
+          <div class="price-box">
+            <small>Pista</small>
+            <div class="price" id="precoPistaTela">R$ 40</div>
+          </div>
+
+          <div class="price-box">
+            <small>Open Bar</small>
+            <div class="price" id="precoOpenBarTela">R$ 80</div>
+          </div>
+        </div>
+
         <div class="price-sub">Lote atual • compra online</div>
 
         <div class="features">
@@ -558,8 +596,8 @@
   </div>
 
   <section class="section" id="sobre">
-    <h2>Uma experiência feita para o verão</h2>
-    <p>
+    <h2 id="sobreTitulo">Uma experiência feita para o verão</h2>
+    <p id="sobreTexto">
       O Tropical Vibes une música, praia, tecnologia e organização.
       Os ingressos são digitais, com QR Code individual e validação segura
       na entrada do evento.
@@ -599,11 +637,148 @@
   </footer>
 
   <script>
-    const dataEvento = new Date("2026-01-04T22:00:00").getTime();
+    const imagemPadrao = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80';
+
+    let dataEventoContagem = new Date("2026-01-04T22:00:00").getTime();
+
+    document.documentElement.style.setProperty('--hero-image', `url("${imagemPadrao}")`);
+    document.documentElement.style.setProperty('--card-image', `url("${imagemPadrao}")`);
+
+    function formatarMoeda(valor) {
+      return `R$ ${Number(valor || 0).toFixed(0)}`;
+    }
+
+    function separarNomeEvento(nome) {
+      const partes = (nome || 'Tropical Vibes 2026').split(' ');
+
+      if (partes.length >= 2) {
+        return {
+          linha1: partes.slice(0, -1).join(' '),
+          linha2: partes[partes.length - 1]
+        };
+      }
+
+      return {
+        linha1: nome || 'Tropical',
+        linha2: 'Vibes'
+      };
+    }
+
+    function tentarConverterData(dataTexto, horarioTexto) {
+      try {
+        if (!dataTexto) return null;
+
+        const texto = dataTexto.toLowerCase();
+
+        const meses = {
+          'janeiro': '01',
+          'fevereiro': '02',
+          'março': '03',
+          'marco': '03',
+          'abril': '04',
+          'maio': '05',
+          'junho': '06',
+          'julho': '07',
+          'agosto': '08',
+          'setembro': '09',
+          'outubro': '10',
+          'novembro': '11',
+          'dezembro': '12'
+        };
+
+        const diaMatch = texto.match(/\d{1,2}/);
+        const anoMatch = texto.match(/\d{4}/);
+
+        let mesEncontrado = null;
+
+        Object.keys(meses).forEach(mes => {
+          if (texto.includes(mes)) {
+            mesEncontrado = meses[mes];
+          }
+        });
+
+        if (!diaMatch || !anoMatch || !mesEncontrado) return null;
+
+        const dia = String(diaMatch[0]).padStart(2, '0');
+        const ano = anoMatch[0];
+
+        let hora = '22';
+        let minuto = '00';
+
+        if (horarioTexto) {
+          const h = horarioTexto.match(/\d{1,2}/);
+          if (h) hora = String(h[0]).padStart(2, '0');
+        }
+
+        return new Date(`${ano}-${mesEncontrado}-${dia}T${hora}:${minuto}:00`).getTime();
+      } catch {
+        return null;
+      }
+    }
+
+    async function carregarConfigEvento() {
+      try {
+        const res = await fetch('/evento-config');
+        const config = await res.json();
+
+        if (!res.ok) return;
+
+        const nomeEvento = config.nomeEvento || 'Tropical Vibes 2026';
+        const dataEvento = config.dataEvento || '04 de Janeiro de 2026';
+        const horarioEvento = config.horarioEvento || '22h até 06h';
+        const localEvento = config.localEvento || 'Salvador/BA';
+        const imagemEvento = config.imagemEvento || imagemPadrao;
+
+        const nomeSeparado = separarNomeEvento(nomeEvento);
+
+        document.title = `${nomeEvento} - Evento`;
+
+        document.querySelector('.logo').innerHTML =
+          `${nomeSeparado.linha1.toUpperCase()} <span>${nomeSeparado.linha2}</span>`;
+
+        document.getElementById('eventDate').textContent =
+          `${dataEvento} • ${localEvento}`;
+
+        document.getElementById('heroNomeLinha1').textContent = nomeSeparado.linha1;
+        document.getElementById('heroNomeLinha2').textContent = nomeSeparado.linha2;
+
+        document.getElementById('heroDescricao').textContent =
+          `A festa ${nomeEvento} vai acontecer em ${localEvento}, com música boa, ingressos digitais, QR Code individual e uma experiência completa do começo ao fim.`;
+
+        document.getElementById('cardNomeEvento').textContent = nomeEvento;
+
+        document.getElementById('cardDescricao').textContent =
+          `${nomeEvento} acontece em ${localEvento}, ${dataEvento}, ${horarioEvento}. Garanta seu ingresso digital com QR Code.`;
+
+        document.getElementById('precoPistaTela').textContent =
+          formatarMoeda(config.precoPista || 40);
+
+        document.getElementById('precoOpenBarTela').textContent =
+          formatarMoeda(config.precoOpenBar || 80);
+
+        document.getElementById('sobreTitulo').textContent =
+          `Uma experiência feita para o ${nomeEvento}`;
+
+        document.getElementById('sobreTexto').textContent =
+          `${nomeEvento} une música, tecnologia e organização. Os ingressos são digitais, com QR Code individual e validação segura na entrada do evento.`;
+
+        document.documentElement.style.setProperty('--hero-image', `url("${imagemEvento}")`);
+        document.documentElement.style.setProperty('--card-image', `url("${imagemEvento}")`);
+
+        const novaData = tentarConverterData(dataEvento, horarioEvento);
+        if (novaData) {
+          dataEventoContagem = novaData;
+        }
+
+        atualizarContagem();
+      } catch (error) {
+        console.log('Erro ao carregar configuração do evento:', error);
+      }
+    }
 
     function atualizarContagem() {
       const agora = new Date().getTime();
-      const distancia = dataEvento - agora;
+      const distancia = dataEventoContagem - agora;
 
       if (distancia <= 0) {
         document.getElementById("dias").textContent = "00";
@@ -624,6 +799,7 @@
       document.getElementById("segundos").textContent = String(segundos).padStart(2, "0");
     }
 
+    carregarConfigEvento();
     atualizarContagem();
     setInterval(atualizarContagem, 1000);
   </script>
