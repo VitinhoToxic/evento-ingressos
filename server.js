@@ -193,20 +193,49 @@ app.post('/validar', auth, adminOnly, async (req, res) => {
     const ticket = await Ticket.findOne({ codigo });
 
     if (!ticket) {
-      return res.status(404).json({ ok: false, message: 'Ingresso inválido' });
+      return res.status(404).json({
+        ok: false,
+        message: 'Ingresso inválido'
+      });
     }
 
     if (ticket.usado) {
-      return res.status(400).json({ ok: false, message: 'Ingresso já usado' });
+      return res.status(400).json({
+        ok: false,
+        message: 'Ingresso já usado',
+        ticket: {
+          codigo: ticket.codigo,
+          tipo: ticket.tipo,
+          preco: ticket.preco,
+          validadoPor: ticket.validadoPor || 'Não informado',
+          validadoEm: ticket.validadoEm || null
+        }
+      });
     }
 
     ticket.usado = true;
+    ticket.validadoPor = req.user.email || 'admin';
+    ticket.validadoEm = new Date();
+
     await ticket.save();
 
-    return res.json({ ok: true, message: 'Entrada liberada' });
+    return res.json({
+      ok: true,
+      message: 'Entrada liberada',
+      ticket: {
+        codigo: ticket.codigo,
+        tipo: ticket.tipo,
+        preco: ticket.preco,
+        validadoPor: ticket.validadoPor,
+        validadoEm: ticket.validadoEm
+      }
+    });
   } catch (error) {
     console.error('Erro no /validar:', error);
-    res.status(500).json({ ok: false, message: 'Erro ao validar ingresso' });
+    res.status(500).json({
+      ok: false,
+      message: 'Erro ao validar ingresso'
+    });
   }
 });
 
