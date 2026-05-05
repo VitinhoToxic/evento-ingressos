@@ -649,6 +649,82 @@ app.get('/evento-principal', async (req, res) => {
     res.status(500).json({ error: 'Erro ao buscar evento principal.' });
   }
 });
+// ADMIN - RESUMO DE UM EVENTO ESPECÍFICO
+app.get('/admin/eventos/:eventId/resumo', auth, adminOnly, async (req, res) => {
+  try {
+    const { eventId } = req.params;
+
+    const evento = await Event.findById(eventId);
+
+    if (!evento) {
+      return res.status(404).json({ error: 'Evento não encontrado.' });
+    }
+
+    const totalVendidos = await Ticket.countDocuments({
+      status: 'pago',
+      eventId: evento._id
+    });
+
+    const totalUsados = await Ticket.countDocuments({
+      usado: true,
+      eventId: evento._id
+    });
+
+    const totalDisponiveis = Math.max(evento.limiteIngressos - totalVendidos, 0);
+
+    const receitaAgg = await Ticket.aggregate([
+      {
+        $match: {
+          status: 'pago',
+          eventId: evento._id
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: '$preco' }
+        }
+      }
+    ]);
+
+    const receitaTotal = receitaAgg[0]?.total || 0;
+
+    res.json({
+      evento,
+      limite: evento.limiteIngressos,
+      totalVendidos,
+      totalUsados,
+      totalDisponiveis,
+      receitaTotal
+    });
+  } catch (error) {
+    console.error('Erro no resumo do evento:', error);
+    res.status(500).json({ error: 'Erro ao carregar resumo do evento.' });
+  }
+});
+
+
+// ADMIN - INGRESSOS DE UM EVENTO ESPECÍFICO
+app.get('/admin/eventos/:eventId/ingressos', auth, adminOnly, async (req, res) => {
+  try {
+    const { eventId } = req.params;
+
+    const evento = await Event.findById(eventId);
+
+    if (!evento) {
+      return res.status(404).json({ error: 'Evento não encontrado.' });
+    }
+
+    const tickets = await Ticket.find({
+      eventId: evento._id
+    }).sort({ createdAt: -1 });
+
+    res.json(tickets);
+  } catch (error) {
+    console.error('Erro ao listar ingressos do evento:', error);
+    res.status(500).json({ error: 'Erro ao listar ingressos do evento.' });
+  }
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Rodando na porta ${PORT}`));
