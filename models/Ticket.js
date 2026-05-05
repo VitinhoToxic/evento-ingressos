@@ -7,6 +7,12 @@ const TicketSchema = new mongoose.Schema(
       required: true
     },
 
+    eventId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Event',
+      default: null
+    },
+
     codigo: {
       type: String,
       required: true,
@@ -34,7 +40,6 @@ const TicketSchema = new mongoose.Schema(
       default: 0
     },
 
-    // Segurança/controle da validação
     validadoPor: {
       type: String,
       default: ''
