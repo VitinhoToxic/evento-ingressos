@@ -9,6 +9,7 @@ const QRCode = require('qrcode');
 const User = require('./models/User');
 const Ticket = require('./models/Ticket');
 const EventConfig = require('./models/EventConfig');
+const Event = require('./models/Event');
 
 const app = express();
 app.use(express.json());
@@ -27,6 +28,35 @@ async function getEventConfig() {
   }
 
   return config;
+}
+function gerarSlug(texto) {
+  return String(texto || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+async function getEventoPrincipal() {
+  let evento = await Event.findOne().sort({ createdAt: 1 });
+
+  if (!evento) {
+    evento = await Event.create({
+      nomeEvento: 'Tropical Vibes 2027',
+      slug: 'tropical-vibes-2027',
+      dataEvento: '31 de Dezembro de 2026',
+      horarioEvento: '22h até 06h',
+      localEvento: 'Brasília/DF',
+      precoOpenBar: 80,
+      precoPista: 40,
+      limiteIngressos: 400,
+      ativo: true
+    });
+  }
+
+  return evento;
 }
 
 async function enviarEmailIngresso({ user, ticket, config, nomeTipo }) {
@@ -517,6 +547,102 @@ app.get('/api/tickets/:codigo/qrcode', async (req, res) => {
   } catch (error) {
     console.error('Erro ao gerar QR Code do e-mail:', error);
     return res.status(500).send('Erro ao gerar QR Code');
+  }
+});
+// ADMIN - CRIAR EVENTO
+app.post('/admin/eventos', auth, adminOnly, async (req, res) => {
+  try {
+    const {
+      nomeEvento,
+      dataEvento,
+      horarioEvento,
+      localEvento,
+      descricaoEvento,
+      imagemEvento,
+      precoOpenBar,
+      precoPista,
+      limiteIngressos
+    } = req.body;
+
+    if (!nomeEvento) {
+      return res.status(400).json({ error: 'Nome do evento é obrigatório.' });
+    }
+
+    let slug = gerarSlug(nomeEvento);
+
+    const jaExiste = await Event.findOne({ slug });
+
+    if (jaExiste) {
+      slug = `${slug}-${Date.now()}`;
+    }
+
+    const evento = await Event.create({
+      nomeEvento,
+      slug,
+      dataEvento,
+      horarioEvento,
+      localEvento,
+      descricaoEvento,
+      imagemEvento,
+      precoOpenBar: Number(precoOpenBar) || 80,
+      precoPista: Number(precoPista) || 40,
+      limiteIngressos: Number(limiteIngressos) || 400,
+      ativo: true,
+      criadoPor: req.user.email || ''
+    });
+
+    res.json({
+      message: 'Evento criado com sucesso.',
+      evento
+    });
+  } catch (error) {
+    console.error('Erro ao criar evento:', error);
+    res.status(500).json({ error: 'Erro ao criar evento.' });
+  }
+});
+
+
+// ADMIN - LISTAR EVENTOS
+app.get('/admin/eventos', auth, adminOnly, async (req, res) => {
+  try {
+    const eventos = await Event.find().sort({ createdAt: -1 });
+
+    res.json(eventos);
+  } catch (error) {
+    console.error('Erro ao listar eventos:', error);
+    res.status(500).json({ error: 'Erro ao listar eventos.' });
+  }
+});
+
+
+// PÚBLICO - PEGAR EVENTO POR SLUG
+app.get('/eventos/:slug/config', async (req, res) => {
+  try {
+    const { slug } = req.params;
+
+    const evento = await Event.findOne({ slug });
+
+    if (!evento) {
+      return res.status(404).json({ error: 'Evento não encontrado.' });
+    }
+
+    res.json(evento);
+  } catch (error) {
+    console.error('Erro ao buscar evento:', error);
+    res.status(500).json({ error: 'Erro ao buscar evento.' });
+  }
+});
+
+
+// PÚBLICO - EVENTO PRINCIPAL
+app.get('/evento-principal', async (req, res) => {
+  try {
+    const evento = await getEventoPrincipal();
+
+    res.json(evento);
+  } catch (error) {
+    console.error('Erro ao buscar evento principal:', error);
+    res.status(500).json({ error: 'Erro ao buscar evento principal.' });
   }
 });
 
