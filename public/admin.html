@@ -413,6 +413,26 @@
     <div class="top-status" id="topStatus">Carregando painel...</div>
 
     <section class="section">
+  <h2>➕ Criar novo evento</h2>
+  <p class="section-sub">
+    Cadastre um novo evento para vender ingressos com página, preços, limite e painel próprios.
+  </p>
+
+  <div class="filters">
+    <input id="novoNomeEvento" type="text" placeholder="Nome do evento. Ex: Tropical Réveillon 2027" />
+    <input id="novoDataEvento" type="text" placeholder="Data. Ex: 31 de Dezembro de 2026" />
+    <input id="novoHorarioEvento" type="text" placeholder="Horário. Ex: 22h até 06h" />
+    <input id="novoLocalEvento" type="text" placeholder="Local. Ex: Brasília/DF" />
+    <input id="novoPrecoOpenBar" type="number" placeholder="Preço Open Bar" />
+    <input id="novoPrecoPista" type="number" placeholder="Preço Pista" />
+    <input id="novoLimiteIngressos" type="number" placeholder="Limite de ingressos" />
+    <input id="novoImagemEvento" type="text" placeholder="URL da imagem/banner do evento" />
+  </div>
+
+  <button onclick="criarNovoEvento()">Criar evento</button>
+</section>
+
+    <section class="section">
   <h2>🎪 Evento selecionado</h2>
   <p class="section-sub">
     Escolha qual evento deseja gerenciar. O resumo e a lista de ingressos serão filtrados por evento.
@@ -981,6 +1001,67 @@
   }
 
   carregarTudo();
+  async function criarNovoEvento() {
+  try {
+    setTopStatus('Criando novo evento...');
+
+    const nomeEvento = document.getElementById('novoNomeEvento').value.trim();
+
+    if (!nomeEvento) {
+      alert('Digite o nome do evento.');
+      return;
+    }
+
+    const body = {
+      nomeEvento,
+      dataEvento: document.getElementById('novoDataEvento').value.trim(),
+      horarioEvento: document.getElementById('novoHorarioEvento').value.trim(),
+      localEvento: document.getElementById('novoLocalEvento').value.trim(),
+      precoOpenBar: Number(document.getElementById('novoPrecoOpenBar').value) || 80,
+      precoPista: Number(document.getElementById('novoPrecoPista').value) || 40,
+      limiteIngressos: Number(document.getElementById('novoLimiteIngressos').value) || 400,
+      imagemEvento: document.getElementById('novoImagemEvento').value.trim()
+    };
+
+    const res = await fetch('/admin/eventos', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token
+      },
+      body: JSON.stringify(body)
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Erro ao criar evento.');
+    }
+
+    alert(`Evento criado com sucesso: ${data.evento.nomeEvento}`);
+
+    document.getElementById('novoNomeEvento').value = '';
+    document.getElementById('novoDataEvento').value = '';
+    document.getElementById('novoHorarioEvento').value = '';
+    document.getElementById('novoLocalEvento').value = '';
+    document.getElementById('novoPrecoOpenBar').value = '';
+    document.getElementById('novoPrecoPista').value = '';
+    document.getElementById('novoLimiteIngressos').value = '';
+    document.getElementById('novoImagemEvento').value = '';
+
+    eventoAtualId = data.evento._id;
+    localStorage.setItem('eventoAtualId', eventoAtualId);
+
+    await carregarEventos();
+    await carregarResumo();
+    await carregarIngressos();
+
+    setTopStatus('Novo evento criado e selecionado com sucesso.', true);
+  } catch (error) {
+    setTopStatus(error.message || 'Erro ao criar evento.');
+    alert(error.message || 'Erro ao criar evento.');
+  }
+}
 </script>
 </body>
 </html>
