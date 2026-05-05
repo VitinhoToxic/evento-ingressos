@@ -412,6 +412,19 @@
 
     <div class="top-status" id="topStatus">Carregando painel...</div>
 
+    <section class="section">
+  <h2>🎪 Evento selecionado</h2>
+  <p class="section-sub">
+    Escolha qual evento deseja gerenciar. O resumo e a lista de ingressos serão filtrados por evento.
+  </p>
+
+  <div class="filters">
+    <select id="eventoSelecionado" onchange="selecionarEvento()">
+      <option value="">Carregando eventos...</option>
+    </select>
+  </div>
+</section>
+
     <section class="stats-grid">
       <article class="stat-card">
         <small>Limite total</small>
@@ -553,336 +566,421 @@
   </main>
 
   <script>
-    const token = localStorage.getItem('token');
-    const isAdmin = localStorage.getItem('isAdmin');
+  const token = localStorage.getItem('token');
+  const isAdmin = localStorage.getItem('isAdmin');
 
-    let todosIngressos = [];
-    let todosUsuarios = [];
+  let todosIngressos = [];
+  let todosUsuarios = [];
+  let todosEventos = [];
+  let eventoAtualId = localStorage.getItem('eventoAtualId') || '';
 
-    if (!token) {
-      alert('Faça login primeiro.');
-      window.location.href = '/login.html';
-    }
-
-    if (isAdmin !== 'true') {
-      alert('Acesso permitido apenas para administrador.');
-      window.location.href = '/index.html';
-    }
-
-    function logout() {
-      localStorage.removeItem('token');
-      localStorage.removeItem('email');
-      localStorage.removeItem('isAdmin');
-
-      alert('Você saiu da conta.');
-      window.location.href = '/login.html';
-    }
-
-    function setTopStatus(message, ok = false) {
-      const el = document.getElementById('topStatus');
-      el.textContent = message;
-      el.style.color = ok ? '#0f766e' : '#d97706';
-    }
-
-    async function carregarResumo() {
-      const res = await fetch('/admin/resumo', {
-        headers: { Authorization: token }
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || 'Erro ao carregar resumo');
-      }
-
-      document.getElementById('limite').textContent = data.limite ?? '-';
-      document.getElementById('vendidos').textContent = data.totalVendidos ?? '-';
-      document.getElementById('usados').textContent = data.totalUsados ?? '-';
-      document.getElementById('disponiveis').textContent = data.totalDisponiveis ?? '-';
-    }
-
-    async function carregarIngressos() {
-      const res = await fetch('/admin/ingressos', {
-        headers: { Authorization: token }
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || 'Erro ao carregar ingressos');
-      }
-
-      todosIngressos = data;
-      renderTickets();
-    }
-
-    async function carregarUsuarios() {
-      const res = await fetch('/admin/usuarios', {
-        headers: { Authorization: token }
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || 'Erro ao carregar usuários');
-      }
-
-      todosUsuarios = data;
-      renderUsers();
-    }
-
-    function formatTipo(ticket) {
-      const tipo = ticket.tipo || 'openbar';
-
-      if (tipo === 'pista') {
-        return '<span class="pill pill-pista">Pista</span>';
-      }
-
-      return '<span class="pill pill-openbar">Open Bar</span>';
-    }
-
-    function formatPreco(ticket) {
-      if (typeof ticket.preco === 'number') {
-        return `R$ ${ticket.preco},00`;
-      }
-
-      return ticket.tipo === 'pista' ? 'R$ 40,00' : 'R$ 80,00';
-    }
-
-    function formatDate(data) {
-      if (!data) return '-';
-      return new Date(data).toLocaleString('pt-BR');
-    }
-
-    function renderTickets() {
-      const body = document.getElementById('ticketsBody');
-      const filtroCodigo = document.getElementById('filtroCodigo').value.toLowerCase().trim();
-      const filtroUso = document.getElementById('filtroUso').value;
-      const filtroTipo = document.getElementById('filtroTipo').value;
-
-      const filtrados = todosIngressos.filter(ticket => {
-        const tipo = ticket.tipo || 'openbar';
-
-        const matchCodigo =
-          !filtroCodigo ||
-          (ticket.codigo || '').toLowerCase().includes(filtroCodigo);
-
-        const matchUso =
-          !filtroUso ||
-          (filtroUso === 'usado' && ticket.usado) ||
-          (filtroUso === 'nao-usado' && !ticket.usado);
-
-        const matchTipo =
-          !filtroTipo ||
-          tipo === filtroTipo;
-
-        return matchCodigo && matchUso && matchTipo;
-      });
-
-      body.innerHTML = '';
-
-      if (!filtrados.length) {
-        body.innerHTML = `<tr><td colspan="9" class="empty">Nenhum ingresso encontrado.</td></tr>`;
-        return;
-      }
-
-      filtrados.forEach(ticket => {
-        const tr = document.createElement('tr');
-
-        tr.innerHTML = `
-          <td>${ticket.codigo || '-'}</td>
-          <td>${formatTipo(ticket)}</td>
-          <td>${formatPreco(ticket)}</td>
-          <td>${ticket.status || '-'}</td>
-          <td class="${ticket.usado ? 'status-ok' : 'status-no'}">${ticket.usado ? 'Sim' : 'Não'}</td>
-          <td>${ticket.validadoPor || '-'}</td>
-          <td>${formatDate(ticket.validadoEm)}</td>
-          <td>${ticket.userId || '-'}</td>
-          <td>${formatDate(ticket.createdAt)}</td>
-        `;
-
-        body.appendChild(tr);
-      });
-    }
-
-    function renderUsers() {
-      const body = document.getElementById('usersBody');
-      const filtroUsuario = document.getElementById('filtroUsuario').value.toLowerCase().trim();
-      const filtroAdmin = document.getElementById('filtroAdmin').value;
-
-      const filtrados = todosUsuarios.filter(user => {
-        const nome = (user.nome || '').toLowerCase();
-        const email = (user.email || '').toLowerCase();
-
-        const matchTexto =
-          !filtroUsuario ||
-          nome.includes(filtroUsuario) ||
-          email.includes(filtroUsuario);
-
-        const matchPerfil =
-          !filtroAdmin ||
-          (filtroAdmin === 'admin' && user.isAdmin) ||
-          (filtroAdmin === 'comum' && !user.isAdmin);
-
-        return matchTexto && matchPerfil;
-      });
-
-      body.innerHTML = '';
-
-      if (!filtrados.length) {
-        body.innerHTML = `<tr><td colspan="4" class="empty">Nenhum usuário encontrado.</td></tr>`;
-        return;
-      }
-
-      filtrados.forEach(user => {
-        const tr = document.createElement('tr');
-
-        tr.innerHTML = `
-          <td>${user.nome || '-'}</td>
-          <td>${user.email || '-'}</td>
-          <td>
-            <span class="pill ${user.isAdmin ? 'pill-admin' : 'pill-user'}">
-              ${user.isAdmin ? 'Admin' : 'Usuário'}
-            </span>
-          </td>
-          <td>${formatDate(user.createdAt)}</td>
-        `;
-
-        body.appendChild(tr);
-      });
-    }
-
-    async function carregarTudo() {
-      try {
-        setTopStatus('Atualizando painel...');
-        await Promise.all([
-          carregarResumo(),
-          carregarIngressos(),
-          carregarUsuarios()
-        ]);
-        setTopStatus('Painel atualizado com sucesso.', true);
-      } catch (error) {
-        setTopStatus(error.message || 'Erro ao carregar painel.');
-      }
-    }
-
-    async function carregarConfigEvento() {
-      try {
-        const res = await fetch('/evento-config');
-        const config = await res.json();
-
-        if (!res.ok) {
-          throw new Error(config.error || 'Erro ao carregar configuração do evento');
-        }
-
-        document.getElementById('nomeEvento').value = config.nomeEvento || '';
-        document.getElementById('dataEvento').value = config.dataEvento || '';
-        document.getElementById('horarioEvento').value = config.horarioEvento || '';
-        document.getElementById('localEvento').value = config.localEvento || '';
-        document.getElementById('precoOpenBar').value = config.precoOpenBar || '';
-        document.getElementById('precoPista').value = config.precoPista || '';
-        document.getElementById('limiteIngressos').value = config.limiteIngressos || '';
-        document.getElementById('imagemEvento').value = config.imagemEvento || '';
-      } catch (error) {
-        setTopStatus(error.message || 'Erro ao carregar configuração.');
-      }
-    }
-
-    async function salvarConfigEvento() {
-      try {
-        setTopStatus('Salvando configuração do evento...');
-
-        const body = {
-          nomeEvento: document.getElementById('nomeEvento').value.trim(),
-          dataEvento: document.getElementById('dataEvento').value.trim(),
-          horarioEvento: document.getElementById('horarioEvento').value.trim(),
-          localEvento: document.getElementById('localEvento').value.trim(),
-          precoOpenBar: Number(document.getElementById('precoOpenBar').value),
-          precoPista: Number(document.getElementById('precoPista').value),
-          limiteIngressos: Number(document.getElementById('limiteIngressos').value),
-          imagemEvento: document.getElementById('imagemEvento').value.trim()
-        };
-
-        const res = await fetch('/admin/evento-config', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: token
-          },
-          body: JSON.stringify(body)
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.error || 'Erro ao salvar configuração');
-        }
-
-        setTopStatus('Configuração salva com sucesso.', true);
-
-        await carregarResumo();
-      } catch (error) {
-        setTopStatus(error.message || 'Erro ao salvar configuração.');
-      }
-    }
-
-    async function resetarIngressos() {
-  const senha = document.getElementById('senhaReset').value.trim();
-  const confirmar = document.getElementById('confirmarReset').value.trim();
-
-  if (!senha) {
-    alert('Digite sua senha de admin.');
-    return;
+  if (!token) {
+    alert('Faça login primeiro.');
+    window.location.href = '/login.html';
   }
 
-  if (confirmar !== 'RESETAR_INGRESSOS') {
-    alert('Digite exatamente RESETAR_INGRESSOS para confirmar.');
-    return;
+  if (isAdmin !== 'true') {
+    alert('Acesso permitido apenas para administrador.');
+    window.location.href = '/index.html';
   }
 
-  const certeza = confirm(
-    'Tem certeza que deseja apagar TODOS os ingressos? Essa ação não pode ser desfeita.'
-  );
+  function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('email');
+    localStorage.removeItem('isAdmin');
+    localStorage.removeItem('eventoAtualId');
 
-  if (!certeza) return;
+    alert('Você saiu da conta.');
+    window.location.href = '/login.html';
+  }
 
-  try {
-    setTopStatus('Resetando ingressos...');
+  function setTopStatus(message, ok = false) {
+    const el = document.getElementById('topStatus');
+    el.textContent = message;
+    el.style.color = ok ? '#0f766e' : '#d97706';
+  }
 
-    const res = await fetch('/admin/reset-ingressos', {
-      method: 'DELETE',
+  function formatDate(data) {
+    if (!data) return '-';
+    return new Date(data).toLocaleString('pt-BR');
+  }
+
+  function formatTipo(ticket) {
+    const tipo = ticket.tipo || 'openbar';
+
+    if (tipo === 'pista') {
+      return '<span class="pill pill-pista">Pista</span>';
+    }
+
+    return '<span class="pill pill-openbar">Open Bar</span>';
+  }
+
+  function formatPreco(ticket) {
+    if (typeof ticket.preco === 'number') {
+      return `R$ ${ticket.preco},00`;
+    }
+
+    return ticket.tipo === 'pista' ? 'R$ 40,00' : 'R$ 80,00';
+  }
+
+  async function carregarEventos() {
+    const res = await fetch('/admin/eventos', {
       headers: {
-        'Content-Type': 'application/json',
         Authorization: token
-      },
-      body: JSON.stringify({
-        senha,
-        confirmar
-      })
+      }
     });
 
     const data = await res.json();
 
     if (!res.ok) {
-      throw new Error(data.error || 'Erro ao resetar ingressos.');
+      throw new Error(data.error || 'Erro ao carregar eventos.');
     }
 
-    alert(`${data.message} Total apagado: ${data.apagados}`);
+    todosEventos = data;
 
-    document.getElementById('senhaReset').value = '';
-    document.getElementById('confirmarReset').value = '';
+    const select = document.getElementById('eventoSelecionado');
 
-    await carregarTudo();
+    if (!todosEventos.length) {
+      select.innerHTML = `<option value="">Nenhum evento encontrado</option>`;
+      eventoAtualId = '';
+      localStorage.removeItem('eventoAtualId');
+      return;
+    }
 
-    setTopStatus('Ingressos resetados com sucesso.', true);
-  } catch (error) {
-    setTopStatus(error.message || 'Erro ao resetar ingressos.');
-    alert(error.message || 'Erro ao resetar ingressos.');
+    if (!eventoAtualId || !todosEventos.some(evento => evento._id === eventoAtualId)) {
+      eventoAtualId = todosEventos[0]._id;
+      localStorage.setItem('eventoAtualId', eventoAtualId);
+    }
+
+    select.innerHTML = todosEventos.map(evento => `
+      <option value="${evento._id}" ${evento._id === eventoAtualId ? 'selected' : ''}>
+        ${evento.nomeEvento}
+      </option>
+    `).join('');
+
+    carregarCamposEventoSelecionado();
   }
-}
 
-    carregarConfigEvento();
-    carregarTudo();
-  </script>
+  function getEventoAtual() {
+    return todosEventos.find(evento => evento._id === eventoAtualId);
+  }
+
+  function carregarCamposEventoSelecionado() {
+    const evento = getEventoAtual();
+
+    if (!evento) return;
+
+    document.getElementById('nomeEvento').value = evento.nomeEvento || '';
+    document.getElementById('dataEvento').value = evento.dataEvento || '';
+    document.getElementById('horarioEvento').value = evento.horarioEvento || '';
+    document.getElementById('localEvento').value = evento.localEvento || '';
+    document.getElementById('precoOpenBar').value = evento.precoOpenBar || '';
+    document.getElementById('precoPista').value = evento.precoPista || '';
+    document.getElementById('limiteIngressos').value = evento.limiteIngressos || '';
+    document.getElementById('imagemEvento').value = evento.imagemEvento || '';
+  }
+
+  async function selecionarEvento() {
+    const select = document.getElementById('eventoSelecionado');
+    eventoAtualId = select.value;
+
+    localStorage.setItem('eventoAtualId', eventoAtualId);
+
+    carregarCamposEventoSelecionado();
+
+    await carregarResumo();
+    await carregarIngressos();
+
+    setTopStatus('Evento selecionado atualizado.', true);
+  }
+
+  async function carregarResumo() {
+    if (!eventoAtualId) {
+      throw new Error('Nenhum evento selecionado.');
+    }
+
+    const res = await fetch(`/admin/eventos/${eventoAtualId}/resumo`, {
+      headers: {
+        Authorization: token
+      }
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Erro ao carregar resumo.');
+    }
+
+    document.getElementById('limite').textContent = data.limite ?? '-';
+    document.getElementById('vendidos').textContent = data.totalVendidos ?? '-';
+    document.getElementById('usados').textContent = data.totalUsados ?? '-';
+    document.getElementById('disponiveis').textContent = data.totalDisponiveis ?? '-';
+  }
+
+  async function carregarIngressos() {
+    if (!eventoAtualId) {
+      throw new Error('Nenhum evento selecionado.');
+    }
+
+    const res = await fetch(`/admin/eventos/${eventoAtualId}/ingressos`, {
+      headers: {
+        Authorization: token
+      }
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Erro ao carregar ingressos.');
+    }
+
+    todosIngressos = data;
+    renderTickets();
+  }
+
+  async function carregarUsuarios() {
+    const res = await fetch('/admin/usuarios', {
+      headers: {
+        Authorization: token
+      }
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Erro ao carregar usuários.');
+    }
+
+    todosUsuarios = data;
+    renderUsers();
+  }
+
+  function renderTickets() {
+    const body = document.getElementById('ticketsBody');
+    const filtroCodigo = document.getElementById('filtroCodigo').value.toLowerCase().trim();
+    const filtroUso = document.getElementById('filtroUso').value;
+    const filtroTipo = document.getElementById('filtroTipo').value;
+
+    const filtrados = todosIngressos.filter(ticket => {
+      const tipo = ticket.tipo || 'openbar';
+
+      const matchCodigo =
+        !filtroCodigo ||
+        (ticket.codigo || '').toLowerCase().includes(filtroCodigo);
+
+      const matchUso =
+        !filtroUso ||
+        (filtroUso === 'usado' && ticket.usado) ||
+        (filtroUso === 'nao-usado' && !ticket.usado);
+
+      const matchTipo =
+        !filtroTipo ||
+        tipo === filtroTipo;
+
+      return matchCodigo && matchUso && matchTipo;
+    });
+
+    body.innerHTML = '';
+
+    if (!filtrados.length) {
+      body.innerHTML = `<tr><td colspan="9" class="empty">Nenhum ingresso encontrado para este evento.</td></tr>`;
+      return;
+    }
+
+    filtrados.forEach(ticket => {
+      const tr = document.createElement('tr');
+
+      tr.innerHTML = `
+        <td>${ticket.codigo || '-'}</td>
+        <td>${formatTipo(ticket)}</td>
+        <td>${formatPreco(ticket)}</td>
+        <td>${ticket.status || '-'}</td>
+        <td class="${ticket.usado ? 'status-ok' : 'status-no'}">${ticket.usado ? 'Sim' : 'Não'}</td>
+        <td>${ticket.validadoPor || '-'}</td>
+        <td>${formatDate(ticket.validadoEm)}</td>
+        <td>${ticket.userId || '-'}</td>
+        <td>${formatDate(ticket.createdAt)}</td>
+      `;
+
+      body.appendChild(tr);
+    });
+  }
+
+  function renderUsers() {
+    const body = document.getElementById('usersBody');
+    const filtroUsuario = document.getElementById('filtroUsuario').value.toLowerCase().trim();
+    const filtroAdmin = document.getElementById('filtroAdmin').value;
+
+    const filtrados = todosUsuarios.filter(user => {
+      const nome = (user.nome || '').toLowerCase();
+      const email = (user.email || '').toLowerCase();
+
+      const matchTexto =
+        !filtroUsuario ||
+        nome.includes(filtroUsuario) ||
+        email.includes(filtroUsuario);
+
+      const matchPerfil =
+        !filtroAdmin ||
+        (filtroAdmin === 'admin' && user.isAdmin) ||
+        (filtroAdmin === 'comum' && !user.isAdmin);
+
+      return matchTexto && matchPerfil;
+    });
+
+    body.innerHTML = '';
+
+    if (!filtrados.length) {
+      body.innerHTML = `<tr><td colspan="4" class="empty">Nenhum usuário encontrado.</td></tr>`;
+      return;
+    }
+
+    filtrados.forEach(user => {
+      const tr = document.createElement('tr');
+
+      tr.innerHTML = `
+        <td>${user.nome || '-'}</td>
+        <td>${user.email || '-'}</td>
+        <td>
+          <span class="pill ${user.isAdmin ? 'pill-admin' : 'pill-user'}">
+            ${user.isAdmin ? 'Admin' : 'Usuário'}
+          </span>
+        </td>
+        <td>${formatDate(user.createdAt)}</td>
+      `;
+
+      body.appendChild(tr);
+    });
+  }
+
+  async function salvarConfigEvento() {
+    try {
+      if (!eventoAtualId) {
+        throw new Error('Nenhum evento selecionado.');
+      }
+
+      setTopStatus('Salvando configuração do evento...');
+
+      const body = {
+        nomeEvento: document.getElementById('nomeEvento').value.trim(),
+        dataEvento: document.getElementById('dataEvento').value.trim(),
+        horarioEvento: document.getElementById('horarioEvento').value.trim(),
+        localEvento: document.getElementById('localEvento').value.trim(),
+        precoOpenBar: Number(document.getElementById('precoOpenBar').value),
+        precoPista: Number(document.getElementById('precoPista').value),
+        limiteIngressos: Number(document.getElementById('limiteIngressos').value),
+        imagemEvento: document.getElementById('imagemEvento').value.trim()
+      };
+
+      const res = await fetch(`/admin/eventos/${eventoAtualId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token
+        },
+        body: JSON.stringify(body)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Erro ao salvar configuração.');
+      }
+
+      setTopStatus('Configuração salva com sucesso.', true);
+
+      await carregarEventos();
+      await carregarResumo();
+      await carregarIngressos();
+    } catch (error) {
+      setTopStatus(error.message || 'Erro ao salvar configuração.');
+      alert(error.message || 'Erro ao salvar configuração.');
+    }
+  }
+
+  async function resetarIngressos() {
+    const senha = document.getElementById('senhaReset').value.trim();
+    const confirmar = document.getElementById('confirmarReset').value.trim();
+
+    if (!senha) {
+      alert('Digite sua senha de admin.');
+      return;
+    }
+
+    if (confirmar !== 'RESETAR_INGRESSOS') {
+      alert('Digite exatamente RESETAR_INGRESSOS para confirmar.');
+      return;
+    }
+
+    if (!eventoAtualId) {
+      alert('Selecione um evento primeiro.');
+      return;
+    }
+
+    const evento = getEventoAtual();
+    const nomeEvento = evento?.nomeEvento || 'este evento';
+
+    const certeza = confirm(
+      `Tem certeza que deseja apagar TODOS os ingressos do evento "${nomeEvento}"? Essa ação não pode ser desfeita.`
+    );
+
+    if (!certeza) return;
+
+    try {
+      setTopStatus('Resetando ingressos do evento...');
+
+      const res = await fetch(`/admin/eventos/${eventoAtualId}/reset-ingressos`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token
+        },
+        body: JSON.stringify({
+          senha,
+          confirmar
+        })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Erro ao resetar ingressos.');
+      }
+
+      alert(`${data.message} Total apagado: ${data.apagados}`);
+
+      document.getElementById('senhaReset').value = '';
+      document.getElementById('confirmarReset').value = '';
+
+      await carregarResumo();
+      await carregarIngressos();
+
+      setTopStatus('Ingressos resetados com sucesso.', true);
+    } catch (error) {
+      setTopStatus(error.message || 'Erro ao resetar ingressos.');
+      alert(error.message || 'Erro ao resetar ingressos.');
+    }
+  }
+
+  async function carregarTudo() {
+    try {
+      setTopStatus('Atualizando painel...');
+
+      await carregarEventos();
+
+      await Promise.all([
+        carregarResumo(),
+        carregarIngressos(),
+        carregarUsuarios()
+      ]);
+
+      setTopStatus('Painel atualizado com sucesso.', true);
+    } catch (error) {
+      setTopStatus(error.message || 'Erro ao carregar painel.');
+    }
+  }
+
+  carregarTudo();
+</script>
 </body>
 </html>

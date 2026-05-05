@@ -725,6 +725,140 @@ app.get('/admin/eventos/:eventId/ingressos', auth, adminOnly, async (req, res) =
     res.status(500).json({ error: 'Erro ao listar ingressos do evento.' });
   }
 });
+// ADMIN - ATUALIZAR UM EVENTO ESPECÍFICO
+app.put('/admin/eventos/:eventId', auth, adminOnly, async (req, res) => {
+  try {
+    const { eventId } = req.params;
+
+    const {
+      nomeEvento,
+      dataEvento,
+      horarioEvento,
+      localEvento,
+      descricaoEvento,
+      imagemEvento,
+      precoOpenBar,
+      precoPista,
+      limiteIngressos,
+      ativo
+    } = req.body;
+
+    const evento = await Event.findById(eventId);
+
+    if (!evento) {
+      return res.status(404).json({ error: 'Evento não encontrado.' });
+    }
+
+    if (nomeEvento) {
+      evento.nomeEvento = nomeEvento;
+    }
+
+    if (dataEvento !== undefined) {
+      evento.dataEvento = dataEvento;
+    }
+
+    if (horarioEvento !== undefined) {
+      evento.horarioEvento = horarioEvento;
+    }
+
+    if (localEvento !== undefined) {
+      evento.localEvento = localEvento;
+    }
+
+    if (descricaoEvento !== undefined) {
+      evento.descricaoEvento = descricaoEvento;
+    }
+
+    if (imagemEvento !== undefined) {
+      evento.imagemEvento = imagemEvento;
+    }
+
+    if (precoOpenBar !== undefined && !isNaN(Number(precoOpenBar))) {
+      evento.precoOpenBar = Number(precoOpenBar);
+    }
+
+    if (precoPista !== undefined && !isNaN(Number(precoPista))) {
+      evento.precoPista = Number(precoPista);
+    }
+
+    if (limiteIngressos !== undefined && !isNaN(Number(limiteIngressos))) {
+      evento.limiteIngressos = Number(limiteIngressos);
+    }
+
+    if (ativo !== undefined) {
+      evento.ativo = Boolean(ativo);
+    }
+
+    await evento.save();
+
+    res.json({
+      message: 'Evento atualizado com sucesso.',
+      evento
+    });
+  } catch (error) {
+    console.error('Erro ao atualizar evento:', error);
+    res.status(500).json({ error: 'Erro ao atualizar evento.' });
+  }
+});
+
+
+// ADMIN - RESETAR INGRESSOS DE UM EVENTO ESPECÍFICO
+app.delete('/admin/eventos/:eventId/reset-ingressos', auth, adminOnly, async (req, res) => {
+  try {
+    const { eventId } = req.params;
+    const { senha, confirmar } = req.body;
+
+    if (confirmar !== 'RESETAR_INGRESSOS') {
+      return res.status(400).json({
+        error: 'Confirmação inválida. Digite RESETAR_INGRESSOS para confirmar.'
+      });
+    }
+
+    if (!senha) {
+      return res.status(400).json({
+        error: 'Senha do admin é obrigatória.'
+      });
+    }
+
+    const evento = await Event.findById(eventId);
+
+    if (!evento) {
+      return res.status(404).json({
+        error: 'Evento não encontrado.'
+      });
+    }
+
+    const admin = await User.findById(req.user.id);
+
+    if (!admin) {
+      return res.status(404).json({
+        error: 'Admin não encontrado.'
+      });
+    }
+
+    const senhaOk = await bcrypt.compare(senha, admin.senha);
+
+    if (!senhaOk) {
+      return res.status(401).json({
+        error: 'Senha incorreta.'
+      });
+    }
+
+    const resultado = await Ticket.deleteMany({
+      eventId: evento._id
+    });
+
+    res.json({
+      message: `Ingressos do evento "${evento.nomeEvento}" apagados com sucesso.`,
+      apagados: resultado.deletedCount
+    });
+  } catch (error) {
+    console.error('Erro ao resetar ingressos do evento:', error);
+    res.status(500).json({
+      error: 'Erro ao resetar ingressos do evento.'
+    });
+  }
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Rodando na porta ${PORT}`));
