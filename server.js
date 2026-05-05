@@ -264,27 +264,31 @@ app.post('/comprar', auth, async (req, res) => {
       return res.status(400).json({ error: 'Tipo de ingresso inválido' });
     }
 
-    const config = await getEventConfig();
+   const evento = await getEventoPrincipal();
 
-    const preco = tipo === 'pista' ? config.precoPista : config.precoOpenBar;
-    const nomeTipo = tipo === 'pista' ? 'Pista Tropical' : 'Open Bar Tropical';
+const preco = tipo === 'pista' ? evento.precoPista : evento.precoOpenBar;
+const nomeTipo = tipo === 'pista' ? 'Pista Tropical' : 'Open Bar Tropical';
 
-    const count = await Ticket.countDocuments({ status: 'pago' });
-    if (count >= config.limiteIngressos) {
-      return res.status(400).json({ error: 'Ingressos esgotados' });
-    }
+const count = await Ticket.countDocuments({
+  status: 'pago',
+  eventId: evento._id
+});
+
+if (count >= evento.limiteIngressos) {
+  return res.status(400).json({ error: 'Ingressos esgotados' });
+}
 
     const codigo = uuidv4();
 
     await Ticket.create({
-      userId: req.user.id,
-      codigo,
-      status: 'pago',
-      usado: false,
-      tipo,
-      preco
-    });
-
+  userId: req.user.id,
+  eventId: evento._id,
+  codigo,
+  status: 'pago',
+  usado: false,
+  tipo,
+  preco
+});
 const qr = await QRCode.toDataURL(codigo);
 
 res.json({
@@ -307,7 +311,7 @@ User.findById(req.user.id)
         preco
       },
       qr,
-      config,
+      config: evento,
       nomeTipo
     });
   })
